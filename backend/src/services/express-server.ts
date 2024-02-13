@@ -44,11 +44,18 @@ export class ExpressServer {
         // Enable URL-encoded request body parsing
         this.app.use(express.urlencoded({ extended: true }));
 
+        var whitelist = ["http://localhost:3000", "http://10.225.100.30:3000/"];
         // Configure CORS (Cross-Origin Resource Sharing)
         this.app.use(
             cors({
-                origin: "*", // Specify the allowed origin for CORS
                 credentials: true,
+                origin: function (origin, callback) {
+                    if (origin && whitelist.indexOf(origin) !== -1) {
+                        callback(null, true);
+                    } else {
+                        callback(new Error("Not allowed by CORS"));
+                    }
+                },
             })
         );
 
