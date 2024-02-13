@@ -47,7 +47,7 @@ export class ExpressServer {
         // Configure CORS (Cross-Origin Resource Sharing)
         this.app.use(
             cors({
-                origin: "http://localhost:3000", // Specify the allowed origin for CORS
+                origin: "*", // Specify the allowed origin for CORS
                 credentials: true,
             })
         );
