@@ -44,7 +44,7 @@ export class ExpressServer {
         // Enable URL-encoded request body parsing
         this.app.use(express.urlencoded({ extended: true }));
 
-        var whitelist = ["http://localhost:3000", "http://10.225.100.30:3000/"];
+        var whitelist = ["http://localhost:3000", "http://10.225.100.30:3000"];
         // Configure CORS (Cross-Origin Resource Sharing)
         this.app.use(
             cors({
