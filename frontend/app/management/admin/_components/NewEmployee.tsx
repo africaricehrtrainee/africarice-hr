@@ -35,7 +35,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
             firstName,
             lastName: lastName?.toUpperCase() ?? null,
             email,
-            supervisorId,
+            supervisorId : supervisorId ?? undefined,
             role,
             password: email.split("@")[0],
             jobTitle,
