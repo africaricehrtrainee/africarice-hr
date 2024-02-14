@@ -75,3 +75,7 @@ export function xlsxToJsonArray(data: any): any[] {
     console.log(output);
     return output;
 }
+
+export function constructPositionTree(employees: Employee[]) {
+    return employees;
+}

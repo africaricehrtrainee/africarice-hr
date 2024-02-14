@@ -122,3 +122,11 @@ interface Comment {
     content: string;
     objective: Objectives;
 }
+
+interface Position {
+    employeeId: number;
+    employeeFirstName: string;
+    employeeLastName: string;
+    employeeJobTitle: string;
+    children?: Position[];
+}

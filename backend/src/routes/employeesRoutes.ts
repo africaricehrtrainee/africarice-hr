@@ -58,7 +58,11 @@ router.post("/bulk", isAuthenticated, async (req, res) => {
 // Get all employees
 router.get("/", isAuthenticated, async (req, res) => {
     try {
-        const result = await prisma.employees.findMany();
+        const result = await prisma.employees.findMany({
+            include: {
+                subordinates: true,
+            },
+        });
         res.status(200).json(result);
     } catch (error) {
         console.error(error);
