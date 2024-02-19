@@ -3,6 +3,7 @@ import { DbService } from "../services/db-service";
 import { isAuthenticated } from "./authRoutes";
 import { Employees, Evaluations, Objectives } from "@prisma/client";
 import prisma from "../../prisma/middleware";
+import { xlsxToJsonArray } from "../services/xlsx-service";
 
 const router = express.Router();
 const dbService = new DbService();
@@ -49,6 +50,24 @@ router.post("/bulk", isAuthenticated, async (req, res) => {
         );
 
         res.status(201).json(transactionResult);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.post("/xlsx", isAuthenticated, async (req, res) => {
+    try {
+        const { document }: { document: any } = req.body;
+
+        if (!document) {
+            res.status(400).json({ error: "A document object is required" });
+            return;
+        }
+
+        xlsxToJsonArray(document);
+
+        res.status(201).json({ message: "Document uploaded successfully" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal Server Error" });

@@ -18,7 +18,7 @@ model Employees {
   matricule    String? @unique
   jobTitle     String
 
-  supervisor   Employees?  @relation("Supervisor", fields: [supervisorId], references: [employeeId])
+  supervisor   Employees?  @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: SetNull)
   subordinates Employees[] @relation("Supervisor")
 
   evaluations360          Evaluation360[]
@@ -64,8 +64,8 @@ model Evaluations {
   selfRespect          String?
   selfLeadership       String?
 
-  employee   Employees @relation(fields: [employeeId], references: [employeeId])
-  supervisor Employees @relation("Supervisor", fields: [supervisorId], references: [employeeId])
+  employee   Employees @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
+  supervisor Employees @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
 }
 
 model Evaluation360 {
@@ -75,8 +75,8 @@ model Evaluation360 {
   evaluationYear   String @default("2024")
   evaluationStatus String @default("draft")
 
-  employee   Employees      @relation(fields: [employeeId], references: [employeeId])
-  supervisor Employees      @relation("Supervisor", fields: [supervisorId], references: [employeeId])
+  employee   Employees      @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
+  supervisor Employees      @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
   evaluators Evaluator360[]
 }
 
@@ -88,20 +88,21 @@ model Evaluator360 {
   evaluatorGrade    Int?
   evaluatorComment  String?
 
-  evaluation Evaluation360 @relation(fields: [evaluationId], references: [evaluation360Id])
-  evaluator  Employees     @relation(fields: [evaluatorId], references: [employeeId])
+  evaluation Evaluation360 @relation(fields: [evaluationId], references: [evaluation360Id], onDelete: Cascade)
+  evaluator  Employees     @relation(fields: [evaluatorId], references: [employeeId], onDelete: Cascade)
 }
 
 model Objectives {
-  objectiveId          Int      @id @default(autoincrement())
-  status               String   @default("draft")
-  objectiveYear        String   @default("2024")
+  objectiveId          Int       @id @default(autoincrement())
+  status               String    @default("draft")
+  objectiveYear        String    @default("2024")
   employeeId           Int
   supervisorId         Int?
-  evaluationStatus     String   @default("draft")
-  selfEvaluationStatus String   @default("draft")
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  evaluationStatus     String    @default("draft")
+  selfEvaluationStatus String    @default("draft")
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  deletedAt            DateTime?
 
   title             String?
   description       String?
@@ -112,9 +113,26 @@ model Objectives {
   comment           String?
   selfComment       String?
 
-  employee         Employees           @relation(fields: [employeeId], references: [employeeId])
-  supervisor       Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId])
+  employee         Employees           @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
+  supervisor       Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
   ObjectiveComment ObjectiveComments[]
+  ObjectiveHistory ObjectiveHistory[]
+}
+
+model ObjectiveHistory {
+  objectiveHistoryId Int @id @default(autoincrement())
+  objectiveId        Int
+
+  title             String
+  description       String
+  successConditions String
+  deadline          String
+  kpi               String
+  grade             Int
+  comment           String
+  selfComment       String
+
+  objective Objectives @relation(fields: [objectiveId], references: [objectiveId], onDelete: Cascade)
 }
 
 model Steps {
@@ -135,15 +153,15 @@ model ObjectiveComments {
   updatedAt   DateTime @updatedAt
   content     String
 
-  objective Objectives @relation(fields: [objectiveId], references: [objectiveId])
-  author    Employees  @relation(fields: [authorId], references: [employeeId])
+  objective Objectives @relation(fields: [objectiveId], references: [objectiveId], onDelete: Cascade)
+  author    Employees  @relation(fields: [authorId], references: [employeeId], onDelete: Cascade)
 }
 
 model Updates {
   updateId   Int        @id @default(autoincrement())
   employeeId Int
   type       UpdateType
-  employee   Employees  @relation(fields: [employeeId], references: [employeeId])
+  employee   Employees  @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now()) @updatedAt
 }

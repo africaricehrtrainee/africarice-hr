@@ -31,7 +31,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
     const handleFormSubmit = (e: React.FormEvent) => {
         setLoading(true);
         e.preventDefault();
-        const employeeData: EmployeeData = {
+        const employeeData = {
             firstName,
             lastName: lastName?.toUpperCase() ?? null,
             email,

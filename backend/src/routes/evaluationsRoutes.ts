@@ -12,7 +12,6 @@ const db = new DbService();
 router.get("/", isAuthenticated, async (req, res) => {
     try {
         const result = await prisma.evaluations.findMany({});
-
         res.status(200).json(result);
     } catch (error) {
         console.error(error);

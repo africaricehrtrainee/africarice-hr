@@ -22,5 +22,6 @@ export const useOrganogramDataStore = create<Data & Actions>()(
         ...initialState,
         setPositions: (to) => set((state) => ({ positions: to })),
         setEmployees: (to) => set((state) => ({ employees: to })),
+
     }))
 );

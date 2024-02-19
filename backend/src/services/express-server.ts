@@ -128,10 +128,11 @@ export class ExpressServer {
                         jobTitle: "Administrator",
                         password: "admin",
                         role: "admin",
-                        employeeId: 99,
+                        employeeId: 1,
                     },
                 })
                 .catch((err) => {});
+
             prisma.steps.createMany({
                 data: [
                     {
@@ -172,6 +173,7 @@ export class ExpressServer {
                 ],
             });
             // cronJob();
+            init();
         });
     }
 }

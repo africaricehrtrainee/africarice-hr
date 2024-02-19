@@ -1,9 +1,5 @@
 "use client";
-import {
-    constructPositionTree,
-    getCurrentMySQLDate,
-    xlsxToJsonArray,
-} from "@/util/utils";
+import { constructPositionTree, getCurrentMySQLDate } from "@/util/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -11,18 +7,45 @@ import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import panzoom, { PanZoom } from "panzoom";
 import Button from "@/components/ui/Button";
 import { useOrganogramDataStore } from "@/app/management/organogram/_store/useStore";
+import { useToast } from "@/components/ui/use-toast";
 
-// const RootTreeNode = dynamic(() => import("./RootTreeNode"), {
-//     ssr: false,
-// });
+const RootTreeNode = dynamic(() => import("./RootTreeNode"), {
+    ssr: false,
+});
 
 export default function OrgChart() {
     const { employees, setEmployees, positions, setPositions } =
         useOrganogramDataStore();
+    const [tree, setTree] = useState<Employee[] | null>(null);
     const elementRef = useRef(null);
     const panzoomRef = useRef<PanZoom>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const { toast } = useToast();
+
+    function postSpreadsheet(document: any) {
+        axios
+            .post(process.env.NEXT_PUBLIC_API_URL + "/api/employees/xlsx", {
+                document,
+            })
+            .then((response) => {
+                if (response.status == 201) {
+                    toast({
+                        description: "Successfully updated employees",
+                    });
+                    ``;
+                }
+            })
+            .catch((err) => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+                console.log(err);
+            });
+    }
+
     // Set up panzoom on mount, and dispose on unmount
     useLayoutEffect(() => {
         // @ts-ignore
@@ -52,12 +75,8 @@ export default function OrgChart() {
                 if (e.target?.result) {
                     const data = e.target.result as ArrayBuffer;
                     // Process the file data using xlsx or any other library
-                    const arr = xlsxToJsonArray(data) as Omit<
-                        Employee,
-                        "employeeId"
-                    >[];
-                    if (arr.length > 0) {
-                        console.log(arr);
+                    if (data) {
+                        postSpreadsheet(data);
                     }
                 }
             };
@@ -89,7 +108,8 @@ export default function OrgChart() {
 
     useEffect(() => {
         if (employees) {
-            console.log("tree", constructPositionTree(employees));
+            const tree = constructPositionTree(employees);
+            setTree(tree);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [employees]);
@@ -112,13 +132,13 @@ export default function OrgChart() {
                 </div>
             </div>
             <div ref={elementRef}>
-                {/* {tree && (
+                {tree && (
                     <div className="flex gap-2">
                         {tree.map((root, index) => (
                             <RootTreeNode tree={root} depth={0} key={index} />
                         ))}
                     </div>
-                )} */}
+                )}
             </div>
             {/* Organogram Controls */}
             <div className="absolute right-4 top-4 flex items-center justify-center gap-2">
@@ -130,10 +150,12 @@ export default function OrgChart() {
                 ></input>
                 <Button
                     className=""
-                    // onClick={() => handleUploadClick()}
+                    onClick={() =>
+                        fileInputRef.current && fileInputRef.current.click()
+                    }
                     variant="alternate"
                 >
-                    Upload filesheet
+                    Import staff spreadsheet
                     <Icon
                         icon="mingcute:upload-3-fill"
                         className="ml-1"
