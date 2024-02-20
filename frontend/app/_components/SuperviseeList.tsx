@@ -81,7 +81,7 @@ const SuperviseeList: React.FC<SuperviseeListProps> = ({ employees }) => {
                                     >
                                         {employee.lastName +
                                             " " +
-                                            employee.firstName}
+                                            employee.firstName.split(" ")[0]}
                                     </p>
                                 </div>
                                 <div className="flex items-center justify-start">

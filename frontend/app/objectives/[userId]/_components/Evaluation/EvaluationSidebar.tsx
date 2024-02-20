@@ -28,11 +28,11 @@ function EvaluationComponent() {
     } = useObjectivesDataStore();
 
     const status =
-        selectedEvaluationStep == 2
+        selectedEvaluationStep == 3
             ? evaluation?.selfEvaluationStatus
             : evaluation?.evaluationStatus;
     const title =
-        selectedEvaluationStep == 2 ? "Self-Evaluation" : "Evaluation";
+        selectedEvaluationStep == 3 ? "Self-Evaluation" : "Evaluation";
     return (
         <div className="flex w-full flex-col items-start justify-start">
             <div className="flex w-full justify-between p-4">
@@ -93,7 +93,7 @@ function EvaluationComponent() {
                 </div>
                 {evaluation &&
                     evaluation.evaluationStatus == "sent" &&
-                    selectedEvaluationStep == 3 && (
+                    selectedEvaluationStep == 4 && (
                         <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
                             <p className="text-[10px] font-bold text-zinc-400">
                                 General grade
@@ -128,13 +128,13 @@ function ObjectiveComponent() {
         selectedEvaluationStep,
     } = useObjectivesDataStore();
     const count =
-        selectedEvaluationStep == 2
+        selectedEvaluationStep == 3
             ? objectives?.filter((obj) => obj.selfEvaluationStatus == "draft")
                   .length
             : objectives?.filter((obj) => obj.evaluationStatus == "draft")
                   .length;
     const title =
-        selectedEvaluationStep == 2 ? "Self-Evaluation" : "Evaluation";
+        selectedEvaluationStep == 3 ? "Self-Evaluation" : "Evaluation";
 
     return (
         <div className="flex w-full flex-col items-start justify-start pb-8">
@@ -160,7 +160,7 @@ function ObjectiveComponent() {
                     ?.filter((obj) => obj.status == "ok")
                     .map((objective, index) => {
                         const status =
-                            selectedEvaluationStep == 2
+                            selectedEvaluationStep == 3
                                 ? objective?.selfEvaluationStatus
                                 : objective?.evaluationStatus;
                         return (
@@ -208,7 +208,7 @@ function ObjectiveComponent() {
                                         </p>
                                     </div>
                                     {objective.grade &&
-                                        selectedEvaluationStep == 3 && (
+                                        selectedEvaluationStep == 4 && (
                                             <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
                                                 <p className="text-[10px] font-bold text-zinc-400">
                                                     Objective grade

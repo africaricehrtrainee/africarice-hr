@@ -4,7 +4,7 @@ import axios from "axios";
 
 interface Data {
     // SLICES
-    selectedEvaluationStep: 0 | 1 | 2 | 3;
+    selectedEvaluationStep: number;
     selectedObjectiveIndex: number;
     objectives: Objective[] | null;
     objectivesLocal: Partial<Objective>[];
@@ -24,7 +24,7 @@ interface Actions {
     setEvaluationLocal: (to: Partial<Evaluation>) => void;
     setEvaluationSteps: (to: Step[]) => void;
     setEmployee: (to: Employee) => void;
-    setSelectedEvaluationStep: (to: 0 | 1 | 2 | 3) => void;
+    setSelectedEvaluationStep: (to: number) => void;
     setSelectedObjectiveIndex: (to: number) => void;
     fetchObjectives: (userId: string) => void;
     fetchEvaluation: (userId: string) => void;

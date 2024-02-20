@@ -211,7 +211,8 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                         </div>
                         {/* Main row */}
                         {(data.selectedEvaluationStep == 0 ||
-                            data.selectedEvaluationStep == 1) && (
+                            data.selectedEvaluationStep == 1 ||
+                            data.selectedEvaluationStep == 2) && (
                             <div className="flex w-full gap-2">
                                 {/* Sidebar with objective list */}
                                 <ObjectiveList
@@ -235,11 +236,21 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                                     cache={data.comments}
                                     fetch={fetchComments}
                                 />
+                                <CommentList
+                                    user={user}
+                                    employee={data.employee}
+                                    objectives={data.objectivesLocal}
+                                    // @ts-expect-error
+                                    setComments={setComments}
+                                    comments={comments}
+                                    cache={data.comments}
+                                    fetch={fetchComments}
+                                />
                             </div>
                         )}
 
-                        {(data.selectedEvaluationStep == 2 ||
-                            data.selectedEvaluationStep == 3) && <Evaluation />}
+                        {(data.selectedEvaluationStep == 3 ||
+                            data.selectedEvaluationStep == 4) && <Evaluation />}
                     </>
                 )
             ) : (
@@ -252,7 +263,7 @@ export default function Objectives({ params }: { params: { userId: string } }) {
 
 function Profile({ user }: { user: Employee }) {
     return (
-        <div className="ml-auto flex w-[350px] items-start justify-evenly gap-4 rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
+        <div className="ml-auto flex w-[400px] items-start justify-evenly gap-4 rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
             <div className="flex h-full flex-col items-center justify-center gap-2">
                 <Chip>
                     Staff
@@ -275,7 +286,7 @@ function Profile({ user }: { user: Employee }) {
                     </p>
                     <p className="text-xs font-bold text-zinc-700">
                         {user.firstName && user.lastName
-                            ? user.lastName + " " + user.firstName
+                            ? user.lastName + " " + user.firstName.split(" ")[0]
                             : ""}
                     </p>
                 </div>
@@ -283,7 +294,7 @@ function Profile({ user }: { user: Employee }) {
                     <p className="text-[10px] font-medium text-zinc-300">
                         Position
                     </p>
-                    <p className="text-xs font-bold text-zinc-700">
+                    <p className="w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-xs font-bold text-zinc-700">
                         {user.jobTitle ?? "..."}
                     </p>
                 </div>
@@ -293,11 +304,11 @@ function Profile({ user }: { user: Employee }) {
                     <p className="text-[10px] font-medium text-zinc-300">
                         SUPERVISOR (N+1)
                     </p>
-                    <p className="text-xs font-bold text-zinc-700">
+                    <p className="whitespace-nowrap text-xs font-bold text-zinc-700">
                         {user.supervisor
                             ? user.supervisor.lastName +
                               " " +
-                              user.supervisor.firstName
+                              user.supervisor.firstName.split(" ")[0]
                             : "..."}
                     </p>
                 </div>
@@ -305,11 +316,11 @@ function Profile({ user }: { user: Employee }) {
                     <p className="text-[10px] font-medium text-zinc-300">
                         SUPERVISOR (N+2)
                     </p>
-                    <p className="text-xs font-bold text-zinc-700">
+                    <p className="whitespace-nowrap text-xs font-bold text-zinc-700">
                         {user.supervisor && user.supervisor.supervisor
                             ? user.supervisor.supervisor.lastName +
                               " " +
-                              user.supervisor.supervisor.lastName
+                              user.supervisor.supervisor.firstName.split(" ")[0]
                             : "..."}
                     </p>
                 </div>
@@ -325,7 +336,7 @@ function Step({
 }: {
     step: Step;
     postSteps: (number: number) => any;
-    index: 0 | 1 | 2;
+    index: number;
 }) {
     const data = useObjectivesDataStore();
     const activeStep = useObjectivesDataStore(selectActiveStep);
@@ -515,7 +526,7 @@ function Schedule({ fetch }: { fetch: () => any }) {
                                     key={stepObj.name}
                                     step={stepObj}
                                     postSteps={postSteps}
-                                    index={index as 0 | 1 | 2}
+                                    index={index as number}
                                 />
                                 {index < data.evaluationSteps.length - 1 && (
                                     <>

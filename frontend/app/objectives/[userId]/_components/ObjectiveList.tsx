@@ -252,8 +252,11 @@ function ObjectiveListItem(props: {
             className={cn(
                 "flex w-full flex-col relative items-between justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
                 {
-                    "bg-zinc-50 border-l-4 border-l-green-300":
+                    "bg-zinc-50 border-l-4 border-l-zinc-300":
                         props.i === props.data.selectedObjectiveIndex,
+                },
+                {
+                    "opacity-75": props.objective.status === "cancelled",
                 }
             )}
         >
@@ -290,6 +293,16 @@ function ObjectiveListItem(props: {
                         Approved
                         <Icon
                             icon="mdi:check-all"
+                            className="ml-1"
+                            fontSize={10}
+                        />
+                    </div>
+                )}
+                {props.objective.status == "cancelled" && (
+                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-100 p-1 px-2 text-[10px] font-semibold text-zinc-500">
+                        Cancelled
+                        <Icon
+                            icon="charm:cross"
                             className="ml-1"
                             fontSize={10}
                         />

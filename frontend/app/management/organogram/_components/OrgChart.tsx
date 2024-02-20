@@ -23,29 +23,6 @@ export default function OrgChart() {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { toast } = useToast();
 
-    function postSpreadsheet(document: any) {
-        axios
-            .post(process.env.NEXT_PUBLIC_API_URL + "/api/employees/xlsx", {
-                document,
-            })
-            .then((response) => {
-                if (response.status == 201) {
-                    toast({
-                        description: "Successfully updated employees",
-                    });
-                    ``;
-                }
-            })
-            .catch((err) => {
-                toast({
-                    variant: "destructive",
-                    title: "Uh oh! Something went wrong.",
-                    description: "There was a problem with your request.",
-                });
-                console.log(err);
-            });
-    }
-
     // Set up panzoom on mount, and dispose on unmount
     useLayoutEffect(() => {
         // @ts-ignore
@@ -63,27 +40,6 @@ export default function OrgChart() {
             panzoomRef?.current?.dispose();
         };
     }, []);
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = event.target.files && event.target.files[0];
-
-        // Handle the selected file as needed
-        if (selectedFile) {
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                if (e.target?.result) {
-                    const data = e.target.result as ArrayBuffer;
-                    // Process the file data using xlsx or any other library
-                    if (data) {
-                        postSpreadsheet(data);
-                    }
-                }
-            };
-
-            reader.readAsArrayBuffer(selectedFile);
-        }
-    };
 
     async function fetchEmployees() {
         axios
@@ -142,26 +98,6 @@ export default function OrgChart() {
             </div>
             {/* Organogram Controls */}
             <div className="absolute right-4 top-4 flex items-center justify-center gap-2">
-                <input
-                    type="file"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                    ref={fileInputRef}
-                ></input>
-                <Button
-                    className=""
-                    onClick={() =>
-                        fileInputRef.current && fileInputRef.current.click()
-                    }
-                    variant="alternate"
-                >
-                    Import staff spreadsheet
-                    <Icon
-                        icon="mingcute:upload-3-fill"
-                        className="ml-1"
-                        fontSize={16}
-                    />
-                </Button>
                 <Button
                     className=""
                     onClick={() => {

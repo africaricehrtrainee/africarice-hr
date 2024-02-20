@@ -9,7 +9,11 @@ const router = express.Router();
 // Endpoint to get all steps
 router.get("/", async (req, res) => {
     try {
-        const result = await prisma.steps.findMany({});
+        const result = await prisma.steps.findMany({
+            orderBy: {
+                stepId: "asc",
+            },
+        });
         res.status(200).json(result);
     } catch (error) {
         res.status(500).send("Error retrieving the steps");

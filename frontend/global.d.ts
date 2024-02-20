@@ -81,7 +81,7 @@ interface Evaluator360 {
 interface Objective {
     objectiveId: number;
     objectiveYear: string; // references evaluationId
-    status: "draft" | "sent" | "invalid" | "ok"; // default draft
+    status: "draft" | "sent" | "invalid" | "ok" | "cancelled"; // default draft
     employeeId: number; // references employeeId
     supervisorId: number; // references employeeId
     evaluationStatus: "draft" | "sent"; // default draft

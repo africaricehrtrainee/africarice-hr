@@ -111,11 +111,28 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
     try {
         const { id } = req.params;
 
-        const result = await prisma.objectives.delete({
+        const obj = await prisma.objectives.findUnique({
             where: { objectiveId: parseInt(id) },
         });
 
-        res.status(201).json(result);
+        if (!obj) {
+            res.status(404).json({ error: "Objective not found" });
+            return;
+        }
+
+        if (obj.status == "ok") {
+            const result = await prisma.objectives.update({
+                where: { objectiveId: parseInt(id) },
+                data: { status: "cancelled" },
+            });
+
+            res.status(201).json(result);
+        } else {
+            const result = await prisma.objectives.delete({
+                where: { objectiveId: parseInt(id) },
+            });
+            res.status(201).json(result);
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal Server Error" });

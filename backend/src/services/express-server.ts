@@ -119,6 +119,7 @@ export class ExpressServer {
             console.log(
                 `API server is running on http://localhost:${this.PORT}`
             );
+
             prisma.employees
                 .create({
                     data: {
@@ -131,47 +132,65 @@ export class ExpressServer {
                         employeeId: 1,
                     },
                 })
-                .catch((err) => {});
+                .catch((err) => {
+                    console.log("Error creating admin user", err);
+                });
 
-            prisma.steps.createMany({
-                data: [
-                    {
-                        stepId: 0,
-                        name: "Objective Submission",
-                        message: "You have a new objective to submit",
-                        active: false,
-                        dateFrom: "2024-01-01",
-                        dateTo: "2024-01-07",
-                    },
+            prisma.steps
+                .createMany({
+                    data: [
+                        {
+                            stepId: 0,
+                            name: "Objective Submission",
+                            message: "You have a new objective to submit",
+                            active: false,
+                            dateFrom: "2024-01-01",
+                            dateTo: "2024-01-07",
+                        },
 
-                    {
-                        stepId: 1,
-                        name: "Objective Validation",
-                        message: "You have an objective to approve",
-                        active: false,
-                        dateFrom: "2024-01-08",
-                        dateTo: "2024-01-14",
-                    },
+                        {
+                            stepId: 1,
+                            name: "Objective Validation",
+                            message: "You have an objective to approve",
+                            active: false,
+                            dateFrom: "2024-01-08",
+                            dateTo: "2024-01-14",
+                        },
 
-                    {
-                        stepId: 2,
-                        name: "Self-Evaluation",
-                        message: "You have a new self-evaluation to submit",
-                        active: false,
-                        dateFrom: "2024-01-15",
-                        dateTo: "2024-01-21",
-                    },
+                        {
+                            stepId: 2,
+                            name: "Midterm Review",
+                            message: "You have a midterm review to do",
+                            active: false,
+                            dateFrom: "2024-01-08",
+                            dateTo: "2024-01-14",
+                        },
 
-                    {
-                        stepId: 3,
-                        name: "Evaluation",
-                        message: "You have an evaluation to submit",
-                        active: true,
-                        dateFrom: "2024-01-22",
-                        dateTo: "2024-01-28",
-                    },
-                ],
-            });
+                        {
+                            stepId: 3,
+                            name: "Self-Evaluation",
+                            message: "You have a new self-evaluation to submit",
+                            active: false,
+                            dateFrom: "2024-01-15",
+                            dateTo: "2024-01-21",
+                        },
+
+                        {
+                            stepId: 4,
+                            name: "Evaluation",
+                            message: "You have an evaluation to submit",
+                            active: true,
+                            dateFrom: "2024-01-22",
+                            dateTo: "2024-01-28",
+                        },
+                    ],
+                })
+                .then(() => {
+                    console.log("Steps created successfully");
+                })
+                .catch((err) => {
+                    console.log("Error creating steps", err);
+                });
             // cronJob();
             init();
         });

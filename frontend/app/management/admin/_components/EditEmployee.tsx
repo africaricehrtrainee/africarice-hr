@@ -13,6 +13,14 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
     selectedEmployee,
     fetch,
 }) => {
+    const [firstName, setFirstName] = useState<string | null>(null);
+    const [lastName, setLastName] = useState<string | null>(null);
+    const [email, setEmail] = useState<string | null>(null);
+    const [supervisorId, setSupervisorId] = useState<number | null>(null);
+    const [role, setRole] = useState<"admin" | "hr" | "staff" | "consultant">(
+        "staff"
+    );
+
     function handleUpdate(e: React.SyntheticEvent) {
         {
             e.preventDefault();
@@ -88,34 +96,6 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
         }
     }
 
-    function handleResetPassword(employeeId: number) {
-        {
-            axios
-                .delete(
-                    process.env.NEXT_PUBLIC_API_URL +
-                        "/api/employees/" +
-                        employeeId +
-                        "/password"
-                )
-                .then((response) =>
-                    response.status == 200
-                        ? alert("Successfully reset user password.")
-                        : alert("An error occurred.")
-                )
-                .catch((err) => console.log(err))
-                .finally(() => {
-                    fetch();
-                });
-        }
-    }
-
-    const [firstName, setFirstName] = useState<string | null>(null);
-    const [lastName, setLastName] = useState<string | null>(null);
-    const [email, setEmail] = useState<string | null>(null);
-    const [supervisorId, setSupervisorId] = useState<number | null>(null);
-    const [role, setRole] = useState<"admin" | "hr" | "staff" | "consultant">(
-        "staff"
-    );
     useEffect(() => {
         if (selectedEmployee) {
             setFirstName(selectedEmployee.firstName);
@@ -327,27 +307,6 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                         Save changes
                         <Icon
                             icon="material-symbols:save-outline"
-                            className="ml-1"
-                            fontSize={14}
-                        />
-                    </Button>
-                    <Button
-                        type="button"
-                        onClick={(e) => {
-                            selectedEmployee &&
-                                confirm(
-                                    "Do you want to reset this user's password ?"
-                                ) &&
-                                handleResetPassword(
-                                    selectedEmployee.employeeId
-                                );
-                        }}
-                        disabled={!selectedEmployee}
-                        variant="outline"
-                    >
-                        Reset password
-                        <Icon
-                            icon="bx:refresh"
                             className="ml-1"
                             fontSize={14}
                         />

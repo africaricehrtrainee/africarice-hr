@@ -72,14 +72,14 @@ function EvaluationForm() {
 
     return (
         <>
-            {selectedEvaluationStep == 2 && (
+            {selectedEvaluationStep == 3 && (
                 <NewSelfEvaluation
                     employee={employee}
                     user={user}
                     onSubmit={postEvaluations}
                 />
             )}
-            {selectedEvaluationStep == 3 && (
+            {selectedEvaluationStep == 4 && (
                 <NewEvaluation
                     employee={employee}
                     user={user}
