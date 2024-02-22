@@ -35,7 +35,6 @@ export default function RootTreeNode({
     tree: Employee;
     depth: number;
 }) {
-    // if (tree.position.deletedAt !== null) return null;
     if (depth == 0 && tree.subordinates)
         return (
             <Tree lineColor="lightgray" label={<Label position={tree} />}>

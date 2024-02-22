@@ -101,3 +101,38 @@ type ObjectiveComment = {
     updatedAt: Date; // sql update timestamp
     content: Date;
 };
+
+// Status types and notifications
+
+type StaffObjectiveStatus =
+    | "OBJECTIVE_IDLE"
+    | "OBJECTIVE_EMPTY"
+    | "OBJECTIVE_SENT"
+    | "OBJECTIVE_INVALID"
+    | "OBJECTIVE_OK"
+    | "OBJECTIVE_UNRATED"
+    | "OBJECTIVE_RATED";
+type StaffSelfEvaluationStatus =
+    | "SELF_EVALUATION_IDLE"
+    | "SELF_EVALUATION_EMPTY"
+    | "SELF_EVALUATION_SENT";
+type SupervisorObjectiveStatus =
+    | "SUPERVISOR_OBJECTIVE_IDLE"
+    | "SUPERVISOR_OBJECTIVE_UNREVIEWED"
+    | "SUPERVISOR_OBJECTIVE_REVIEWED";
+type SupervisorEvaluationStatus =
+    | "SUPERVISOR_EVALUATION_IDLE"
+    | "SUPERVISOR_EVALUATION_UNRATED"
+    | "SUPERVISOR_EVALUATION_RATED";
+
+type SupervisorStatus = {
+    objectiveStatus: SupervisorObjectiveStatus;
+    evaluationStatus: SupervisorEvaluationStatus;
+    employeeId: number;
+}[];
+
+export type Status = {
+    objectiveStatus: StaffObjectiveStatus;
+    selfEvaluationStatus: StaffSelfEvaluationStatus;
+    supervisorStatus?: SupervisorStatus;
+};

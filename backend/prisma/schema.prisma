@@ -31,7 +31,6 @@ model Employees {
   evaluations           Evaluations[]
   evaluationsSupervisor Evaluations[]       @relation("Supervisor")
   comments              ObjectiveComments[]
-  updates               Updates[]
 }
 
 model Evaluations {
@@ -120,17 +119,15 @@ model Objectives {
 }
 
 model ObjectiveHistory {
-  objectiveHistoryId Int @id @default(autoincrement())
+  objectiveHistoryId Int      @id @default(autoincrement())
   objectiveId        Int
+  createdAt          DateTime @default(now())
 
   title             String
   description       String
   successConditions String
   deadline          String
   kpi               String
-  grade             Int
-  comment           String
-  selfComment       String
 
   objective Objectives @relation(fields: [objectiveId], references: [objectiveId], onDelete: Cascade)
 }
@@ -140,8 +137,8 @@ model Steps {
   name     String
   message  String
   active   Boolean @default(false)
-  dateFrom String?
-  dateTo   String?
+  dateFrom String
+  dateTo   String
   sent     Boolean @default(false)
 }
 
@@ -155,19 +152,4 @@ model ObjectiveComments {
 
   objective Objectives @relation(fields: [objectiveId], references: [objectiveId], onDelete: Cascade)
   author    Employees  @relation(fields: [authorId], references: [employeeId], onDelete: Cascade)
-}
-
-model Updates {
-  updateId   Int        @id @default(autoincrement())
-  employeeId Int
-  type       UpdateType
-  employee   Employees  @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now()) @updatedAt
-}
-
-enum UpdateType {
-  OBJECTIVE_SUBMIT
-  OBJECTIVE_VALID
-  OBJECTIVE_INVALID
 }

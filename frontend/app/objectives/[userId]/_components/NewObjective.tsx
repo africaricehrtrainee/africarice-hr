@@ -27,8 +27,11 @@ export function NewObjective({
     const selectedObjective = useObjectivesDataStore(selectActiveObjective);
     const activeStep = useObjectivesDataStore(selectActiveStep);
     const [loading, setLoading] = useState<boolean>(false);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState<boolean>(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
     const [isSupervisorSubmitModalOpen, setIsSupervisorSubmitModalOpen] =
         useState<boolean>(false);
@@ -36,7 +39,7 @@ export function NewObjective({
 
     const isEditable =
         !selectedObjective ||
-        selectedObjective.status == "ok" ||
+        (selectedObjective.status == "ok" && !isEditing) ||
         selectedObjective.status == "cancelled" ||
         selectedObjective.grade != null ||
         user?.employeeId !== employee.employeeId;
@@ -145,6 +148,36 @@ export function NewObjective({
         }
     }
 
+    async function reviewObjective(objective: Partial<Objective>) {
+        axios
+            .put(
+                process.env.NEXT_PUBLIC_API_URL +
+                    "/api/objectives/" +
+                    objective.objectiveId +
+                    (objective.status == "ok" ? "/update" : ""),
+                {
+                    objective,
+                }
+            )
+            .then((response) => {
+                if (response.status == 201) {
+                    data.fetchObjectives(employee.employeeId.toString());
+                    toast({
+                        description: "Successfully updated objectives",
+                    });
+                    ``;
+                }
+            })
+            .catch((err) => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem with your request.",
+                });
+                console.log(err);
+            });
+    }
+
     async function updateObjective(objective: Partial<Objective>) {
         axios
             .put(
@@ -184,12 +217,408 @@ export function NewObjective({
         >
             {selectedObjective && (
                 <>
-                    <p className="absolute bottom-4 left-4 font-mono text-[8px] text-muted-foreground">
+                    <p className="absolute bottom-4 left-4 font-mono text-[6px] text-muted-foreground opacity-75">
                         OBJECTIVE-ID: {selectedObjective.objectiveId}
                     </p>
                     {/* Objective Header */}
                     <div className="flex w-full items-center justify-between">
                         {renderStatusBadge()}
+                        {user?.employeeId == employee.employeeId && (
+                            <>
+                                {selectedObjective.status !== "ok" &&
+                                    selectedObjective.status !==
+                                        "cancelled" && (
+                                        <>
+                                            <div
+                                                className={
+                                                    "flex items-center justify-center gap-2"
+                                                }
+                                            >
+                                                <Button
+                                                    disabled={
+                                                        JSON.stringify(
+                                                            data.objectives
+                                                        ) ==
+                                                            JSON.stringify(
+                                                                data.objectivesLocal
+                                                            ) ||
+                                                        !selectedObjective.title
+                                                    }
+                                                    onClick={() => {
+                                                        updateObjective(
+                                                            selectedObjective
+                                                        );
+                                                    }}
+                                                    variant="primary"
+                                                >
+                                                    Save changes
+                                                    <Icon
+                                                        icon="ic:baseline-save-alt"
+                                                        className="ml-1"
+                                                        fontSize={14}
+                                                    />
+                                                </Button>
+                                                <Button
+                                                    disabled={objectives.some(
+                                                        (obj) => obj.grade
+                                                    )}
+                                                    onClick={() => {
+                                                        setIsDeleteModalOpen(
+                                                            true
+                                                        );
+                                                    }}
+                                                    variant="alertOutline"
+                                                >
+                                                    Delete objective
+                                                    <Icon
+                                                        icon="gridicons:trash"
+                                                        className="ml-1"
+                                                        fontSize={14}
+                                                    />
+                                                </Button>
+                                                <Modal
+                                                    show={isDeleteModalOpen}
+                                                    onClose={() =>
+                                                        setIsDeleteModalOpen(
+                                                            false
+                                                        )
+                                                    }
+                                                >
+                                                    <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
+                                                        <div className="flex w-full flex-col items-start justify-between">
+                                                            <p className="text-xl font-bold text-zinc-700">
+                                                                Delete this
+                                                                objective ?
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                This action
+                                                                cannot be
+                                                                undone.
+                                                            </p>
+                                                            <div className="mt-4 flex w-full items-center justify-end gap-2">
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        setIsDeleteModalOpen(
+                                                                            false
+                                                                        );
+                                                                    }}
+                                                                    variant="outline"
+                                                                >
+                                                                    Cancel
+                                                                    <Icon
+                                                                        icon="charm:cross"
+                                                                        className="ml-1"
+                                                                        fontSize={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </Button>
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        deleteObjective(
+                                                                            data.selectedObjectiveIndex
+                                                                        );
+                                                                        setIsDeleteModalOpen(
+                                                                            false
+                                                                        );
+                                                                    }}
+                                                                    variant="alert"
+                                                                >
+                                                                    Confirm
+                                                                    <Icon
+                                                                        icon="gridicons:trash"
+                                                                        className="ml-1"
+                                                                        fontSize={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Modal>
+                                            </div>
+                                        </>
+                                    )}
+                                {selectedObjective.status == "ok" &&
+                                    data.selectedEvaluationStep == 2 && (
+                                        <>
+                                            <div
+                                                className={
+                                                    "flex items-center justify-center gap-2"
+                                                }
+                                            >
+                                                {!isEditing ? (
+                                                    <>
+                                                        <Button
+                                                            onClick={() => {
+                                                                setIsEditing(
+                                                                    true
+                                                                );
+                                                            }}
+                                                            variant="outline"
+                                                        >
+                                                            Edit objective
+                                                            <Icon
+                                                                icon="ic:baseline-edit-road"
+                                                                className="ml-1"
+                                                                fontSize={14}
+                                                            />
+                                                        </Button>
+                                                        <Button
+                                                            disabled={objectives.some(
+                                                                (obj) =>
+                                                                    obj.grade
+                                                            )}
+                                                            onClick={() => {
+                                                                setIsCancelModalOpen(
+                                                                    true
+                                                                );
+                                                            }}
+                                                            variant="alert"
+                                                        >
+                                                            Cancel objective
+                                                            <Icon
+                                                                icon="charm:cross"
+                                                                className="ml-1"
+                                                                fontSize={14}
+                                                            />
+                                                        </Button>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Button
+                                                            disabled={
+                                                                JSON.stringify(
+                                                                    data.objectives
+                                                                ) ===
+                                                                JSON.stringify(
+                                                                    data.objectivesLocal
+                                                                )
+                                                            }
+                                                            onClick={() => {
+                                                                setIsUpdateModalOpen(
+                                                                    true
+                                                                );
+                                                            }}
+                                                            variant="primary"
+                                                        >
+                                                            Update objective
+                                                            <Icon
+                                                                icon="ic:baseline-edit-road"
+                                                                className="ml-1"
+                                                                fontSize={14}
+                                                            />
+                                                        </Button>
+                                                        <Button
+                                                            disabled={objectives.some(
+                                                                (obj) =>
+                                                                    obj.grade
+                                                            )}
+                                                            onClick={() => {
+                                                                setIsEditing(
+                                                                    false
+                                                                );
+                                                            }}
+                                                            variant="outline"
+                                                        >
+                                                            Cancel editing
+                                                            <Icon
+                                                                icon="charm:cross"
+                                                                className="ml-1"
+                                                                fontSize={14}
+                                                            />
+                                                        </Button>
+                                                    </>
+                                                )}
+
+                                                <Modal
+                                                    show={isUpdateModalOpen}
+                                                    onClose={() =>
+                                                        setIsUpdateModalOpen(
+                                                            false
+                                                        )
+                                                    }
+                                                >
+                                                    <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
+                                                        <div className="flex w-full flex-col items-start justify-between">
+                                                            <p className="text-xl font-bold text-zinc-700">
+                                                                Update this
+                                                                objective ?
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                This action
+                                                                cannot be
+                                                                undone.
+                                                            </p>
+                                                            <div className="mt-4 flex w-full items-center justify-end gap-2">
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        setIsUpdateModalOpen(
+                                                                            false
+                                                                        );
+                                                                        setIsEditing(
+                                                                            false
+                                                                        );
+                                                                    }}
+                                                                    variant="outline"
+                                                                >
+                                                                    Cancel
+                                                                    <Icon
+                                                                        icon="charm:cross"
+                                                                        className="ml-1"
+                                                                        fontSize={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </Button>
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        reviewObjective(
+                                                                            selectedObjective
+                                                                        );
+                                                                        setIsUpdateModalOpen(
+                                                                            false
+                                                                        );
+                                                                        setIsEditing(
+                                                                            false
+                                                                        );
+                                                                    }}
+                                                                    variant="primary"
+                                                                >
+                                                                    Update
+                                                                    <Icon
+                                                                        icon="mdi:check-all"
+                                                                        className="ml-1"
+                                                                        fontSize={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Modal>
+                                                <Modal
+                                                    show={isCancelModalOpen}
+                                                    onClose={() =>
+                                                        setIsCancelModalOpen(
+                                                            false
+                                                        )
+                                                    }
+                                                >
+                                                    <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
+                                                        <div className="flex w-full flex-col items-start justify-between">
+                                                            <p className="text-xl font-bold text-zinc-700">
+                                                                Cancel this
+                                                                objective ?
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                This action
+                                                                cannot be
+                                                                undone.
+                                                            </p>
+                                                            <div className="mt-4 flex w-full items-center justify-end gap-2">
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        setIsCancelModalOpen(
+                                                                            false
+                                                                        );
+                                                                    }}
+                                                                    variant="outline"
+                                                                >
+                                                                    Cancel
+                                                                    <Icon
+                                                                        icon="charm:cross"
+                                                                        className="ml-1"
+                                                                        fontSize={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </Button>
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        deleteObjective(
+                                                                            data.selectedObjectiveIndex
+                                                                        );
+                                                                        setIsDeleteModalOpen(
+                                                                            false
+                                                                        );
+                                                                    }}
+                                                                    variant="alert"
+                                                                >
+                                                                    Confirm
+                                                                    <Icon
+                                                                        icon="gridicons:trash"
+                                                                        className="ml-1"
+                                                                        fontSize={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Modal>
+                                            </div>
+                                        </>
+                                    )}
+                            </>
+                        )}
+                        {user?.employeeId == employee.supervisorId && (
+                            <>
+                                {selectedObjective.status !== "draft" &&
+                                    selectedObjective.status !== "ok" &&
+                                    activeStep >= 1 && (
+                                        <>
+                                            <div
+                                                className={
+                                                    "flex items-center justify-center gap-2"
+                                                }
+                                            >
+                                                <Button
+                                                    onClick={() => {
+                                                        const obj = {
+                                                            ...selectedObjective,
+                                                        };
+                                                        obj.status = "ok";
+                                                        updateObjective(obj);
+                                                    }}
+                                                    variant="primary"
+                                                >
+                                                    Approve
+                                                    <Icon
+                                                        icon="mdi:check-all"
+                                                        className="ml-1"
+                                                        fontSize={14}
+                                                    />
+                                                </Button>
+                                                <Button
+                                                    onClick={() => {
+                                                        const obj = {
+                                                            ...selectedObjective,
+                                                        };
+                                                        obj.status = "invalid";
+                                                        updateObjective(obj);
+                                                    }}
+                                                    disabled={
+                                                        selectedObjective.status ==
+                                                        "invalid"
+                                                    }
+                                                    variant="alertOutline"
+                                                >
+                                                    Reject
+                                                    <Icon
+                                                        icon="mdi:alert"
+                                                        className="ml-1"
+                                                        fontSize={14}
+                                                    />
+                                                </Button>
+                                            </div>
+                                        </>
+                                    )}
+                            </>
+                        )}
                     </div>
                     {/* Objective Form */}
                     <div className="mt-2 h-full w-full">

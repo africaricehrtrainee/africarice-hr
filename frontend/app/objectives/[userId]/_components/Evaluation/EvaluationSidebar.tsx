@@ -156,75 +156,71 @@ function ObjectiveComponent() {
                 )}
             </div>
             <div className="flex w-full flex-col justify-start">
-                {objectives
-                    ?.filter((obj) => obj.status == "ok")
-                    .map((objective, index) => {
-                        const status =
-                            selectedEvaluationStep == 3
-                                ? objective?.selfEvaluationStatus
-                                : objective?.evaluationStatus;
-                        return (
-                            <>
-                                <button
-                                    key={index}
-                                    onClick={() =>
-                                        setSelectedObjectiveIndex(index)
+                {objectives?.map((objective, index) => {
+                    const status =
+                        selectedEvaluationStep == 3
+                            ? objective?.selfEvaluationStatus
+                            : objective?.evaluationStatus;
+                    if (objective.status !== "ok") return null;
+                    return (
+                        <>
+                            <button
+                                key={index}
+                                onClick={() => setSelectedObjectiveIndex(index)}
+                                className={cn(
+                                    "flex w-fullrelative items-between justify-start border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
+                                    {
+                                        "bg-zinc-50 border-l-4 border-l-green-300":
+                                            selectedObjectiveIndex === index,
                                     }
-                                    className={cn(
-                                        "flex w-fullrelative items-between justify-start border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
-                                        {
-                                            "bg-zinc-50 border-l-4 border-l-green-300":
-                                                selectedObjectiveIndex ===
-                                                index,
-                                        }
+                                )}
+                            >
+                                <div className="flex flex-col items-start justify-start">
+                                    {(status == "draft" || !status) && (
+                                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                            Draft
+                                            <Icon
+                                                icon="octicon:issue-draft-16"
+                                                className="ml-1"
+                                                fontSize={10}
+                                            />
+                                        </div>
                                     )}
-                                >
-                                    <div className="flex flex-col items-start justify-start">
-                                        {(status == "draft" || !status) && (
-                                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                                                Draft
-                                                <Icon
-                                                    icon="octicon:issue-draft-16"
-                                                    className="ml-1"
-                                                    fontSize={10}
-                                                />
-                                            </div>
-                                        )}
-                                        {status == "sent" && (
-                                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                                                Submitted
-                                                <Icon
-                                                    icon="mdi:check-all"
-                                                    className="ml-1"
-                                                    fontSize={10}
-                                                />
-                                            </div>
-                                        )}
-                                        <p className="mt-2 text-[8px] font-medium text-zinc-300">
-                                            EVALUATION SECTION
-                                        </p>
-                                        <p className="w-[200px] truncate text-start text-xs font-bold text-zinc-700">
-                                            {objective.title ?? "Untitled"}
-                                        </p>
-                                    </div>
-                                    {objective.grade &&
-                                        selectedEvaluationStep == 4 && (
-                                            <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
-                                                <p className="text-[10px] font-bold text-zinc-400">
-                                                    Objective grade
-                                                </p>
-                                                <p className="text-2xl font-bold text-zinc-700">
-                                                    {objective.grade}
-                                                    <span className="text-xs font-bold text-zinc-400">
-                                                        /5
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        )}
-                                </button>
-                            </>
-                        );
-                    })}
+                                    {status == "sent" && (
+                                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                            Submitted
+                                            <Icon
+                                                icon="mdi:check-all"
+                                                className="ml-1"
+                                                fontSize={10}
+                                            />
+                                        </div>
+                                    )}
+                                    <p className="mt-2 text-[8px] font-medium text-zinc-300">
+                                        EVALUATION SECTION
+                                    </p>
+                                    <p className="w-[200px] truncate text-start text-xs font-bold text-zinc-700">
+                                        {objective.title ?? "Untitled"}
+                                    </p>
+                                </div>
+                                {objective.grade &&
+                                    selectedEvaluationStep == 4 && (
+                                        <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
+                                            <p className="text-[10px] font-bold text-zinc-400">
+                                                Objective grade
+                                            </p>
+                                            <p className="text-2xl font-bold text-zinc-700">
+                                                {objective.grade}
+                                                <span className="text-xs font-bold text-zinc-400">
+                                                    /5
+                                                </span>
+                                            </p>
+                                        </div>
+                                    )}
+                            </button>
+                        </>
+                    );
+                })}
             </div>
         </div>
     );

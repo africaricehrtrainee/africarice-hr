@@ -26,6 +26,7 @@ const ObjectiveList: React.FC<ObjectiveListProps> = ({
     const { user } = useAuth();
     const data = useObjectivesDataStore();
     const activeStep = useObjectivesDataStore(selectActiveStep);
+
     return (
         <>
             {user && (
@@ -106,6 +107,10 @@ function ObjectiveHeaderBar(props: {
     const { fetchObjectives } = useObjectivesDataStore();
     const { toast } = useToast();
 
+    const filteredObjectives = props.objectives.filter(
+        (obj) => obj.status !== "cancelled"
+    );
+
     async function createObjective() {
         setCreating(true);
         axios
@@ -146,7 +151,7 @@ function ObjectiveHeaderBar(props: {
                 ) && (
                     <Button
                         loading={creating}
-                        disabled={props.objectives.length >= 5}
+                        disabled={filteredObjectives.length >= 5}
                         onClick={() => {
                             createObjective();
                         }}
@@ -207,14 +212,15 @@ function ObjectiveListComponent(props: {
 }) {
     return (
         <div className="w-full">
-            {props.objectives.length == 0 && (
-                <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-4 text-center text-zinc-300">
-                    <Icon icon="fluent:dust-20-filled" fontSize={28} />
-                    <h1 className="text-md font-bold">
-                        No objective has been created yet.
-                    </h1>
-                </div>
-            )}
+            {props.objectives.length == 0 &&
+                props.employeeId == props._employeeId && (
+                    <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-4 text-center text-zinc-300">
+                        <Icon icon="fluent:dust-20-filled" fontSize={28} />
+                        <h1 className="text-md font-bold">
+                            No objective has been created yet.
+                        </h1>
+                    </div>
+                )}
             {props.objectives
                 .filter((objective: { status: string }) =>
                     props.employeeId == props._employeeId
@@ -252,11 +258,12 @@ function ObjectiveListItem(props: {
             className={cn(
                 "flex w-full flex-col relative items-between justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
                 {
-                    "bg-zinc-50 border-l-4 border-l-zinc-300":
+                    "bg-zinc-50 border-l-4 border-l-green-300":
                         props.i === props.data.selectedObjectiveIndex,
                 },
                 {
-                    "opacity-75": props.objective.status === "cancelled",
+                    "opacity-75 border-l-zinc-300":
+                        props.objective.status === "cancelled",
                 }
             )}
         >
@@ -334,12 +341,14 @@ function ObjectiveBottomActionBar({
     const data = useObjectivesDataStore();
     const [loading, setLoading] = useState<boolean>(false);
     const { toast } = useToast();
-
-    function submitObjectives(objective: Partial<Objective>[]) {
+    const filteredObjectives = objectives.filter(
+        (obj) => obj.status !== "cancelled"
+    );
+    function submitObjectives(array: Partial<Objective>[]) {
         setLoading(true);
         axios
             .post(process.env.NEXT_PUBLIC_API_URL + "/api/objectives/bulk", {
-                objectives,
+                objectives: array,
             })
             .then((response) => {
                 if (response.status == 201) {
@@ -365,7 +374,7 @@ function ObjectiveBottomActionBar({
 
     return (
         <>
-            <div className="mb-4 mt-auto flex w-full items-center justify-between px-4">
+            <div className="mb-4 mt-auto flex w-full items-center justify-center px-4">
                 {/* Status Chip */}
                 {/* {objectives.length > 0 && (
                     <div className="flex items-center justify-between">
@@ -414,40 +423,50 @@ function ObjectiveBottomActionBar({
                 {/* Submission button */}
                 {user.employeeId == employee.employeeId && (
                     <>
-                        {objectives.some((obj) => obj.status != "ok") && (
-                            <Button
-                                loading={loading}
-                                className=""
-                                disabled={
-                                    objectives.length < 3 ||
-                                    objectives.length > 5 ||
-                                    objectives.some(
-                                        (objective) =>
-                                            !objective.title ||
-                                            !objective.deadline ||
-                                            !objective.kpi ||
-                                            !objective.description ||
-                                            !objective.successConditions
-                                    )
-                                }
-                                onClick={() => {
-                                    const temp = [...objectives];
-                                    temp.forEach((obj, i, arr) => {
-                                        arr[i].status =
-                                            obj.status == "ok" ? "ok" : "sent";
-                                    });
-                                    submitObjectives(temp);
-                                }}
-                                variant="primary"
-                            >
-                                Submit for validation
-                                <Icon
-                                    icon="material-symbols:upload"
-                                    className="ml-1"
-                                    fontSize={14}
-                                />
-                            </Button>
-                        )}
+                        {objectives.some((obj) => obj.status != "ok") &&
+                            data.selectedEvaluationStep == 0 && (
+                                <Button
+                                    loading={loading}
+                                    className=""
+                                    disabled={
+                                        filteredObjectives.length < 3 ||
+                                        filteredObjectives.length > 5 ||
+                                        objectives.some(
+                                            (objective) =>
+                                                !objective.title ||
+                                                !objective.deadline ||
+                                                !objective.kpi ||
+                                                !objective.description ||
+                                                !objective.successConditions
+                                        )
+                                    }
+                                    onClick={() => {
+                                        const temp = [...objectives];
+                                        temp.forEach((obj, i, arr) => {
+                                            switch (obj.status) {
+                                                case "draft":
+                                                case "invalid":
+                                                    arr[i] = {
+                                                        ...obj,
+                                                        status: "sent",
+                                                    };
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        });
+                                        submitObjectives(temp);
+                                    }}
+                                    variant="primary"
+                                >
+                                    Submit for validation
+                                    <Icon
+                                        icon="material-symbols:upload"
+                                        className="ml-1"
+                                        fontSize={14}
+                                    />
+                                </Button>
+                            )}
                     </>
                 )}
             </div>

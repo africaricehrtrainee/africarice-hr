@@ -4,6 +4,8 @@ import { isAuthenticated } from "./authRoutes";
 import { Employees, Evaluations, Objectives } from "@prisma/client";
 import prisma from "../../prisma/middleware";
 import { xlsxToJsonArray } from "../services/xlsx-service";
+import { computeNotifications } from "./util/utils";
+import { parse } from "dotenv";
 
 const router = express.Router();
 const dbService = new DbService();
@@ -118,6 +120,9 @@ router.get("/:id/objectives", isAuthenticated, async (req, res) => {
                 },
             },
         });
+
+        const status = await computeNotifications(parseInt(id));
+        console.log(status);
 
         res.status(200).json(result);
     } catch (error) {
@@ -255,6 +260,22 @@ router.get("/:id/evaluation360/", isAuthenticated, async (req, res) => {
             },
         });
         res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.get(":/id/status", isAuthenticated, async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            res.status(400).json({ error: "Employee ID is required" });
+            return;
+        }
+
+        const status = await computeNotifications(parseInt(id));
+        res.status(200).json(status);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal Server Error" });

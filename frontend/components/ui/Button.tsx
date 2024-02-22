@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { VariantProps, cva } from "class-variance-authority";
 
 const buttonVariants = cva(
-    `p-2 px-4 flex justify-center border border-transparent disabled:bg-zinc-100 disabled:shadow-none disabled:text-zinc-400 disabled:border-transparent items-center text-xs font-semibold gap-1 transition-all shadow-sm active:scale-95 disabled:select-none`,
+    `p-2 px-4 flex justify-center relative border border-transparent disabled:bg-zinc-100 disabled:shadow-none disabled:text-zinc-400 disabled:border-transparent items-center text-xs font-semibold gap-1 transition-all shadow-sm active:scale-95 disabled:select-none`,
     {
         variants: {
             border: {

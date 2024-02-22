@@ -111,26 +111,15 @@ function Profile() {
                         </button>
                     </div>
 
-                    {(user.subordinates?.length == 0 || !user.subordinates) && (
-                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-100 p-2 px-3 text-xs font-semibold text-zinc-500">
-                            Staff
-                            <Icon
-                                icon="material-symbols:globe"
-                                className="ml-1"
-                                fontSize={16}
-                            />
-                        </div>
-                    )}
-                    {user.subordinates?.length > 0 && (
-                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-purple-100 p-2 px-3 text-xs font-semibold text-purple-500">
-                            Supervisor
-                            <Icon
-                                icon="iconoir:eye-solid"
-                                className="ml-1"
-                                fontSize={12}
-                            />
-                        </div>
-                    )}
+                    <Button type="submit" variant="outline">
+                        My Inbox
+                        <Icon
+                            icon="heroicons:inbox-16-solid"
+                            className="ml-1"
+                            fontSize={14}
+                        />
+                        <div className="absolute -bottom-2 -right-2 h-4 w-4 animate-ping rounded-full bg-red-500"></div>
+                    </Button>
                 </div>
             )}
         </>

@@ -36,7 +36,7 @@ export class ExpressServer {
 
     private configureMiddleware(): void {
         // Use middleware for request logging (Morgan)
-        this.app.use(morgan("dev"));
+        this.app.use(morgan("common"));
 
         // Enable JSON request body parsing
         this.app.use(express.json());
@@ -44,7 +44,11 @@ export class ExpressServer {
         // Enable URL-encoded request body parsing
         this.app.use(express.urlencoded({ extended: true }));
 
-        var whitelist = ["http://localhost:3000", "http://10.225.100.30:3000"];
+        var whitelist = [
+            "http://localhost:3000",
+            "http://10.225.100.30:3000",
+            "http://127.0.0.1",
+        ];
         // Configure CORS (Cross-Origin Resource Sharing)
         this.app.use(
             cors({

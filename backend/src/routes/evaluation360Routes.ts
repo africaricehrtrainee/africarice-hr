@@ -46,19 +46,6 @@ router.get("/:id/evaluators", async (req, res) => {
     }
 });
 
-router.get("/:id/updates", async (req, res) => {
-    const { id } = req.params;
-    try {
-        const updates = await prisma.updates.findMany({
-            where: { OR :[{employeeId: parseInt(id)}] },
-        });
-        res.json(updates);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-})
-
 // Create a new evaluation360
 router.post("/", async (req, res) => {
     const { evaluation }: { evaluation: Evaluation360 } = req.body;

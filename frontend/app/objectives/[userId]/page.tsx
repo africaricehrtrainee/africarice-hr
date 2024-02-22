@@ -15,6 +15,7 @@ import EditStep from "@/app/objectives/[userId]/_components/EditStep";
 import { selectActiveStep, useObjectivesDataStore } from "./_store/useStore";
 import { useToast } from "@/components/ui/use-toast";
 import Evaluation from "./_components/Evaluation/Evaluation";
+import HistoryList from "./_components/HistoryList";
 
 export default function Objectives({ params }: { params: { userId: string } }) {
     const { toast } = useToast();
@@ -236,15 +237,11 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                                     cache={data.comments}
                                     fetch={fetchComments}
                                 />
-                                <CommentList
+                                {/* Version history of the objective */}
+                                <HistoryList
                                     user={user}
                                     employee={data.employee}
                                     objectives={data.objectivesLocal}
-                                    // @ts-expect-error
-                                    setComments={setComments}
-                                    comments={comments}
-                                    cache={data.comments}
-                                    fetch={fetchComments}
                                 />
                             </div>
                         )}
@@ -265,13 +262,8 @@ function Profile({ user }: { user: Employee }) {
     return (
         <div className="ml-auto flex w-[400px] items-start justify-evenly gap-4 rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
             <div className="flex h-full flex-col items-center justify-center gap-2">
-                <Chip>
-                    Staff
-                    <Icon
-                        icon="mingcute:profile-fill"
-                        className="ml-1"
-                        fontSize={14}
-                    />
+                <Chip variant={"background"} className="font-mono">
+                    {user.matricule}
                 </Chip>
                 <div className="te flex h-10 w-10 items-center justify-center rounded-full bg-brand font-bold text-white">
                     {user.firstName && user.lastName
@@ -390,31 +382,14 @@ function Step({
                             }
                         }}
                         className={cn(
-                            "p-2 px-4 border border-transparent rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition-all active:scale-95 bg-transparent border-zinc-200 text-zinc-500 ",
-                            `${
-                                activeStep == index &&
-                                "bg-transparent-100 text-green-600 border-green-300"
-                            }`,
+                            "p-2 px-4 border-transparent rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition-all active:scale-95 bg-transparent border-zinc-200 text-zinc-500 hover:bg-zinc-50 ",
+                            `${activeStep < index && "opacity-50"}`,
                             `${
                                 data.selectedEvaluationStep == index &&
-                                "bg-green-100 text-green-600 border-green-300"
+                                "bg-white text-zinc-600 border-green-300 shadow-sm"
                             }`
                         )}
                     >
-                        {data.selectedEvaluationStep == index && (
-                            <Icon
-                                icon="tdesign:check-circle-filled"
-                                className="mb-1"
-                                fontSize={20}
-                            />
-                        )}
-                        {data.selectedEvaluationStep !== index && (
-                            <Icon
-                                icon="material-symbols:circle-outline"
-                                className="mb-1"
-                                fontSize={20}
-                            />
-                        )}
                         {step.name}
                         <p className="-mt-0 text-[8px]">
                             from{" "}
@@ -517,7 +492,10 @@ function Schedule({ fetch }: { fetch: () => any }) {
     return (
         <div className="flex w-full flex-1 items-center justify-between rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
             <div className="flex flex-col items-start justify-start gap-2">
-                <div className="flex w-full items-center justify-start gap-2">
+                <Chip variant={"background"} className="font-mono">
+                    Evaluation Menu
+                </Chip>
+                <div className="flex w-full items-center justify-start gap-2 rounded-md bg-zinc-100 p-1">
                     {data.evaluationSteps
                         .sort((a, b) => a.stepId - b.stepId)
                         .map((stepObj, index) => (
@@ -528,7 +506,7 @@ function Schedule({ fetch }: { fetch: () => any }) {
                                     postSteps={postSteps}
                                     index={index as number}
                                 />
-                                {index < data.evaluationSteps.length - 1 && (
+                                {/* {index < data.evaluationSteps.length - 1 && (
                                     <>
                                         <div
                                             className={
@@ -538,24 +516,8 @@ function Schedule({ fetch }: { fetch: () => any }) {
                                                     : " bg-zinc-100")
                                             }
                                         ></div>
-                                        <div
-                                            className={
-                                                "h-2 w-2 rounded-full" +
-                                                (activeStep > index
-                                                    ? " bg-zinc-300"
-                                                    : " bg-zinc-100")
-                                            }
-                                        ></div>
-                                        <div
-                                            className={
-                                                "h-2 w-2 rounded-full" +
-                                                (activeStep > index
-                                                    ? " bg-zinc-300"
-                                                    : " bg-zinc-100")
-                                            }
-                                        ></div>
                                     </>
-                                )}
+                                )} */}
                             </>
                         ))}
                 </div>

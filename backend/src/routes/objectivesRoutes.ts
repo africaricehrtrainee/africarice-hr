@@ -107,6 +107,57 @@ router.put("/:id", isAuthenticated, async (req, res) => {
     }
 });
 
+router.put("/:id/update", isAuthenticated, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { objective } = req.body;
+
+        if (!objective) {
+            res.status(400).json({ error: "Objective is required" });
+            return;
+        }
+
+        const obj = await prisma.objectives.findUnique({
+            where: { objectiveId: parseInt(id) },
+        });
+
+        if (
+            !obj ||
+            !obj.deadline ||
+            !obj.description ||
+            !obj.title ||
+            !obj.kpi ||
+            !obj.successConditions ||
+            obj.status != "ok"
+        ) {
+            res.status(404).json({ error: "Objective not found or invalid" });
+            return;
+        }
+
+        const result = await prisma.$transaction([
+            prisma.objectives.update({
+                where: { objectiveId: parseInt(id) },
+                data: objective,
+            }),
+            prisma.objectiveHistory.create({
+                data: {
+                    objectiveId: parseInt(id),
+                    deadline: obj.deadline,
+                    description: obj.description,
+                    title: obj.title,
+                    kpi: obj.kpi,
+                    successConditions: obj.successConditions,
+                },
+            }),
+        ]);
+
+        res.status(201).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 router.delete("/:id", isAuthenticated, async (req, res) => {
     try {
         const { id } = req.params;
