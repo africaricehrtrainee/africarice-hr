@@ -4,8 +4,8 @@
     },
     "files": ["src/global.d.ts"],
     "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
+        "target": "ES2018",
+        "module": "CommonJS",
         "outDir": "./dist",
         "rootDir": "./src",
         "strict": true,

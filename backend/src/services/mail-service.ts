@@ -2,6 +2,7 @@ import emailjs from "@emailjs/nodejs";
 import { DbService } from "./db-service";
 import { compareAsc } from "date-fns";
 import { Prisma, PrismaClient } from "@prisma/client";
+import { computeNotifications } from "../routes/util/utils";
 
 const prisma = new PrismaClient();
 export default function sendMail({
@@ -96,4 +97,37 @@ export async function mailEvaluationStep() {
                 console.log("FAILED...", err);
             }
         );
+}
+
+export async function mailNotificationStep() {
+    // Fetching all the employees and the current date
+    const employees = await prisma.employees.findMany({
+        select: {
+            employeeId: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+        },
+        orderBy: {
+            lastName: "asc",
+        },
+        where: {
+            supervisorId: {
+                not: null,
+            },
+        },
+    });
+
+    if (!employees) {
+        console.log("No employees have been found.");
+        return;
+    }
+
+    const getCurrentDate = (): string => new Date().toISOString().split("T")[0];
+    const date = getCurrentDate();
+
+    // Fetching the current status of the employee
+    employees.forEach(async (employee) => {
+        const status = await computeNotifications(employee.employeeId);
+    });
 }

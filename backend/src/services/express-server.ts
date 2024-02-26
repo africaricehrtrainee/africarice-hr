@@ -16,6 +16,7 @@ import cors from "cors";
 import { DbService } from "./db-service";
 import init from "./xlsx-service";
 import prisma from "../../prisma/middleware";
+import cronJob from "../routes/util/cron";
 
 export class ExpressServer {
     private app: Application;
@@ -136,9 +137,7 @@ export class ExpressServer {
                         employeeId: 1,
                     },
                 })
-                .catch((err) => {
-                    console.log("Error creating admin user", err);
-                });
+                .catch((err) => {});
 
             prisma.steps
                 .createMany({
@@ -189,13 +188,10 @@ export class ExpressServer {
                         },
                     ],
                 })
-                .then(() => {
-                    console.log("Steps created successfully");
-                })
-                .catch((err) => {
-                    console.log("Error creating steps", err);
-                });
-            // cronJob();
+                .then(() => {})
+                .catch((err) => {});
+
+            cronJob();
             init();
         });
     }

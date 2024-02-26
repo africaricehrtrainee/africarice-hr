@@ -48,16 +48,12 @@ export async function computeNotifications(
         },
     });
 
-    console.log("objectives", objectives.length);
-
     const evaluation = await prisma.evaluations.findFirst({
         where: {
             employeeId,
             evaluationYear: new Date().getFullYear().toString(),
         },
     });
-
-    console.log("evaluation", evaluation);
 
     const team = await prisma.employees.findMany({
         where: {

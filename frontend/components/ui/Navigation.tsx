@@ -11,6 +11,42 @@ import { usePathname, useRouter } from "next/navigation";
 import LoadingBar from "react-top-loading-bar";
 import { useLoaderRef } from "@/hooks/useLoading";
 import axios from "axios";
+import Notification from "./Notification";
+import { Employee } from "@/global";
+
+function NotificationBox({ user }: { user: Employee }) {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    return (
+        <div className="relative">
+            <Button
+                onClick={() => setIsOpen((prev) => !prev)}
+                type="submit"
+                variant={"outline"}
+            >
+                My Tasks
+                <Icon
+                    icon="heroicons:inbox-16-solid"
+                    className="ml-1"
+                    fontSize={14}
+                />
+                <div className="absolute -bottom-2 -right-2 h-4 w-4 animate-ping rounded-full bg-red-500"></div>
+            </Button>
+
+            <div
+                className={
+                    "absolute left-0 z-10 flex flex-col justify-start items-start gap-1 top-full mt-2 rounded-md border border-zinc-200 bg-white shadow-sm transition-all  " +
+                    `${
+                        isOpen
+                            ? "opacity-100 visible translate-y-0"
+                            : "opacity-0 invisible -translate-y-4"
+                    }`
+                }
+            >
+                <Notification user={user} />
+            </div>
+        </div>
+    );
+}
 
 function Profile() {
     const { user, logout } = useAuth();
@@ -111,21 +147,12 @@ function Profile() {
                         </button>
                     </div>
 
-                    <Button type="submit" variant="outline">
-                        My Inbox
-                        <Icon
-                            icon="heroicons:inbox-16-solid"
-                            className="ml-1"
-                            fontSize={14}
-                        />
-                        <div className="absolute -bottom-2 -right-2 h-4 w-4 animate-ping rounded-full bg-red-500"></div>
-                    </Button>
+                    <NotificationBox user={user} />
                 </div>
             )}
         </>
     );
 }
-
 interface MenuItem {
     name: string;
     route?: string;
@@ -156,10 +183,10 @@ function Page({ item }: { item: MenuItem }) {
                 <button
                     onClick={() => setIsOpen((prev) => !prev)}
                     className={
-                        "rounded-full p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 active:scale-90 flex items-center justify-center gap-1 group" +
+                        "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 active:scale-90 flex items-center justify-center gap-1 group" +
                         ` ${
                             pathName.includes(item.route as string) &&
-                            "bg-zinc-100 text-zinc-800"
+                            "bg-white shadow-sm text-zinc-800"
                         }`
                     }
                 >
@@ -226,12 +253,12 @@ function Page({ item }: { item: MenuItem }) {
             <Link
                 key={item.name}
                 className={
-                    "rounded-full p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 active:scale-90 flex items-center justify-center gap-1 group" +
+                    "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 active:scale-90 flex items-center justify-center gap-1 group" +
                     ` ${
-                        item.route == "/"
+                        (item.route == "/"
                             ? pathName == "/"
-                            : pathName.includes(item.route as string) &&
-                              "bg-zinc-100 text-zinc-800"
+                            : pathName.includes(item.route as string)) &&
+                        "bg-white shadow-sm text-zinc-800"
                     }`
                 }
                 href={item.route as string}
@@ -296,7 +323,7 @@ function Menu() {
     return (
         <>
             {user && (
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2 rounded-md bg-zinc-100 p-1">
                     {links.map((link) => {
                         return <Page item={link} key={link.name} />;
                     })}
