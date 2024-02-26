@@ -266,7 +266,7 @@ router.get("/:id/evaluation360/", isAuthenticated, async (req, res) => {
     }
 });
 
-router.get(":/id/status", isAuthenticated, async (req, res) => {
+router.get("/:id/status", isAuthenticated, async (req, res) => {
     const { id } = req.params;
     try {
         if (!id) {
