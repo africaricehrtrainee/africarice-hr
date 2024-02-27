@@ -129,10 +129,10 @@ type SupervisorStatus = {
     objectiveStatus: SupervisorObjectiveStatus;
     evaluationStatus: SupervisorEvaluationStatus;
     employeeId: number;
-}[];
+};
 
 export type Status = {
     objectiveStatus: StaffObjectiveStatus;
     selfEvaluationStatus: StaffSelfEvaluationStatus;
-    supervisorStatus?: SupervisorStatus;
+    supervisorStatus?: SupervisorStatus[];
 };

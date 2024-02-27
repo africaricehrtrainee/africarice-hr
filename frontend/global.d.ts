@@ -62,7 +62,6 @@ interface Evaluation360 {
     employeeId: number;
     supervisorId: number;
     evaluationYear: string;
-    evaluationStatus: "draft" | "sent" | "ok" | "invalid"; // default draft
     employee: Employee;
     supervisor: Employee;
     evaluator: Employee | null;
@@ -72,6 +71,7 @@ interface Evaluation360 {
 interface Evaluator360 {
     evaluator360Id: number;
     evaluationId: number;
+    evaluatorStatus: "draft" | "sent" | "ok" | "invalid"; // default draft
     evaluatorId: number;
     evaluatorJobTitle: string;
     evaluatorGrade: number;
@@ -156,10 +156,10 @@ type SupervisorStatus = {
     objectiveStatus: SupervisorObjectiveStatus;
     evaluationStatus: SupervisorEvaluationStatus;
     employeeId: number;
-}[];
+};
 
-export type Status = {
+type Status = {
     objectiveStatus: StaffObjectiveStatus;
     selfEvaluationStatus: StaffSelfEvaluationStatus;
-    supervisorStatus?: SupervisorStatus;
+    supervisorStatus?: SupervisorStatus[];
 };

@@ -79,6 +79,28 @@ router.post("/xlsx", isAuthenticated, async (req, res) => {
 // Get all employees
 router.get("/", isAuthenticated, async (req, res) => {
     try {
+        if (req.query.search) {
+            console.log(req.query.search);
+            const result = await prisma.employees.findMany({
+                where: {
+                    OR: [
+                        {
+                            firstName: {
+                                contains: req.query.search.toString(),
+                            },
+                        },
+                        {
+                            lastName: {
+                                contains: req.query.search.toString(),
+                            },
+                        },
+                    ],
+                },
+            });
+            res.status(200).json(result);
+            return;
+        }
+
         const result = await prisma.employees.findMany({
             include: {
                 subordinates: true,
@@ -120,9 +142,6 @@ router.get("/:id/objectives", isAuthenticated, async (req, res) => {
                 },
             },
         });
-
-        const status = await computeNotifications(parseInt(id));
-        console.log(status);
 
         res.status(200).json(result);
     } catch (error) {
@@ -275,6 +294,7 @@ router.get("/:id/status", isAuthenticated, async (req, res) => {
         }
 
         const status = await computeNotifications(parseInt(id));
+        console.log(status);
         res.status(200).json(status);
     } catch (error) {
         console.error(error);

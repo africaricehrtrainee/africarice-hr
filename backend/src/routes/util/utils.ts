@@ -28,7 +28,7 @@ export async function computeNotifications(
     let objectiveStatus: StaffObjectiveStatus = "OBJECTIVE_IDLE";
     let selfEvaluationStatus: StaffSelfEvaluationStatus =
         "SELF_EVALUATION_IDLE";
-    let supervisorStatus: SupervisorStatus = [];
+    let supervisorStatus: SupervisorStatus[] = [];
 
     const employee = await prisma.employees.findUnique({
         where: {
@@ -67,8 +67,8 @@ export async function computeNotifications(
     if (compareAsc(new Date(), steps[0].dateFrom) !== -1) {
         // Objective is not between 3 and 5 inclusive or aren't all sent
         if (
-            objectives.length < 3 ||
-            objectives.length > 5 ||
+            objectives.filter((obj) => obj.status).length < 3 ||
+            objectives.filter((obj) => obj.status !== "cancelled").length > 5 ||
             objectives.some((obj) => obj.status == "draft")
         ) {
             objectiveStatus = "OBJECTIVE_EMPTY";
@@ -113,8 +113,7 @@ export async function computeNotifications(
     }
 
     // Supervisor status computation
-
-    team.map(async (member) => {
+    const arr = team.map(async (member) => {
         let objectiveStatus: SupervisorObjectiveStatus =
             "SUPERVISOR_OBJECTIVE_IDLE";
         let evaluationStatus: SupervisorEvaluationStatus =
@@ -125,7 +124,7 @@ export async function computeNotifications(
                 employeeId: member.employeeId,
             },
         });
-
+        //
         const evaluation = await prisma.evaluations.findFirst({
             where: {
                 employeeId: member.employeeId,
@@ -133,10 +132,13 @@ export async function computeNotifications(
             },
         });
 
-        if (compareAsc(new Date(), steps[1].dateFrom) !== -1) {
+        if (
+            compareAsc(new Date(), steps[1].dateFrom) !== -1 &&
+            objectives.filter((obj) => obj.status !== "cancelled").length > 3
+        ) {
             if (objectives.some((obj) => obj.status == "sent")) {
                 objectiveStatus = "SUPERVISOR_OBJECTIVE_UNREVIEWED";
-            } else {
+            } else if (objectives.every((obj) => obj.status == "ok")) {
                 objectiveStatus = "SUPERVISOR_OBJECTIVE_REVIEWED";
             }
         }
@@ -144,7 +146,7 @@ export async function computeNotifications(
         if (compareAsc(new Date(), steps[4].dateFrom) !== -1) {
             if (evaluation && evaluation.evaluationStatus == "sent") {
                 evaluationStatus = "SUPERVISOR_EVALUATION_RATED";
-            } else {
+            } else if (evaluation && evaluation.evaluationStatus == "draft") {
                 evaluationStatus = "SUPERVISOR_EVALUATION_UNRATED";
             }
         }
@@ -155,9 +157,12 @@ export async function computeNotifications(
             employeeId: member.employeeId,
         };
     });
+    supervisorStatus = await Promise.all(arr);
     return {
         objectiveStatus,
         selfEvaluationStatus,
         supervisorStatus,
+
+        // Supervisor status computation
     };
 }

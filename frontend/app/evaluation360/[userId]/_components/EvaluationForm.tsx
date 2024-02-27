@@ -101,7 +101,7 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                     .put(
                         `${process.env.NEXT_PUBLIC_API_URL}/api/evaluator360/${evaluation.evaluator360Id}`,
                         {
-                            evaluation: {
+                            evaluator: {
                                 evaluatorGrade: grade,
                                 evaluatorComment: comment,
                             },
@@ -137,6 +137,11 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
             console.log(error);
         }
     }
+    useEffect(() => {
+        setGrade(evaluation.evaluatorGrade ?? -1);
+        setComment(evaluation.evaluatorComment ?? "");
+    }, [evaluation]);
+
     return (
         <form action={updateEvaluator360} className="mt-4 w-full">
             <div className="flex w-full flex-col items-start justify-start gap-2">

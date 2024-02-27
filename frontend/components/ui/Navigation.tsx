@@ -12,10 +12,26 @@ import LoadingBar from "react-top-loading-bar";
 import { useLoaderRef } from "@/hooks/useLoading";
 import axios from "axios";
 import Notification from "./Notification";
-import { Employee } from "@/global";
 
 function NotificationBox({ user }: { user: Employee }) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const divRef = useRef<HTMLDivElement>(null);
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (divRef.current && !divRef.current.contains(event.target as Node)) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        // Bind the event listener
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            // Unbind the event listener on clean up
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [divRef]);
+
     return (
         <div className="relative">
             <Button
@@ -33,6 +49,7 @@ function NotificationBox({ user }: { user: Employee }) {
             </Button>
 
             <div
+                ref={divRef}
                 className={
                     "absolute left-0 z-10 flex flex-col justify-start items-start gap-1 top-full mt-2 rounded-md border border-zinc-200 bg-white shadow-sm transition-all  " +
                     `${
@@ -163,6 +180,7 @@ interface MenuItem {
 function Page({ item }: { item: MenuItem }) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const pathName = usePathname();
+    const { user } = useAuth();
 
     const handleClickOutside = (event: MouseEvent) => {
         setIsOpen(false);
@@ -185,8 +203,9 @@ function Page({ item }: { item: MenuItem }) {
                     className={
                         "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 active:scale-90 flex items-center justify-center gap-1 group" +
                         ` ${
-                            pathName.includes(item.route as string) &&
-                            "bg-white shadow-sm text-zinc-800"
+                            item.children.some((obj) =>
+                                pathName.includes(obj.route as string)
+                            ) && "bg-white shadow-sm text-zinc-800"
                         }`
                     }
                 >
@@ -219,6 +238,12 @@ function Page({ item }: { item: MenuItem }) {
                     }
                 >
                     {item.children.map((child) => {
+                        if (
+                            user &&
+                            child.permission &&
+                            !child.permission.includes(user.role)
+                        )
+                            return;
                         return (
                             <Link
                                 key={child.name}
@@ -299,7 +324,7 @@ function Menu() {
                 },
                 {
                     name: "360 Evaluation",
-                    route: `/global/${user?.employeeId}`,
+                    route: `/evaluation360/${user?.employeeId}`,
                 },
             ],
         },

@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 function ProfileCard({ employee }: { employee: Employee }) {
     return (
-        <div className="ml-auto flex w-[350px] items-start justify-evenly gap-4 rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
+        <div className="ml-auto flex h-fit w-[350px] items-start justify-evenly gap-4 rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
             <div className="flex h-full flex-col items-center justify-center gap-2">
                 <Chip>
                     Staff
@@ -37,7 +37,7 @@ function ProfileCard({ employee }: { employee: Employee }) {
                     <p className="text-[10px] font-medium text-zinc-300">
                         JOB TITLE
                     </p>
-                    <p className="text-xs font-bold text-zinc-700">
+                    <p className="max-w-[100px] overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-bold text-zinc-700">
                         {employee.jobTitle ?? "..."}
                     </p>
                 </div>

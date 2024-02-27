@@ -207,8 +207,8 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                     <>
                         {/* Top Row */}
                         <div className="flex w-full gap-2 transition-all">
-                            <Schedule fetch={fetchStep} />
                             {data.employee && <Profile user={data.employee} />}
+                            <Schedule fetch={fetchStep} />
                         </div>
                         {/* Main row */}
                         {(data.selectedEvaluationStep == 0 ||
@@ -432,33 +432,6 @@ function Step({
                                 <path
                                     fill="currentColor"
                                     d="M880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32m-622.3-84c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9"
-                                />
-                            </svg>
-                        </button>
-                        <button
-                            onClick={() => {
-                                if (
-                                    confirm(
-                                        "Do you want to set this step as active ?"
-                                    )
-                                ) {
-                                    postSteps(index);
-                                }
-                            }}
-                            className={
-                                "whitespace-nowrap p-2 px-3 text-xs font-bold transition-all hover:text-zinc-800 text-green-600 bg-green-100 hover:bg-zinc-50 active:scale-90 flex items-center justify-between gap-4 group w-full "
-                            }
-                        >
-                            Set as active
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    fill="currentColor"
-                                    d="M4 19v-2h2v-7q0-2.075 1.25-3.687T10.5 4.2v-.7q0-.625.438-1.062T12 2q.625 0 1.063.438T13.5 3.5v.7q2 .5 3.25 2.113T18 10v7h2v2zm8 3q-.825 0-1.412-.587T10 20h4q0 .825-.587 1.413T12 22M2 10q0-2.5 1.113-4.587T6.1 1.95l1.175 1.6q-1.5 1.1-2.387 2.775T4 10zm18 0q0-2-.888-3.675T16.726 3.55l1.175-1.6q1.875 1.375 2.988 3.463T22 10z"
                                 />
                             </svg>
                         </button>

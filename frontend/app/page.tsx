@@ -7,7 +7,6 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import SuperviseeList from "@/app/_components/SuperviseeList";
-import { Employee } from "@/global";
 
 export default function Dashboard() {
     const [supervisees, setSupervisees] = useState<Employee[] | null>(null);

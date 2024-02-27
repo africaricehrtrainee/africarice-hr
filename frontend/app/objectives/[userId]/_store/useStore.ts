@@ -108,7 +108,9 @@ export const useObjectivesDataStore = create<Data & Actions>((set) => ({
 // };
 export const selectActiveStep = (state: Data) =>
     state.evaluationSteps
-        ? state.evaluationSteps.findIndex((step) => step.active)
+        ? state.evaluationSteps.findLastIndex(
+              (step) => compareAsc(new Date(), step.dateFrom) == 1
+          )
         : -1;
 
 export const selectActiveObjective = (state: Data) =>

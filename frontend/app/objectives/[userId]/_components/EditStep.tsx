@@ -14,9 +14,8 @@ const EditStep: React.FC<EditStepProps> = ({ step, onFormSubmit }) => {
         {
             e.preventDefault();
             if (
-                name &&
-                message &&
-                deadline &&
+                dateFrom &&
+                dateTo &&
                 confirm("Do you want to update this step ?")
             ) {
                 axios
@@ -25,9 +24,10 @@ const EditStep: React.FC<EditStepProps> = ({ step, onFormSubmit }) => {
                             "/api/steps/" +
                             step.stepId,
                         {
-                            name,
-                            message,
-                            deadline,
+                            step: {
+                                dateFrom,
+                                dateTo,
+                            },
                         }
                     )
                     .then((response) =>
@@ -42,10 +42,10 @@ const EditStep: React.FC<EditStepProps> = ({ step, onFormSubmit }) => {
             }
         }
     }
-
-    const [stepId, setStepId] = useState<number>(step.stepId);
     const [name, setName] = useState<string>(step.name);
-    const [deadline, setDeadLine] = useState<string>(step.dateFrom);
+    const [stepId, setStepId] = useState<number>(step.stepId);
+    const [dateFrom, setDateFrom] = useState<string>(step.dateFrom);
+    const [dateTo, setDateTo] = useState<string>(step.dateTo);
     const [message, setMessage] = useState<string>(step.message);
 
     return (
@@ -64,28 +64,33 @@ const EditStep: React.FC<EditStepProps> = ({ step, onFormSubmit }) => {
             <form className="w-full" onSubmit={handleUpdate}>
                 <div className="mt-4 flex w-full flex-col justify-start gap-1">
                     <label className="text-[8px] font-medium text-zinc-300">
-                        EVALUATION STEP NAME
-                    </label>
-                    <input
-                        autoCorrect="off"
-                        spellCheck="false"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Enter the evaluation step name"
-                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
-                    />
-                </div>
-                <div className="mt-4 flex w-full flex-col justify-start gap-1">
-                    <label className="text-[8px] font-medium text-zinc-300">
-                        EVALUATION STEP DEADLINE
+                        EVALUATION STARTING DATE
                     </label>
                     <input
                         autoCorrect="off"
                         spellCheck="false"
                         type="date"
-                        value={deadline}
-                        onChange={(e) => setDeadLine(e.target.value)}
+                        onClick={(e) => {
+                            e.currentTarget.showPicker();
+                        }}
+                        value={dateFrom}
+                        onChange={(e) => setDateFrom(e.target.value)}
+                        placeholder="Pick the step starting date"
+                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                    />
+                </div>
+
+                <div className="mt-4 flex w-full flex-col justify-start gap-1">
+                    <label className="text-[8px] font-medium text-zinc-300">
+                        EVALUATION ENDING DATE
+                    </label>
+                    <input
+                        autoCorrect="off"
+                        spellCheck="false"
+                        type="date"
+                        value={dateTo}
+                        min={dateFrom}
+                        onChange={(e) => setDateTo(e.target.value)}
                         placeholder="Pick the evaluation step deadline"
                         className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                     />
@@ -110,7 +115,7 @@ const EditStep: React.FC<EditStepProps> = ({ step, onFormSubmit }) => {
                         type="submit"
                         disabled={
                             !(
-                                JSON.stringify([name, deadline, message]) !==
+                                JSON.stringify([name, dateTo, message]) !==
                                 JSON.stringify([
                                     step.name,
                                     step.dateFrom,
@@ -122,7 +127,7 @@ const EditStep: React.FC<EditStepProps> = ({ step, onFormSubmit }) => {
                     >
                         Save changes
                         <Icon
-                            icon="material-symbols:save-outline"
+                            icon="mdi:check-all"
                             className="ml-1"
                             fontSize={14}
                         />

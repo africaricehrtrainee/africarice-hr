@@ -49,13 +49,42 @@ router.post("/", async (req, res) => {
 // Update an evaluator360
 router.put("/:id", async (req, res) => {
     const { id } = req.params;
-    const { evaluation } = req.body;
+    const { evaluator } = req.body;
     try {
         const evaluator360 = await prisma.evaluator360.update({
             where: { evaluator360Id: parseInt(id) },
-            data: evaluation,
+            data: {
+                ...evaluator,
+            },
         });
         res.json(evaluator360);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// Update an evaluator360
+router.post("/bulk", async (req, res) => {
+    const { evaluators } = req.body;
+    try {
+        if (!Array.isArray(evaluators)) {
+            res.status(400).json({ error: "Invalid input" });
+            return;
+        }
+        console.log(evaluators);
+        const result = await prisma.$transaction(
+            evaluators.map((evaluator: Evaluator360) =>
+                prisma.evaluator360.update({
+                    where: { evaluator360Id: evaluator.evaluator360Id },
+                    data: {
+                        ...evaluator,
+                    },
+                })
+            )
+        );
+
+        res.json(result);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal server error" });

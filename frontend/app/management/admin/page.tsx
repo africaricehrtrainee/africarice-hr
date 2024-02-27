@@ -30,10 +30,12 @@ export default function Dashboard() {
                     setSelectedEmployee={setSelectedEmployee}
                     selectedEmployee={selectedEmployee}
                 />
-                <EditEmployee
-                    selectedEmployee={employees[selectedEmployee]}
-                    fetch={fetch}
-                />
+                {selectedEmployee !== -1 && (
+                    <EditEmployee
+                        selectedEmployee={employees[selectedEmployee]}
+                        fetch={fetch}
+                    />
+                )}
             </div>
         </main>
     );

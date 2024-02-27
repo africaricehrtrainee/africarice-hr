@@ -660,9 +660,17 @@ export function NewObjective({
                                     </label>
                                     <input
                                         autoCorrect="off"
+                                        onClick={(e) =>
+                                            e.currentTarget.showPicker()
+                                        }
                                         spellCheck="false"
                                         disabled={isEditable}
-                                        type="text"
+                                        type="date"
+                                        min={
+                                            new Date()
+                                                .toISOString()
+                                                .split("T")[0]
+                                        }
                                         value={selectedObjective.deadline ?? ""}
                                         onChange={(
                                             e: React.ChangeEvent<HTMLInputElement>

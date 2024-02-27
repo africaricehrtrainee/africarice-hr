@@ -33,7 +33,11 @@ export default function Home() {
                     toast({
                         description: "Successfully logged in.",
                     });
-                    router.push(`/`);
+                    if (response.data.user.role === "admin") {
+                        router.push(`/management/admin`);
+                    } else {
+                        router.push(`/`);
+                    }
                 } else {
                     toast({
                         variant: "destructive",

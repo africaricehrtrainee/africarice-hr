@@ -23,12 +23,14 @@ function EvaluatorsList({
         <div className="flex w-full flex-1 items-center justify-between rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
             {evaluation ? (
                 <div className="flex h-full w-full flex-col items-start justify-end gap-2">
-                    <div className="flex w-full items-end justify-between">
+                    <div className="flex h-full w-full items-start justify-between">
                         <ListComponent evaluation={evaluation} />
                         <div className="flex h-full items-start justify-center gap-2">
                             {evaluators &&
                             evaluators.length > 0 &&
-                            evaluators.some((obj) => obj.evaluatorGrade) ? (
+                            evaluators.some((obj) => obj.evaluatorGrade) &&
+                            (user.employeeId == employee.employeeId ||
+                                user.employeeId == employee.supervisorId) ? (
                                 <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
                                     <p className="text-[10px] font-bold text-zinc-400">
                                         Evaluation grade
@@ -89,16 +91,15 @@ function UserSideBar({
     evaluation: Evaluation360;
 }) {
     const { evaluators, fetchEvaluation } = useEvaluationDataStore();
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const { toast } = useToast();
 
-    async function postEvaluation(evaluation: Evaluation360): Promise<any> {
+    async function submitEvaluations(evaluators: Evaluator360[]): Promise<any> {
         try {
             const result = await axios
-                .put(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/evaluation360/${evaluation.evaluation360Id}`,
+                .post(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/evaluator360/bulk`,
                     {
-                        evaluation,
+                        evaluators,
                     }
                 )
                 .then((res) => {
@@ -126,34 +127,34 @@ function UserSideBar({
 
     return (
         <div className="flex h-full w-full flex-col items-end justify-start gap-2">
-            <EvaluationStatusBadge evaluation={evaluation} />
+            <EvaluationStatusBadge evaluators={evaluators} />
             <Button
                 variant="primary"
-                loading={isSubmitting}
                 disabled={
-                    evaluators?.length == 0 ||
-                    evaluation.evaluationStatus == "sent" ||
-                    evaluators?.some(
-                        (obj) => obj.evaluatorGrade || obj.evaluatorComment
+                    !evaluators ||
+                    evaluators.length < 3 ||
+                    evaluators.every(
+                        (evaluator) =>
+                            evaluator.evaluatorStatus == "ok" ||
+                            evaluator.evaluatorStatus == "sent"
                     )
                 }
                 onClick={() => {
-                    if (evaluation) {
-                        setIsSubmitting(true);
-                        const obj = { ...evaluation };
-                        obj.evaluationStatus = "sent";
-                        postEvaluation(obj).finally(() =>
-                            setIsSubmitting(false)
-                        );
-                    }
+                    if (!evaluators) return;
+
+                    let arr = [...evaluators];
+                    evaluators.forEach((obj, i) => {
+                        if (obj.evaluatorStatus !== "ok") {
+                            let temp = { ...obj };
+                            temp.evaluatorStatus = "sent";
+                            arr[i] = temp;
+                        }
+                    });
+                    submitEvaluations(arr);
                 }}
             >
                 Submit list to supervisor
-                <Icon
-                    icon="mingcute:mail-send-fill"
-                    className="ml-1"
-                    fontSize={14}
-                />
+                <Icon icon="mdi:send" className="ml-1" fontSize={14} />
             </Button>
         </div>
     );
@@ -205,60 +206,8 @@ function SupervisorSidebar({
     }
 
     return (
-        <div className="flex h-full w-full flex-col items-end justify-end gap-2">
-            <EvaluationStatusBadge evaluation={evaluation} />
-            <Button
-                variant="primary"
-                loading={isSubmitting}
-                disabled={
-                    evaluators?.length == 0 ||
-                    evaluation.evaluationStatus == "ok" ||
-                    evaluators?.some(
-                        (obj) => obj.evaluatorGrade || obj.evaluatorComment
-                    )
-                }
-                onClick={() => {
-                    if (evaluation) {
-                        setIsSubmitting(true);
-                        const obj = { ...evaluation };
-                        obj.evaluationStatus = "ok";
-                        postEvaluation(obj).finally(() =>
-                            setIsSubmitting(false)
-                        );
-                    }
-                }}
-            >
-                Mark as OK
-                <Icon icon="mdi:check-all" className="ml-1" fontSize={14} />
-            </Button>
-            <Button
-                variant="alertOutline"
-                loading={isSubmitting}
-                disabled={
-                    evaluators?.length == 0 ||
-                    evaluation.evaluationStatus == "invalid" ||
-                    evaluators?.some(
-                        (obj) => obj.evaluatorGrade || obj.evaluatorComment
-                    )
-                }
-                onClick={() => {
-                    if (evaluation) {
-                        setIsSubmitting(true);
-                        const obj = { ...evaluation };
-                        obj.evaluationStatus = "invalid";
-                        postEvaluation(obj).finally(() =>
-                            setIsSubmitting(false)
-                        );
-                    }
-                }}
-            >
-                Mark as invalid
-                <Icon
-                    icon="mingcute:mail-send-fill"
-                    className="ml-1"
-                    fontSize={14}
-                />
-            </Button>
+        <div className="flex h-full w-full flex-col items-end justify-start gap-2">
+            <EvaluationStatusBadge evaluators={evaluators} />
         </div>
     );
 }
@@ -332,33 +281,38 @@ function ListComponent({ evaluation }: { evaluation: Evaluation360 }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (evaluators == undefined || !user) return null;
+    if (evaluators == undefined || !user || !employee) return null;
     return (
         <div className="flex h-full flex-col items-start justify-start gap-2">
             <Chip>
                 My evaluators
                 <Icon icon="solar:list-bold" className="ml-1" fontSize={14} />
             </Chip>
-            <div className="flex items-center justify-start gap-2">
+            <div className="flex items-start justify-start gap-2">
                 {evaluators
-                    .filter(
-                        (obj) =>
-                            obj.evaluatorId == user.employeeId ||
-                            user.employeeId == employee?.supervisorId ||
-                            user.employeeId == employee?.employeeId
-                    )
+                    .filter((obj) => {
+                        return user.employeeId == employee?.employeeId
+                            ? true
+                            : user.employeeId == employee.supervisorId
+                            ? obj.evaluatorStatus !== "draft"
+                            : user.employeeId == obj.evaluatorId
+                            ? obj.evaluatorStatus == "ok"
+                            : false;
+                    })
                     .map(
                         (
                             evaluator: Evaluator360,
                             i: React.Key | null | undefined
                         ) => (
-                            <ListItem key={i} evaluator={evaluator} />
+                            <ListItem
+                                key={i}
+                                evaluator={evaluator}
+                                employee={employee}
+                            />
                         )
                     )}
 
                 {evaluators.length < 3 &&
-                    evaluation.evaluationStatus !== "ok" &&
-                    evaluation.evaluationStatus !== "sent" &&
                     user.employeeId == employee?.employeeId && (
                         <button
                             onClick={() => {
@@ -382,9 +336,16 @@ function ListComponent({ evaluation }: { evaluation: Evaluation360 }) {
     );
 }
 
-function ListItem({ evaluator }: { evaluator: Evaluator360 }) {
+function ListItem({
+    evaluator,
+    employee,
+}: {
+    evaluator: Evaluator360;
+    employee: Employee;
+}) {
     const [isDeleting, setIsDeleting] = useState(false);
-    const [user, setUser] = useState<Employee>();
+    const [evaluatorProfile, setEvaluatorProfile] = useState<Employee>();
+    const { user } = useAuth();
     const {
         fetchEvaluators,
         evaluation,
@@ -403,7 +364,35 @@ function ListItem({ evaluator }: { evaluator: Evaluator360 }) {
                     console.log(err);
                     return null;
                 });
-            if (employee) setUser(employee);
+            if (employee) setEvaluatorProfile(employee);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async function updateEvaluator360(evaluator: Evaluator360) {
+        try {
+            if (evaluation) {
+                const result = await axios
+                    .put(
+                        `${process.env.NEXT_PUBLIC_API_URL}/api/evaluator360/${evaluator.evaluator360Id}`,
+                        {
+                            evaluator,
+                        }
+                    )
+                    .then((res) => {
+                        if (res.status == 201) {
+                            return true;
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        return false;
+                    })
+                    .finally(() => {
+                        fetchEvaluators(evaluation.evaluation360Id.toString());
+                    });
+                return result;
+            }
         } catch (error) {
             console.log(error);
         }
@@ -440,21 +429,29 @@ function ListItem({ evaluator }: { evaluator: Evaluator360 }) {
         fetchEmployee(evaluator.evaluatorId.toString());
     }, [evaluator]);
 
-    if (!user) return null;
+    if (!evaluatorProfile) return null;
     return (
-        <>
+        <div className="flex flex-col items-start justify-start gap-2">
             <button
                 onClick={() => {
-                    if (evaluation && evaluation.evaluationStatus == "ok") {
-                        setSelectedEmployeeId(user.employeeId);
+                    if (evaluator.evaluatorStatus == "ok") {
+                        setSelectedEmployeeId(evaluatorProfile.employeeId);
                     }
-                    if (evaluation && evaluation.evaluationStatus == "sent") {
+                    if (evaluator.evaluatorStatus == "sent") {
                     }
-                    if (evaluation && evaluation.evaluationStatus == "draft") {
-                        setIsDeleting(true);
+                    if (
+                        evaluator.evaluatorStatus == "draft" ||
+                        evaluator.evaluatorStatus == "invalid"
+                    ) {
+                        user?.employeeId == employee.employeeId &&
+                            setIsDeleting(true);
                     }
                 }}
-                className="flex flex-col items-center justify-center rounded-lg border border-dashed border-green-300 bg-transparent p-3 px-4 text-xs font-semibold text-green-600 transition-all hover:bg-zinc-50 active:scale-95"
+                className={cn(
+                    "flex flex-col items-center text-opacity-75 justify-center rounded-lg border border-dashed border-green-300 bg-transparent p-3 px-4 text-xs font-semibold text-green-600 transition-all hover:bg-zinc-50 active:scale-95",
+                    selectedEmployeeId == evaluator.evaluatorId &&
+                        "bg-green-50 text-opacity-100"
+                )}
             >
                 {evaluator.evaluatorGrade && evaluator.evaluatorComment ? (
                     <Chip variant="brand" size="xs" className="mb-2">
@@ -466,20 +463,95 @@ function ListItem({ evaluator }: { evaluator: Evaluator360 }) {
                         />
                     </Chip>
                 ) : (
-                    <Chip variant="brand" size="xs" className="mb-2">
-                        Pending
-                        <Icon
-                            icon="ph:circle-dashed"
-                            className="ml-1"
-                            fontSize={14}
-                        />
-                    </Chip>
+                    <>
+                        {evaluator.evaluatorStatus == "draft" && (
+                            <Chip variant="primary" size="xs" className="mb-2">
+                                Draft
+                                <Icon
+                                    icon="ph:newspaper-clipping-fill"
+                                    className="ml-1"
+                                    fontSize={14}
+                                />
+                            </Chip>
+                        )}
+                        {evaluator.evaluatorStatus == "sent" && (
+                            <Chip variant="primary" size="xs" className="mb-2">
+                                Submitted
+                                <Icon
+                                    icon="mdi-check-all"
+                                    className="ml-1"
+                                    fontSize={14}
+                                />
+                            </Chip>
+                        )}
+
+                        {evaluator.evaluatorStatus == "ok" && (
+                            <Chip variant="blue" size="xs" className="mb-2">
+                                {/* Pending */}
+                                <Icon
+                                    icon="mdi-check-all"
+                                    className="ml-1"
+                                    fontSize={14}
+                                />
+                            </Chip>
+                        )}
+                        {evaluator.evaluatorStatus == "invalid" && (
+                            <Chip
+                                variant="destructive"
+                                size="xs"
+                                className="mb-2"
+                            >
+                                Invalid
+                                <Icon
+                                    icon="ion:alert-sharp"
+                                    className="ml-1"
+                                    fontSize={14}
+                                />
+                            </Chip>
+                        )}
+                    </>
                 )}
-                <p>{user.firstName + " " + user.lastName}</p>
-                <p className="whitespace-nowrap text-[10px]">
+                <p>
+                    {evaluatorProfile.firstName.split(" ")[0] +
+                        " " +
+                        evaluatorProfile.lastName}
+                </p>
+
+                <p className="max-w-[100px] overflow-hidden overflow-ellipsis whitespace-nowrap text-[10px]">
                     {evaluator.evaluatorJobTitle}
                 </p>
             </button>
+            {user?.employeeId == employee.supervisorId &&
+                evaluator.evaluatorStatus !== "ok" && (
+                    <>
+                        <div className="flex w-full items-start justify-center gap-1">
+                            <Button
+                                variant="primary"
+                                onClick={() => {
+                                    let obj = { ...evaluator };
+                                    obj.evaluatorStatus = "ok";
+                                    updateEvaluator360(obj);
+                                }}
+                            >
+                                <Icon icon="mdi:check-all" fontSize={14} />
+                            </Button>
+                            <Button
+                                disabled={
+                                    evaluator.evaluatorStatus == "invalid"
+                                }
+                                variant="alert"
+                                onClick={() => {
+                                    let obj = { ...evaluator };
+                                    obj.evaluatorStatus = "invalid";
+                                    updateEvaluator360(obj);
+                                }}
+                            >
+                                <Icon icon="charm:cross" fontSize={14} />
+                            </Button>
+                        </div>
+                    </>
+                )}
+
             <Modal show={isDeleting} onClose={() => setIsDeleting(false)}>
                 <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
                     <div className="flex w-full flex-col items-start justify-between">
@@ -522,7 +594,7 @@ function ListItem({ evaluator }: { evaluator: Evaluator360 }) {
                     </div>
                 </div>
             </Modal>
-        </>
+        </div>
     );
 }
 
@@ -605,7 +677,9 @@ function AssignmentModal(props: {
         }
         // Only fetch data if the search term is not empty
         if (memoizedSearchQuery !== "" && memoizedSearchQuery.length >= 3) {
-            fetchEmployees();
+            setTimeout(() => {
+                fetchEmployees();
+            }, 500);
         } else {
             setEmployees([]);
         }
@@ -622,7 +696,7 @@ function AssignmentModal(props: {
                 }
             }}
         >
-            <div className="flex h-[450px] w-[600px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-8 shadow-sm transition-all">
+            <div className="flex h-[450px] w-[800px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-8 shadow-sm transition-all">
                 <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[8px] font-semibold text-blue-700">
                     Assigment
                     <Icon
@@ -778,9 +852,13 @@ function AssignmentModal(props: {
     );
 }
 
-function EvaluationStatusBadge({ evaluation }: { evaluation: Evaluation360 }) {
-    switch (evaluation.evaluationStatus) {
-        case "draft":
+function EvaluationStatusBadge({
+    evaluators,
+}: {
+    evaluators: Evaluator360[] | undefined;
+}) {
+    if (evaluators && evaluators.length > 0) {
+        if (evaluators.every((obj) => obj.evaluatorStatus == "draft"))
             return (
                 <Chip variant="primary">
                     Draft
@@ -791,7 +869,7 @@ function EvaluationStatusBadge({ evaluation }: { evaluation: Evaluation360 }) {
                     />
                 </Chip>
             );
-        case "sent":
+        if (evaluators.every((obj) => obj.evaluatorStatus == "sent"))
             return (
                 <Chip variant="blue">
                     Submitted
@@ -802,14 +880,14 @@ function EvaluationStatusBadge({ evaluation }: { evaluation: Evaluation360 }) {
                     />
                 </Chip>
             );
-        case "ok":
+        if (evaluators.every((obj) => obj.evaluatorStatus == "ok"))
             return (
                 <Chip variant="brand">
                     OK
                     <Icon icon="mdi:check-all" className="ml-1" fontSize={14} />
                 </Chip>
             );
-        case "invalid":
+        if (evaluators.some((obj) => obj.evaluatorStatus == "invalid"))
             return (
                 <Chip variant="destructive">
                     Invalid
@@ -820,9 +898,13 @@ function EvaluationStatusBadge({ evaluation }: { evaluation: Evaluation360 }) {
                     />
                 </Chip>
             );
-
-        default:
-            break;
+    } else {
+        return (
+            <Chip variant="primary">
+                No evaluators
+                <Icon icon="ic:baseline-star" className="ml-1" fontSize={14} />
+            </Chip>
+        );
     }
 }
 

@@ -1,10 +1,3 @@
-import {
-    Employee,
-    StaffObjectiveStatus,
-    StaffSelfEvaluationStatus,
-    Status,
-    SupervisorEvaluationStatus,
-} from "@/global";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import React, { use, useEffect } from "react";
@@ -37,13 +30,173 @@ import axios from "axios";
 //     objectiveStatus: SupervisorObjectiveStatus;
 //     evaluationStatus: SupervisorEvaluationStatus;
 //     employeeId: number;
-// }[];
+// };
 
 // export type Status = {
 //     objectiveStatus: StaffObjectiveStatus;
 //     selfEvaluationStatus: StaffSelfEvaluationStatus;
-//     supervisorStatus?: SupervisorStatus;
+//     supervisorStatus?: SupervisorStatus[];
 // };
+
+function SupervisorNotification({
+    user,
+    supervisorStatus,
+}: {
+    user: Employee;
+    supervisorStatus: SupervisorStatus;
+}) {
+    const [employee, setEmployee] = React.useState<Employee>();
+    async function getEmployee() {
+        await axios
+            .get<Employee>(
+                process.env.NEXT_PUBLIC_API_URL +
+                    "/api/employees/" +
+                    supervisorStatus.employeeId
+            )
+            .then((response) => {
+                if (response.data) {
+                    setEmployee(response.data);
+                } else {
+                }
+            })
+            .catch((err) => console.log(err));
+    }
+    useEffect(() => {
+        getEmployee();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    if (!employee) return;
+    return (
+        <>
+            {supervisorStatus.objectiveStatus ===
+                "SUPERVISOR_OBJECTIVE_UNREVIEWED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                        <Icon
+                            icon="mdi:alert"
+                            fontSize={16}
+                            className="text-yellow-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have not reviewed <b>{employee.firstName}&apos;s</b>{" "}
+                        objectives yet.
+                    </p>
+                </Link>
+            )}
+            {supervisorStatus.objectiveStatus ===
+                "SUPERVISOR_OBJECTIVE_REVIEWED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                        <Icon
+                            icon="mdi:check-all"
+                            fontSize={16}
+                            className="text-green-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have reviewed <b>{employee.firstName}&apos;s</b>{" "}
+                        objectives.
+                    </p>
+                </Link>
+            )}
+            {supervisorStatus.evaluationStatus ===
+                "SUPERVISOR_EVALUATION_UNRATED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                        <Icon
+                            icon="mdi:alert"
+                            fontSize={16}
+                            className="text-yellow-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have not evaluated{" "}
+                        <b>{employee.firstName}&apos;s</b> objectives yet.
+                    </p>
+                </Link>
+            )}
+            {supervisorStatus.evaluationStatus ===
+                "SUPERVISOR_EVALUATION_RATED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                        <Icon
+                            icon="mdi:check-all"
+                            fontSize={16}
+                            className="text-green-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have evaluated <b>{employee.firstName}&apos;s</b>{" "}
+                        objectives.
+                    </p>
+                </Link>
+            )}
+        </>
+    );
+}
+
+function SelfEvaluationNotification({
+    user,
+    status,
+}: {
+    user: Employee;
+    status: Status;
+}) {
+    return (
+        <>
+            {status.selfEvaluationStatus !== "SELF_EVALUATION_IDLE" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${user.employeeId}`}
+                >
+                    {status.selfEvaluationStatus ===
+                        "SELF_EVALUATION_EMPTY" && (
+                        <>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                                <Icon
+                                    icon="mdi:alert"
+                                    fontSize={16}
+                                    className="text-yellow-600"
+                                />
+                            </div>
+                            <p className="whitespace-nowrap text-xs">
+                                You have not submitted{" "}
+                                <b>your self-evaluation</b> yet.
+                            </p>
+                        </>
+                    )}
+                    {status.selfEvaluationStatus === "SELF_EVALUATION_SENT" && (
+                        <>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                                <Icon
+                                    icon="mdi:check-all"
+                                    fontSize={16}
+                                    className="text-green-600"
+                                />
+                            </div>
+                            <p className="whitespace-nowrap text-xs">
+                                You have submitted <b>your self-evaluation</b>.
+                            </p>
+                        </>
+                    )}
+                </Link>
+            )}
+        </>
+    );
+}
 
 function ObjectiveNotification({
     user,
@@ -56,7 +209,7 @@ function ObjectiveNotification({
         <>
             {status.objectiveStatus !== "OBJECTIVE_IDLE" && (
                 <Link
-                    className="flex items-center justify-between gap-4 p-2"
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
                     href={`/objectives/${user.employeeId}`}
                 >
                     {status.objectiveStatus === "OBJECTIVE_EMPTY" && (
@@ -72,14 +225,6 @@ function ObjectiveNotification({
                                 You have not submitted <b>your objectives</b>{" "}
                                 yet.
                             </p>
-                            <Button variant="outline">
-                                Access
-                                <Icon
-                                    icon="ph:arrow-up-right-bold"
-                                    className="ml-1"
-                                    fontSize={14}
-                                />
-                            </Button>
                         </>
                     )}
                     {status.objectiveStatus === "OBJECTIVE_SENT" && (
@@ -94,14 +239,6 @@ function ObjectiveNotification({
                             <p className="whitespace-nowrap text-xs">
                                 You have submitted <b>your objectives</b>.
                             </p>
-                            <Button variant="outline">
-                                Access
-                                <Icon
-                                    icon="ph:arrow-up-right-bold"
-                                    className="ml-1"
-                                    fontSize={14}
-                                />
-                            </Button>
                         </>
                     )}
                     {status.objectiveStatus === "OBJECTIVE_INVALID" && (
@@ -116,14 +253,6 @@ function ObjectiveNotification({
                             <p className="whitespace-nowrap text-xs">
                                 Your objectives need to be <b>modified</b>.
                             </p>
-                            <Button variant="outline">
-                                Access
-                                <Icon
-                                    icon="ph:arrow-up-right-bold"
-                                    className="ml-1"
-                                    fontSize={14}
-                                />
-                            </Button>
                         </>
                     )}
                     {status.objectiveStatus === "OBJECTIVE_OK" && (
@@ -138,14 +267,6 @@ function ObjectiveNotification({
                             <p className="whitespace-nowrap text-xs">
                                 Your objectives are <b>approved</b>.
                             </p>
-                            <Button variant="outline">
-                                Access
-                                <Icon
-                                    icon="ph:arrow-up-right-bold"
-                                    className="ml-1"
-                                    fontSize={14}
-                                />
-                            </Button>
                         </>
                     )}
                     {status.objectiveStatus === "OBJECTIVE_UNRATED" && (
@@ -161,14 +282,6 @@ function ObjectiveNotification({
                                 You have not <b>evaluated your objectives</b>{" "}
                                 yet.
                             </p>
-                            <Button variant="outline">
-                                Access
-                                <Icon
-                                    icon="ph:arrow-up-right-bold"
-                                    className="ml-1"
-                                    fontSize={14}
-                                />
-                            </Button>
                         </>
                     )}
                 </Link>
@@ -179,6 +292,7 @@ function ObjectiveNotification({
 
 function Notification({ user }: { user: Employee }) {
     const [status, setStatus] = React.useState<Status>();
+
     async function getStatus() {
         axios
             .get<Status>(
@@ -198,12 +312,21 @@ function Notification({ user }: { user: Employee }) {
     }
     useEffect(() => {
         getStatus();
-    }, []);
+    }, [user]);
+
     if (!status) return;
     return (
-        <>
+        <div className="flex flex-col">
             <ObjectiveNotification user={user} status={status} />
-        </>
+            <SelfEvaluationNotification user={user} status={status} />
+            {status.supervisorStatus?.map((supervisorStatus, i) => (
+                <SupervisorNotification
+                    key={i}
+                    user={user}
+                    supervisorStatus={supervisorStatus}
+                />
+            ))}
+        </div>
     );
 }
 

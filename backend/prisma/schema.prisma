@@ -68,18 +68,18 @@ model Evaluations {
 }
 
 model Evaluation360 {
-  evaluation360Id  Int            @id @default(autoincrement())
-  employeeId       Int
-  supervisorId     Int
-  evaluationYear   String         @default("2024")
-  evaluationStatus String         @default("draft")
-  employee         Employees      @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
-  supervisor       Employees      @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
-  evaluators       Evaluator360[]
+  evaluation360Id Int            @id @default(autoincrement())
+  employeeId      Int
+  supervisorId    Int
+  evaluationYear  String         @default("2024")
+  employee        Employees      @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
+  supervisor      Employees      @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
+  evaluators      Evaluator360[]
 }
 
 model Evaluator360 {
   evaluator360Id    Int     @id @default(autoincrement())
+  evaluatorStatus   String  @default("draft")
   evaluationId      Int
   evaluatorId       Int
   evaluatorJobTitle String

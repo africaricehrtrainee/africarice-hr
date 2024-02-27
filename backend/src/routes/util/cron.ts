@@ -5,34 +5,48 @@ import sendMail, {
     mailNotificationStep,
 } from "../../services/mail-service";
 import { lightFormat } from "date-fns";
+// Schedule the task to run every 5 seconds (using a cron expression)
 
 export default async function cronJob() {
     const log = console.log;
     // Define your task function here
-    function evaluationDayJob() {
-        console.log("Checking for the current evaluation step.");
+    function evaluationStepJob() {
+        log(
+            chalk.black.bgGreenBright(
+                `🗲 Running evaluation schedule job at ${lightFormat(
+                    new Date(),
+                    "hh:mm:ss"
+                )}`
+            )
+        );
         mailEvaluationStep();
         // Replace this with your actual task logic
     }
 
     function evaluationAlertJob() {
         log(
-            chalk.black
-                .bgYellow`\u03BB Running evaluation alert job at ${lightFormat(
-                new Date(),
-                "mm:ss:SS"
-            )}`
+            chalk.black.bgGreenBright(
+                `🗲 Running evaluation alert job at ${lightFormat(
+                    new Date(),
+                    "hh:mm:ss"
+                )}`
+            )
         );
         mailNotificationStep();
     }
 
-    // Schedule the task to run every 5 seconds (using a cron expression)
-    // cron.schedule("0 0 * * *", evaluationDayJob);
-    // cron.schedule("* * * * *", evaluationDayJob);
+    cron.schedule("*/10 * * * *", evaluationStepJob);
 
     log(
         chalk.black.bgYellow(
-            "\u03BB Alert service is scheduled to run every minute"
+            "\u03BB Evaluation schedule notification every 10 minutes"
+        )
+    );
+    cron.schedule("*/5 * * * *", evaluationAlertJob);
+
+    log(
+        chalk.black.bgYellow(
+            "\u03BB Alert service notification run every 5 minute"
         )
     );
     // Alternatively, you can use a more human-readable syntax (recommended)

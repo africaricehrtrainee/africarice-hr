@@ -1,5 +1,4 @@
 // SuperviseeList.tsx
-
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
 import Button from "../../components/ui/Button";
@@ -101,7 +100,7 @@ const SuperviseeList: React.FC<SuperviseeListProps> = ({ employees }) => {
                                         variant="underline"
                                         onClick={() => {
                                             router.push(
-                                                `/global/${employee.employeeId}`
+                                                `/evaluation360/${employee.employeeId}`
                                             );
                                         }}
                                     >
