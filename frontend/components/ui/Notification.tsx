@@ -4,6 +4,8 @@ import React, { use, useEffect } from "react";
 import Button from "./Button";
 import Link from "next/link";
 import axios from "axios";
+import { useObjectivesDataStore } from "@/app/objectives/[userId]/_store/useStore";
+import { useEvaluationDataStore } from "@/app/evaluation360/[userId]/_store/useStore";
 
 // type StaffObjectiveStatus =
 //     | "OBJECTIVE_IDLE"
@@ -473,7 +475,8 @@ function Evaluation360Notification({
 
 function Notification({ user }: { user: Employee }) {
     const [status, setStatus] = React.useState<Status>();
-
+    const { objectives, evaluation } = useObjectivesDataStore();
+    const { evaluators } = useEvaluationDataStore();
     async function getStatus() {
         axios
             .get<Status>(
@@ -493,7 +496,8 @@ function Notification({ user }: { user: Employee }) {
     }
     useEffect(() => {
         getStatus();
-    }, [user]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user, objectives, evaluation, evaluators]);
 
     if (!status) return;
     return (

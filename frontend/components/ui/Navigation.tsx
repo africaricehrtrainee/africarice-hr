@@ -111,7 +111,7 @@ function Profile() {
                     <div
                         ref={divRef}
                         className={
-                            "absolute left-0 z-10 flex flex-col justify-start items-start gap-1 top-full mt-4 rounded-md border border-zinc-200 bg-white shadow-sm transition-all p-2 " +
+                            "absolute left-0 z-10 flex flex-col justify-start items-start gap-1 top-full mt-4 rounded-md border border-zinc-200 bg-white shadow-sm transition-all p-1 " +
                             `${
                                 isOpen
                                     ? "opacity-100 visible translate-y-0"
@@ -370,6 +370,7 @@ export default function Navigation() {
     const loaderRef = useLoaderRef();
     const router = useRouter();
     const user = useAuth();
+    const pathName = usePathname();
 
     axios.interceptors.request.use(
         function (config) {
@@ -405,7 +406,7 @@ export default function Navigation() {
             return response;
         },
         function (error) {
-            if (error.response.status === 401) {
+            if (error.response.status === 401 && !pathName.includes("auth")) {
                 router.push("/auth?redirect=true");
             }
             return Promise.reject(error);

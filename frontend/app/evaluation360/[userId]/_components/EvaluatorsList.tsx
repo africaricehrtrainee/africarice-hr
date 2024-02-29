@@ -755,7 +755,7 @@ function AssignmentModal(props: {
                                             : setSelectedEmployee(employee);
                                     }}
                                     className={cn(
-                                        "grid grid-cols-5 w-full relative items-center justify-start rounded-md border-b border-b-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
+                                        "grid  grid-cols-5 w-full relative items-center justify-start rounded-md border-b border-b-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
                                         `${
                                             selectedEmployee?.employeeId ==
                                                 employee.employeeId &&
@@ -765,7 +765,7 @@ function AssignmentModal(props: {
                                     key={i}
                                 >
                                     <div className="flex items-center justify-start">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-zinc-50">
+                                        <div className="flex h-8 w-8 truncate max-w-full items-center justify-center rounded-full bg-green-500 text-sm font-bold text-zinc-50">
                                             {employee.firstName.charAt(0) +
                                                 employee.lastName.charAt(0)}
                                         </div>
@@ -776,7 +776,7 @@ function AssignmentModal(props: {
                                         </p>
                                         <p
                                             className={cn(
-                                                "text-xs text-zinc-700 max-w-[150px] truncate font-medium"
+                                                "text-xs text-zinc-700 max-w-[100px] truncate font-medium"
                                             )}
                                         >
                                             {employee.lastName}
