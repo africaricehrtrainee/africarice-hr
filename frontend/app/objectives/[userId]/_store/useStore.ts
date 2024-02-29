@@ -4,6 +4,7 @@ import axios from "axios";
 
 interface Data {
     // SLICES
+    selectedYear: string | null;
     selectedEvaluationStep: number;
     selectedObjectiveIndex: number;
     objectives: Objective[] | null;
@@ -17,6 +18,7 @@ interface Data {
 
 interface Actions {
     // ACTIONS
+    setSelectedYear: (to: string) => void;
     setObjectives: (to: Objective[] | null) => void;
     setObjectivesLocal: (to: Partial<Objective>[]) => void;
     setComments: (to: Comment[]) => void;
@@ -32,6 +34,7 @@ interface Actions {
 }
 const initialState: Data = {
     // SLICES
+    selectedYear: null,
     objectives: null,
     objectivesLocal: [],
     comments: [],
@@ -45,6 +48,7 @@ const initialState: Data = {
 export const useObjectivesDataStore = create<Data & Actions>((set) => ({
     ...initialState,
     // ACTIONS
+    setSelectedYear: (to) => set((state) => ({ selectedYear: to })),
     setObjectives: (to) => set((state) => ({ objectives: to })),
     setObjectivesLocal: (to) => set((state) => ({ objectivesLocal: to })),
     setComments: (to) => set((state) => ({ comments: to })),

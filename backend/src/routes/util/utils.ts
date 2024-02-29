@@ -1,9 +1,14 @@
+import { Evaluator360 } from "@prisma/client";
 import { compareAsc, compareDesc } from "date-fns";
 import prisma from "../../../prisma/middleware";
 import {
+    OtherEvaluation360,
+    OtherEvaluation360Status,
+    StaffEvaluation360Status,
     StaffObjectiveStatus,
     StaffSelfEvaluationStatus,
     Status,
+    SupervisorEvaluation360Status,
     SupervisorEvaluationStatus,
     SupervisorObjectiveStatus,
     SupervisorStatus,
@@ -28,6 +33,8 @@ export async function computeNotifications(
     let objectiveStatus: StaffObjectiveStatus = "OBJECTIVE_IDLE";
     let selfEvaluationStatus: StaffSelfEvaluationStatus =
         "SELF_EVALUATION_IDLE";
+    let evaluation360Status: StaffEvaluation360Status = "EVALUATION360_IDLE";
+    let otherEvaluation360Status: OtherEvaluation360[] = [];
     let supervisorStatus: SupervisorStatus[] = [];
 
     const employee = await prisma.employees.findUnique({
@@ -55,11 +62,82 @@ export async function computeNotifications(
         },
     });
 
+    const evaluation360 = await prisma.evaluation360.findFirst({
+        where: {
+            employeeId,
+        },
+    });
+
+    const evaluator360 = await prisma.evaluator360.findMany({
+        where: {
+            evaluatorId: employeeId,
+            evaluatorStatus: "ok",
+        },
+    });
+
     const team = await prisma.employees.findMany({
         where: {
             supervisorId: employeeId,
         },
     });
+
+    // 360 Evaluation computation
+
+    if (evaluation360) {
+        const evaluator360 = await prisma.evaluator360.findMany({
+            where: {
+                evaluationId: evaluation360.evaluation360Id,
+            },
+        });
+
+        if (evaluator360.length >= 3) {
+            if (evaluator360.some((obj) => obj.evaluatorStatus == "invalid")) {
+                evaluation360Status = "EVALUATION360_INVALID";
+            } else if (
+                evaluator360.every((obj) => obj.evaluatorStatus == "sent")
+            ) {
+                evaluation360Status = "EVALUATION360_SENT";
+            } else if (
+                evaluator360.every((obj) => obj.evaluatorStatus == "ok")
+            ) {
+                evaluation360Status = "EVALUATION360_OK";
+            } else if (
+                evaluator360.every(
+                    (obj) => obj.evaluatorGrade && obj.evaluatorComment
+                )
+            ) {
+                evaluation360Status = "EVALUATION360_RATED";
+            }
+        } else {
+            evaluation360Status = "EVALUATION360_EMPTY";
+        }
+    } else {
+        evaluation360Status = "EVALUATION360_EMPTY";
+    }
+
+    // Other forms status
+    if (evaluator360.length > 0) {
+        evaluator360.forEach(async (element) => {
+            const evaluation = await prisma.evaluation360.findFirst({
+                where: { evaluation360Id: element.evaluationId },
+            });
+            if (!evaluation) {
+                return;
+            }
+
+            if (!element.evaluatorGrade || !element.evaluatorComment) {
+                otherEvaluation360Status.push({
+                    employeeId: evaluation?.employeeId,
+                    evaluationStatus: "EVALUATION360_UNRATED",
+                });
+            } else {
+                otherEvaluation360Status.push({
+                    employeeId: evaluation?.employeeId,
+                    evaluationStatus: "EVALUATION360_RATED",
+                });
+            }
+        });
+    }
 
     // Objective status computation
 
@@ -118,7 +196,8 @@ export async function computeNotifications(
             "SUPERVISOR_OBJECTIVE_IDLE";
         let evaluationStatus: SupervisorEvaluationStatus =
             "SUPERVISOR_EVALUATION_IDLE";
-
+        let evaluation360Status: SupervisorEvaluation360Status =
+            "SUPERVISOR_EVALUATION360_IDLE";
         const objectives = await prisma.objectives.findMany({
             where: {
                 employeeId: member.employeeId,
@@ -131,6 +210,30 @@ export async function computeNotifications(
                 evaluationYear: new Date().getFullYear().toString(),
             },
         });
+
+        const evaluation360 = await prisma.evaluation360.findFirst({
+            where: {
+                employeeId: member.employeeId,
+            },
+        });
+
+        if (evaluation360) {
+            const evaluators360 = await prisma.evaluator360.findMany({
+                where: {
+                    evaluationId: evaluation360.evaluation360Id,
+                },
+            });
+
+            if (evaluators360.length > 0) {
+                if (
+                    evaluators360.some((obj) => obj.evaluatorStatus == "sent")
+                ) {
+                    evaluation360Status = "SUPERVISOR_EVALUATION360_UNREVIEWED";
+                } else {
+                    evaluation360Status = "SUPERVISOR_EVALUATION360_REVIEWED";
+                }
+            }
+        }
 
         if (
             compareAsc(new Date(), steps[1].dateFrom) !== -1 &&
@@ -154,12 +257,15 @@ export async function computeNotifications(
         return {
             objectiveStatus,
             evaluationStatus,
+            evaluation360Status,
             employeeId: member.employeeId,
         };
     });
     supervisorStatus = await Promise.all(arr);
     return {
         objectiveStatus,
+        evaluation360Status,
+        otherEvaluation360Status,
         selfEvaluationStatus,
         supervisorStatus,
 

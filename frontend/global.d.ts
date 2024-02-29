@@ -130,6 +130,7 @@ interface Position {
     employeeJobTitle: string;
     children?: Position[];
 }
+// Status types and notifications
 
 type StaffObjectiveStatus =
     | "OBJECTIVE_IDLE"
@@ -152,14 +153,45 @@ type SupervisorEvaluationStatus =
     | "SUPERVISOR_EVALUATION_UNRATED"
     | "SUPERVISOR_EVALUATION_RATED";
 
+type StaffEvaluation360Status =
+    | "EVALUATION360_IDLE"
+    | "EVALUATION360_EMPTY"
+    | "EVALUATION360_SENT"
+    | "EVALUATION360_INVALID"
+    | "EVALUATION360_OK"
+    | "EVALUATION360_RATED";
+
+type SupervisorEvaluation360Status =
+    | "SUPERVISOR_EVALUATION360_IDLE"
+    | "SUPERVISOR_EVALUATION360_UNREVIEWED"
+    | "SUPERVISOR_EVALUATION360_REVIEWED";
+
+type OtherEvaluation360Status =
+    | "EVALUATION360_IDLE"
+    | "EVALUATION360_UNRATED"
+    | "EVALUATION360_RATED";
+
 type SupervisorStatus = {
     objectiveStatus: SupervisorObjectiveStatus;
     evaluationStatus: SupervisorEvaluationStatus;
+    evaluation360Status: SupervisorEvaluation360Status;
+    employeeId: number;
+};
+
+type Evaluation360Status = {
+    evaluationStatus: StaffEvaluation360Status;
+    employeeId: number;
+};
+
+type OtherEvaluation360 = {
+    evaluationStatus: OtherEvaluation360Status;
     employeeId: number;
 };
 
 type Status = {
     objectiveStatus: StaffObjectiveStatus;
+    evaluation360Status: StaffEvaluation360Status;
     selfEvaluationStatus: StaffSelfEvaluationStatus;
+    otherEvaluation360Status: OtherEvaluation360[];
     supervisorStatus?: SupervisorStatus[];
 };

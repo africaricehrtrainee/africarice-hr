@@ -11,6 +11,7 @@ import {
 import axios from "axios";
 import { useToast } from "../../../../components/ui/use-toast";
 import Objectives from "../page";
+import { useQueryState } from "nuqs";
 
 interface ObjectiveListProps {
     employee: Employee;
@@ -111,6 +112,8 @@ function ObjectiveHeaderBar(props: {
         (obj) => obj.status !== "cancelled"
     );
 
+    const [year, setYear] = useQueryState("year");
+
     async function createObjective() {
         setCreating(true);
         axios
@@ -118,6 +121,7 @@ function ObjectiveHeaderBar(props: {
                 process.env.NEXT_PUBLIC_API_URL + "/api/objectives/",
                 {
                     objective: {
+                        objectiveYear: year ?? undefined,
                         employeeId: props.employeeId,
                         supervisorId: props.user.supervisorId,
                     },

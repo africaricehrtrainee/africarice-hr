@@ -152,3 +152,9 @@ model ObjectiveComments {
   objective Objectives @relation(fields: [objectiveId], references: [objectiveId], onDelete: Cascade)
   author    Employees  @relation(fields: [authorId], references: [employeeId], onDelete: Cascade)
 }
+
+model Settings {
+  settingId Int    @id @default(autoincrement())
+  name      String
+  value     String
+}

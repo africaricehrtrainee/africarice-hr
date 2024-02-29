@@ -6,6 +6,7 @@ import prisma from "../../prisma/middleware";
 import { xlsxToJsonArray } from "../services/xlsx-service";
 import { computeNotifications } from "./util/utils";
 import { parse } from "dotenv";
+import { getYear } from "date-fns";
 
 const router = express.Router();
 const dbService = new DbService();
@@ -134,12 +135,14 @@ router.get("/:id", isAuthenticated, async (req, res) => {
 router.get("/:id/objectives", isAuthenticated, async (req, res) => {
     try {
         const { id } = req.params;
-
+        const { year } = req.query;
         const result = await prisma.objectives.findMany({
             where: {
                 employeeId: {
                     equals: parseInt(id),
                 },
+                objectiveYear:
+                    (year as string) ?? getYear(new Date()).toString(),
             },
         });
 

@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
 import { useAuth } from "@/hooks/useAuth";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -14,6 +14,7 @@ export default function Home() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const { toast } = useToast();
+    const params = useSearchParams();
 
     const router = useRouter();
     const { setUser } = useAuth();
@@ -33,10 +34,14 @@ export default function Home() {
                     toast({
                         description: "Successfully logged in.",
                     });
-                    if (response.data.user.role === "admin") {
+                    if (params.get("redirect")) {
+                        router.back();
+                    } else if (response.data.user.role === "admin") {
                         router.push(`/management/admin`);
                     } else {
-                        router.push(`/`);
+                        router.push(
+                            `/objectives/${response.data.user.employeeId}`
+                        );
                     }
                 } else {
                     toast({

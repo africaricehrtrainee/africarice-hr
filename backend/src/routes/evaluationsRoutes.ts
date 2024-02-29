@@ -11,7 +11,14 @@ const db = new DbService();
 
 router.get("/", isAuthenticated, async (req, res) => {
     try {
-        const result = await prisma.evaluations.findMany({});
+        const year = req.query.year;
+        const result = await prisma.evaluations.findMany({
+            where: {
+                evaluationYear:
+                    (year as string) ?? new Date().getFullYear().toString(),
+            },
+            orderBy: { evaluationId: "asc" },
+        });
         res.status(200).json(result);
     } catch (error) {
         console.error(error);

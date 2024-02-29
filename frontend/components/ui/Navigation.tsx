@@ -203,8 +203,12 @@ function Page({ item }: { item: MenuItem }) {
                     className={
                         "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 active:scale-90 flex items-center justify-center gap-1 group" +
                         ` ${
-                            item.children.some((obj) =>
-                                pathName.includes(obj.route as string)
+                            item.children.some(
+                                (obj) =>
+                                    pathName.includes(obj.route as string) ||
+                                    pathName.includes(
+                                        (obj.route as string).split("/")[1]
+                                    )
                             ) && "bg-white shadow-sm text-zinc-800"
                         }`
                     }
@@ -341,6 +345,11 @@ function Menu() {
                     route: "/management/admin",
                     permission: ["admin", "hr"],
                 },
+                {
+                    name: "Settings",
+                    route: "/management/settings",
+                    permission: ["admin", "hr"],
+                },
             ],
         },
     ];
@@ -359,6 +368,8 @@ function Menu() {
 }
 export default function Navigation() {
     const loaderRef = useLoaderRef();
+    const router = useRouter();
+    const user = useAuth();
 
     axios.interceptors.request.use(
         function (config) {
@@ -384,6 +395,19 @@ export default function Navigation() {
             // Any status codes that falls outside the range of 2xx cause this function to trigger
             // Do something with response error
             loaderRef.current.complete();
+            return Promise.reject(error);
+        }
+    );
+
+    // Add a redirect to /autth when a 401 occurs
+    axios.interceptors.response.use(
+        function (response) {
+            return response;
+        },
+        function (error) {
+            if (error.response.status === 401) {
+                router.push("/auth?redirect=true");
+            }
             return Promise.reject(error);
         }
     );

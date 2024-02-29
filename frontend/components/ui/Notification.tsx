@@ -120,8 +120,7 @@ function SupervisorNotification({
                         />
                     </div>
                     <p className="whitespace-nowrap text-xs">
-                        You have not evaluated{" "}
-                        <b>{employee.firstName}&apos;s</b> objectives yet.
+                        You have not evaluated <b>{employee.firstName}</b> yet.
                     </p>
                 </Link>
             )}
@@ -139,8 +138,46 @@ function SupervisorNotification({
                         />
                     </div>
                     <p className="whitespace-nowrap text-xs">
-                        You have evaluated <b>{employee.firstName}&apos;s</b>{" "}
-                        objectives.
+                        You have evaluated <b>{employee.firstName}</b> yet
+                    </p>
+                </Link>
+            )}
+
+            {supervisorStatus.evaluation360Status ===
+                "SUPERVISOR_EVALUATION360_UNREVIEWED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                        <Icon
+                            icon="mdi:alert"
+                            fontSize={16}
+                            className="text-yellow-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have not reviewed <b>{employee.firstName}</b>&apos;s
+                        360 evaluators yet.
+                    </p>
+                </Link>
+            )}
+            {supervisorStatus.evaluationStatus ===
+                "SUPERVISOR_EVALUATION_RATED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                        <Icon
+                            icon="mdi:check-all"
+                            fontSize={16}
+                            className="text-green-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have reviewed <b>{employee.firstName}&apos;s</b>{" "}
+                        evaluators.
                     </p>
                 </Link>
             )}
@@ -148,6 +185,59 @@ function SupervisorNotification({
     );
 }
 
+function OtherEvaluation360Notification({
+    user,
+    otherEvaluation360,
+}: {
+    user: Employee;
+    otherEvaluation360: OtherEvaluation360;
+}) {
+    const [employee, setEmployee] = React.useState<Employee>();
+
+    async function getEmployee() {
+        await axios
+            .get<Employee>(
+                process.env.NEXT_PUBLIC_API_URL +
+                    "/api/employees/" +
+                    otherEvaluation360.employeeId
+            )
+            .then((response) => {
+                if (response.data) {
+                    setEmployee(response.data);
+                } else {
+                }
+            })
+            .catch((err) => console.log(err));
+    }
+    useEffect(() => {
+        getEmployee();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    if (!employee) return;
+    return (
+        <>
+            {otherEvaluation360.evaluationStatus ===
+                "EVALUATION360_UNRATED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/evaluation360/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                        <Icon
+                            icon="mdi:alert"
+                            fontSize={16}
+                            className="text-yellow-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have not submitted{" "}
+                        <b>{employee.firstName}&apos;s</b> 360 yet.
+                    </p>
+                </Link>
+            )}
+        </>
+    );
+}
 function SelfEvaluationNotification({
     user,
     status,
@@ -289,6 +379,97 @@ function ObjectiveNotification({
         </>
     );
 }
+function Evaluation360Notification({
+    user,
+    status,
+}: {
+    user: Employee;
+    status: Status;
+}) {
+    return (
+        <>
+            {status.evaluation360Status !== "EVALUATION360_IDLE" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/evaluation360/${user.employeeId}`}
+                >
+                    {status.evaluation360Status === "EVALUATION360_EMPTY" && (
+                        <>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                                <Icon
+                                    icon="mdi:alert"
+                                    fontSize={16}
+                                    className="text-yellow-600"
+                                />
+                            </div>
+                            <p className="whitespace-nowrap text-xs">
+                                You have not submitted{" "}
+                                <b>your 360 evaluators</b> yet.
+                            </p>
+                        </>
+                    )}
+                    {status.evaluation360Status === "EVALUATION360_SENT" && (
+                        <>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                                <Icon
+                                    icon="mdi:check-all"
+                                    fontSize={16}
+                                    className="text-green-600"
+                                />
+                            </div>
+                            <p className="whitespace-nowrap text-xs">
+                                You have submitted <b>your 360 evaluators</b>.
+                            </p>
+                        </>
+                    )}
+                    {status.evaluation360Status === "EVALUATION360_INVALID" && (
+                        <>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-300">
+                                <Icon
+                                    icon="mdi:alert"
+                                    fontSize={16}
+                                    className="text-red-600"
+                                />
+                            </div>
+                            <p className="whitespace-nowrap text-xs">
+                                Your 360 evaluators need to be <b>modified</b>.
+                            </p>
+                        </>
+                    )}
+                    {status.evaluation360Status === "EVALUATION360_OK" && (
+                        <>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-300">
+                                <Icon
+                                    icon="mdi:check-all"
+                                    fontSize={16}
+                                    className="text-blue-600"
+                                />
+                            </div>
+                            <p className="whitespace-nowrap text-xs">
+                                Your 360 evaluators are <b>approved</b>.
+                            </p>
+                        </>
+                    )}
+                    {status.evaluation360Status === "EVALUATION360_OK" && (
+                        <>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                                <Icon
+                                    icon="mdi:check-a;;"
+                                    fontSize={16}
+                                    className="text-green-600"
+                                />
+                            </div>
+                            <p className="whitespace-nowrap text-xs">
+                                Your 360 evaluators <b>submitted all</b> their
+                                feedback.
+                            </p>
+                        </>
+                    )}
+                </Link>
+            )}
+        </>
+    );
+}
 
 function Notification({ user }: { user: Employee }) {
     const [status, setStatus] = React.useState<Status>();
@@ -319,11 +500,20 @@ function Notification({ user }: { user: Employee }) {
         <div className="flex flex-col">
             <ObjectiveNotification user={user} status={status} />
             <SelfEvaluationNotification user={user} status={status} />
+            <Evaluation360Notification user={user} status={status} />
             {status.supervisorStatus?.map((supervisorStatus, i) => (
                 <SupervisorNotification
                     key={i}
                     user={user}
                     supervisorStatus={supervisorStatus}
+                />
+            ))}
+
+            {status.otherEvaluation360Status.map((otherEvaluation360, i) => (
+                <OtherEvaluation360Notification
+                    key={i}
+                    user={user}
+                    otherEvaluation360={otherEvaluation360}
                 />
             ))}
         </div>

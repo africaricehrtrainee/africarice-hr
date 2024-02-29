@@ -1,4 +1,11 @@
 "use client";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import Button from "@/components/ui/Button";
 import Chip from "@/components/ui/Chip";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -8,7 +15,6 @@ import { NewObjective } from "./_components/NewObjective";
 import { cn } from "@/util/utils";
 import { CommentList } from "./_components/CommentList";
 import axios from "axios";
-import { NewEvaluation } from "@/app/objectives/[userId]/_components/NewEvaluation";
 import { useAuth } from "@/hooks/useAuth";
 import Modal from "@/components/ui/Modal";
 import EditStep from "@/app/objectives/[userId]/_components/EditStep";
@@ -16,18 +22,22 @@ import { selectActiveStep, useObjectivesDataStore } from "./_store/useStore";
 import { useToast } from "@/components/ui/use-toast";
 import Evaluation from "./_components/Evaluation/Evaluation";
 import HistoryList from "./_components/HistoryList";
+import { useRouter, usePathname } from "next/navigation";
+import { useQueryState } from "nuqs";
+import { getYear } from "date-fns";
 
 export default function Objectives({ params }: { params: { userId: string } }) {
     const { toast } = useToast();
     const { user } = useAuth();
 
     const [comments, setComments] = useState<Comment[] | null>(null);
+    const [year, setYear] = useQueryState("year");
 
     const data = useObjectivesDataStore();
 
     async function fetchStep() {
         axios
-            .get<Step[]>(process.env.NEXT_PUBLIC_API_URL + "/api/steps/")
+            .get<Step[]>(process.env.NEXT_PUBLIC_API_URL + "/api/steps/", {})
             .then((response) => {
                 if (response.data) {
                     console.log("steps", response.data);
@@ -45,7 +55,12 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                 process.env.NEXT_PUBLIC_API_URL +
                     "/api/employees/" +
                     params.userId +
-                    "/objectives"
+                    "/objectives",
+                {
+                    params: {
+                        year,
+                    },
+                }
             )
             .then((response) => {
                 if (response.data.length > 0) {
@@ -161,6 +176,10 @@ export default function Objectives({ params }: { params: { userId: string } }) {
     }, []);
 
     useEffect(() => {
+        fetchEvaluations();
+        fetchObjectives();
+    }, [year]);
+    useEffect(() => {
         if (
             JSON.stringify(data.objectives) !==
             JSON.stringify(data.objectivesLocal)
@@ -194,6 +213,7 @@ export default function Objectives({ params }: { params: { userId: string } }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data.employee]);
 
+    useEffect(() => {}, []);
     return (
         // <ProtectedRoute>
         <main className="flex min-h-screen flex-col items-start justify-start gap-2 p-4 px-8">
@@ -386,7 +406,7 @@ function Step({
                             `${activeStep < index && "opacity-50"}`,
                             `${
                                 data.selectedEvaluationStep == index &&
-                                "bg-white text-zinc-600 border-green-300 shadow-sm"
+                                "bg-white text-zinc-800 border-green-300 shadow-sm"
                             }`
                         )}
                     >
@@ -445,6 +465,8 @@ function Step({
 function Schedule({ fetch }: { fetch: () => any }) {
     const data = useObjectivesDataStore();
     const activeStep = useObjectivesDataStore(selectActiveStep);
+    const router = useRouter();
+    const [year, setYear] = useQueryState("year");
 
     const { toast } = useToast();
     const postSteps = async (index: number) => {
@@ -465,9 +487,20 @@ function Schedule({ fetch }: { fetch: () => any }) {
     return (
         <div className="flex w-full flex-1 items-center justify-between rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
             <div className="flex flex-col items-start justify-start gap-2">
-                <Chip variant={"background"} className="font-mono">
-                    Evaluation Menu
-                </Chip>
+                <div className="">
+                    <Select
+                        defaultValue={year ?? getYear(new Date()).toString()}
+                        onValueChange={(value) => setYear(value)}
+                    >
+                        <SelectTrigger className="w-[120px] border border-zinc-100 shadow-sm">
+                            <SelectValue placeholder="Pick term" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="2024">2024-2025</SelectItem>
+                            <SelectItem value="2023">2023-2024</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
                 <div className="flex w-full items-center justify-start gap-2 rounded-md bg-zinc-100 p-1">
                     {data.evaluationSteps
                         .sort((a, b) => a.stepId - b.stepId)

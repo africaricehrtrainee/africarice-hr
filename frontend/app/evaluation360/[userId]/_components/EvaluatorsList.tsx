@@ -487,7 +487,7 @@ function ListItem({
 
                         {evaluator.evaluatorStatus == "ok" && (
                             <Chip variant="blue" size="xs" className="mb-2">
-                                {/* Pending */}
+                                Pending
                                 <Icon
                                     icon="mdi-check-all"
                                     className="ml-1"
