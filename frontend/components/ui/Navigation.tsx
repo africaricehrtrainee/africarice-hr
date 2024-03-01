@@ -195,13 +195,14 @@ function Page({ item }: { item: MenuItem }) {
         };
     }, []);
 
+    if (!item.permission && user?.email.includes("admin")) return null;
     if (item.children)
         return (
             <div className="relative">
                 <button
                     onClick={() => setIsOpen((prev) => !prev)}
                     className={
-                        "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 active:scale-90 flex items-center justify-center gap-1 group" +
+                        "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 hover:text-zinc-600 active:scale-90 flex items-center justify-center gap-1 group" +
                         ` ${
                             item.children.some(
                                 (obj) =>
@@ -214,21 +215,6 @@ function Page({ item }: { item: MenuItem }) {
                     }
                 >
                     {item.name}
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 48 48"
-                    >
-                        <path
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="4"
-                            d="M36 18L24 30L12 18"
-                        />
-                    </svg>
                 </button>
 
                 <div
@@ -259,52 +245,30 @@ function Page({ item }: { item: MenuItem }) {
                                 replace={true}
                             >
                                 {child.name}
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="14"
-                                    height="14"
-                                    viewBox="0 0 24 24"
-                                    className="transition-all group-hover:translate-x-1"
-                                >
-                                    <path
-                                        fill="currentColor"
-                                        d="m5.99 16.596l8.192-8.192H7.818v-2h9.778v9.778h-2V9.818L7.403 18.01L5.99 16.596Z"
-                                    />
-                                </svg>
                             </Link>
                         );
                     })}
                 </div>
             </div>
         );
+    else if (item.permission && user && !item.permission.includes(user.role))
+        return null;
     else
         return (
             <Link
                 key={item.name}
                 className={
-                    "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 active:scale-90 flex items-center justify-center gap-1 group" +
+                    "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-200 text-zinc-500 hover:text-zinc-600 active:scale-90 flex items-center justify-center gap-1 group" +
                     ` ${
                         (item.route == "/"
                             ? pathName == "/"
                             : pathName.includes(item.route as string)) &&
-                        "bg-white shadow-sm text-zinc-800"
+                        "bg-white shadow-sm text-zinc-800 hover:bg-zinc-50"
                     }`
                 }
                 href={item.route as string}
             >
                 {item.name}
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    className="transition-all group-hover:translate-x-1"
-                >
-                    <path
-                        fill="currentColor"
-                        d="m5.99 16.596l8.192-8.192H7.818v-2h9.778v9.778h-2V9.818L7.403 18.01L5.99 16.596Z"
-                    />
-                </svg>
             </Link>
         );
 }
@@ -319,38 +283,26 @@ function Menu() {
             route: "/",
         },
         {
-            name: "Performance",
-            route: "/objectives",
-            children: [
-                {
-                    name: "My Objectives",
-                    route: `/objectives/${user?.employeeId}`,
-                },
-                {
-                    name: "360 Evaluation",
-                    route: `/evaluation360/${user?.employeeId}`,
-                },
-            ],
+            name: "My Objectives",
+            route: `/objectives/${user?.employeeId}`,
         },
         {
-            name: "Management",
-            route: "/management",
-            children: [
-                {
-                    name: "Organogram",
-                    route: `/management/organogram`,
-                },
-                {
-                    name: "Accounts",
-                    route: "/management/admin",
-                    permission: ["admin", "hr"],
-                },
-                {
-                    name: "Settings",
-                    route: "/management/settings",
-                    permission: ["admin", "hr"],
-                },
-            ],
+            name: "My 360 Evaluation",
+            route: `/evaluation360/${user?.employeeId}`,
+        },
+        {
+            name: "Organogram",
+            route: `/management/organogram`,
+        },
+        {
+            name: "Accounts",
+            route: "/management/admin",
+            permission: ["admin"],
+        },
+        {
+            name: "Settings",
+            route: "/management/settings",
+            permission: ["admin"],
         },
     ];
 
@@ -407,6 +359,7 @@ export default function Navigation() {
         },
         function (error) {
             if (error.response.status === 401 && !pathName.includes("auth")) {
+                console.log("Path", pathName);
                 router.push("/auth?redirect=true");
             }
             return Promise.reject(error);

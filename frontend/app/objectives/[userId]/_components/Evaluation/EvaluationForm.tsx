@@ -6,28 +6,29 @@ import { NewEvaluation } from "../NewEvaluation";
 import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { usePathname } from "next/navigation";
+import { useQueryState } from "nuqs";
 
 function EvaluationForm() {
-    const {
-        selectedEvaluationStep,
-        employee,
-        setEvaluation,
-        setEvaluationLocal,
-    } = useObjectivesDataStore();
+    const { employee, setEvaluation, setEvaluationLocal } =
+        useObjectivesDataStore();
     const { user } = useAuth();
     const { toast } = useToast();
-    const id = usePathname();
-
+    const [step] = useQueryState<number>("step", {
+        defaultValue: 0,
+        parse: parseInt,
+    });
     const fetchEvaluations = async () => {
         try {
             const response = await axios.get<Evaluation>(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${id}/evaluations`
+                `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${
+                    user?.employeeId ?? ""
+                }/evaluations`
             ); // Adjust the API endpoint
             if (response.data) {
                 setEvaluation(response.data);
             } else {
                 setEvaluationLocal({
-                    employeeId: parseInt(id),
+                    employeeId: user?.employeeId,
                     evaluationYear: "2024",
                     supervisorId: employee?.supervisorId
                         ? employee?.supervisorId
@@ -50,6 +51,7 @@ function EvaluationForm() {
                 })
                 .then((response) => {
                     if (response.status == 201) {
+                        console.log("Successfully updated evaluations");
                         fetchEvaluations();
                         toast({
                             description: "Successfully updated evaluations",
@@ -72,14 +74,14 @@ function EvaluationForm() {
 
     return (
         <>
-            {selectedEvaluationStep == 3 && (
+            {step == 3 && (
                 <NewSelfEvaluation
                     employee={employee}
                     user={user}
                     onSubmit={postEvaluations}
                 />
             )}
-            {selectedEvaluationStep == 4 && (
+            {step == 4 && (
                 <NewEvaluation
                     employee={employee}
                     user={user}

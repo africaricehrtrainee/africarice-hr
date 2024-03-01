@@ -149,7 +149,7 @@ function SupervisorNotification({
                 "SUPERVISOR_EVALUATION360_UNREVIEWED" && (
                 <Link
                     className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
-                    href={`/objectives/${employee.employeeId}`}
+                    href={`/evaluation360/${employee.employeeId}`}
                 >
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
                         <Icon
@@ -168,7 +168,7 @@ function SupervisorNotification({
                 "SUPERVISOR_EVALUATION_RATED" && (
                 <Link
                     className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
-                    href={`/objectives/${employee.employeeId}`}
+                    href={`/evaluation360/${employee.employeeId}`}
                 >
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
                         <Icon
@@ -252,7 +252,7 @@ function SelfEvaluationNotification({
             {status.selfEvaluationStatus !== "SELF_EVALUATION_IDLE" && (
                 <Link
                     className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
-                    href={`/objectives/${user.employeeId}`}
+                    href={`/objectives/${user.employeeId}/?step=3`}
                 >
                     {status.selfEvaluationStatus ===
                         "SELF_EVALUATION_EMPTY" && (
@@ -452,11 +452,11 @@ function Evaluation360Notification({
                             </p>
                         </>
                     )}
-                    {status.evaluation360Status === "EVALUATION360_OK" && (
+                    {status.evaluation360Status === "EVALUATION360_RATED" && (
                         <>
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
                                 <Icon
-                                    icon="mdi:check-a;;"
+                                    icon="mdi:check-all"
                                     fontSize={16}
                                     className="text-green-600"
                                 />

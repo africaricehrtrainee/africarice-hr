@@ -110,6 +110,7 @@ model Objectives {
   grade             Int?
   comment           String?
   selfComment       String?
+  midtermComment    String?
 
   employee         Employees           @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
   supervisor       Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)

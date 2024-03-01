@@ -7,7 +7,7 @@ import sendMail, {
 import { lightFormat } from "date-fns";
 // Schedule the task to run every 5 seconds (using a cron expression)
 
-export default async function cronJob() {
+export default async function cronJobInit() {
     const log = console.log;
     // Define your task function here
     function evaluationStepJob() {
@@ -35,14 +35,14 @@ export default async function cronJob() {
         mailNotificationStep();
     }
 
-    cron.schedule("*/10 * * * *", evaluationStepJob);
+    // cron.schedule("*/10 * * * *", evaluationStepJob);
 
     log(
         chalk.black.bgYellow(
             "\u03BB Evaluation schedule notification every 10 minutes"
         )
     );
-    cron.schedule("*/5 * * * *", evaluationAlertJob);
+    // cron.schedule("*/5 * * * *", evaluationAlertJob);
 
     log(
         chalk.black.bgYellow(

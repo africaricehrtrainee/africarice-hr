@@ -5,7 +5,6 @@ import axios from "axios";
 interface Data {
     // SLICES
     selectedYear: string | null;
-    selectedEvaluationStep: number;
     selectedObjectiveIndex: number;
     objectives: Objective[] | null;
     objectivesLocal: Partial<Objective>[];
@@ -26,7 +25,6 @@ interface Actions {
     setEvaluationLocal: (to: Partial<Evaluation>) => void;
     setEvaluationSteps: (to: Step[]) => void;
     setEmployee: (to: Employee) => void;
-    setSelectedEvaluationStep: (to: number) => void;
     setSelectedObjectiveIndex: (to: number) => void;
     fetchObjectives: (userId: string) => void;
     fetchEvaluation: (userId: string) => void;
@@ -41,7 +39,6 @@ const initialState: Data = {
     evaluation: null,
     evaluationLocal: {},
     employee: null,
-    selectedEvaluationStep: 0,
     evaluationSteps: [],
     selectedObjectiveIndex: -1,
 };
@@ -55,8 +52,6 @@ export const useObjectivesDataStore = create<Data & Actions>((set) => ({
     setEvaluation: (to) => set((state) => ({ evaluation: to })),
     setEvaluationLocal: (to) => set((state) => ({ evaluationLocal: to })),
     setEmployee: (to) => set((state) => ({ employee: to })),
-    setSelectedEvaluationStep: (to) =>
-        set((state) => ({ selectedEvaluationStep: to })),
     setEvaluationSteps: (to) => set((state) => ({ evaluationSteps: to })),
     setSelectedObjectiveIndex: (to) =>
         set((state) => ({ selectedObjectiveIndex: to })),

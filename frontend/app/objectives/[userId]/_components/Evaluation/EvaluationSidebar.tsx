@@ -4,16 +4,17 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
 import { useObjectivesDataStore } from "../../_store/useStore";
 import { cn } from "@/lib/utils";
+import { useQueryState } from "nuqs";
 
 function EvaluationSidebar() {
     const { objectives } = useObjectivesDataStore();
     return (
         <div className="relative flex h-fit w-[450px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white shadow-sm transition-all">
-            <EvaluationComponent />
             {objectives &&
                 objectives?.filter((obj) => obj.status == "ok").length > 0 && (
                     <ObjectiveComponent />
                 )}
+            <EvaluationComponent />
         </div>
     );
 }
@@ -24,15 +25,17 @@ function EvaluationComponent() {
         setSelectedObjectiveIndex,
         selectedObjectiveIndex,
         evaluation,
-        selectedEvaluationStep,
     } = useObjectivesDataStore();
 
+    const [step, setStep] = useQueryState<number>("step", {
+        defaultValue: 0,
+        parse: (value) => parseInt(value),
+    });
     const status =
-        selectedEvaluationStep == 3
+        step == 3
             ? evaluation?.selfEvaluationStatus
             : evaluation?.evaluationStatus;
-    const title =
-        selectedEvaluationStep == 3 ? "Self-Evaluation" : "Evaluation";
+    const title = step == 3 ? "Self-Evaluation" : "Evaluation";
     return (
         <div className="flex w-full flex-col items-start justify-start">
             <div className="flex w-full justify-between p-4">
@@ -93,7 +96,7 @@ function EvaluationComponent() {
                 </div>
                 {evaluation &&
                     evaluation.evaluationStatus == "sent" &&
-                    selectedEvaluationStep == 4 && (
+                    step == 4 && (
                         <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
                             <p className="text-[10px] font-bold text-zinc-400">
                                 General grade
@@ -121,20 +124,20 @@ function EvaluationComponent() {
 }
 
 function ObjectiveComponent() {
-    const {
-        objectives,
-        setSelectedObjectiveIndex,
-        selectedObjectiveIndex,
-        selectedEvaluationStep,
-    } = useObjectivesDataStore();
+    const { objectives, setSelectedObjectiveIndex, selectedObjectiveIndex } =
+        useObjectivesDataStore();
+
+    const [step, setStep] = useQueryState<number>("step", {
+        defaultValue: 0,
+        parse: (value) => parseInt(value),
+    });
     const count =
-        selectedEvaluationStep == 3
+        step == 3
             ? objectives?.filter((obj) => obj.selfEvaluationStatus == "draft")
                   .length
             : objectives?.filter((obj) => obj.evaluationStatus == "draft")
                   .length;
-    const title =
-        selectedEvaluationStep == 3 ? "Self-Evaluation" : "Evaluation";
+    const title = step == 3 ? "Self-Evaluation" : "Evaluation";
 
     return (
         <div className="flex w-full flex-col items-start justify-start pb-8">
@@ -158,7 +161,7 @@ function ObjectiveComponent() {
             <div className="flex w-full flex-col justify-start">
                 {objectives?.map((objective, index) => {
                     const status =
-                        selectedEvaluationStep == 3
+                        step == 3
                             ? objective?.selfEvaluationStatus
                             : objective?.evaluationStatus;
                     if (objective.status !== "ok") return null;
@@ -203,20 +206,19 @@ function ObjectiveComponent() {
                                         {objective.title ?? "Untitled"}
                                     </p>
                                 </div>
-                                {objective.grade &&
-                                    selectedEvaluationStep == 4 && (
-                                        <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
-                                            <p className="text-[10px] font-bold text-zinc-400">
-                                                Objective grade
-                                            </p>
-                                            <p className="text-2xl font-bold text-zinc-700">
-                                                {objective.grade}
-                                                <span className="text-xs font-bold text-zinc-400">
-                                                    /5
-                                                </span>
-                                            </p>
-                                        </div>
-                                    )}
+                                {objective.grade && step == 4 && (
+                                    <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
+                                        <p className="text-[10px] font-bold text-zinc-400">
+                                            Objective grade
+                                        </p>
+                                        <p className="text-2xl font-bold text-zinc-700">
+                                            {objective.grade}
+                                            <span className="text-xs font-bold text-zinc-400">
+                                                /5
+                                            </span>
+                                        </p>
+                                    </div>
+                                )}
                             </button>
                         </>
                     );

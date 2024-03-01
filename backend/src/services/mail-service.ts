@@ -2,7 +2,7 @@ import emailjs from "@emailjs/nodejs";
 import { DbService } from "./db-service";
 import { compareAsc } from "date-fns";
 import { Employees, Prisma, PrismaClient } from "@prisma/client";
-import { computeNotifications } from "../routes/util/utils";
+import { computeFinished, computeNotifications } from "../routes/util/utils";
 import chalk from "chalk";
 
 const prisma = new PrismaClient();
@@ -26,6 +26,13 @@ export async function mailEvaluationStep() {
         },
         orderBy: {
             lastName: "asc",
+        },
+        where: {
+            email: {
+                not: {
+                    startsWith: "A",
+                },
+            },
         },
     });
 
@@ -75,9 +82,8 @@ export async function mailEvaluationStep() {
             {
                 title: "Update from AfricaRice HR",
                 content: `<h1>${step.message}</h1>`,
-                recipients:
-                    // employees.reduce((a, b) => a + ";" + b.email, "") +
-                    "yessochrisa@gmail.com",
+                recipients: employees.reduce((a, b) => a + ";" + b.email, ""),
+                // "yessochrisa@gmail.com",
             },
             {
                 publicKey: "8VojYnxF076zkbnHg",
@@ -107,50 +113,64 @@ export async function mailEvaluationStep() {
 
 export async function mailNotificationStep() {
     // Fetching all the employees and the current date
-    const employees = await prisma.employees.findMany({});
+
+    const employees = await prisma.employees.findMany({
+        select: {
+            email: true,
+            employeeId: true,
+        },
+        where: {
+            email: {
+                not: {
+                    startsWith: "A",
+                },
+            },
+        },
+    });
 
     if (!employees) {
         console.log("No employees have been found.");
         return;
     }
 
-    let objectivesNum = 0;
-    let selfevaluationNum = 0;
-    let supervisorNum = 0;
+    let recipients: string[] = [];
 
-    // Fetching the current status of the employee
-    const statusFun = async (employees: Employees[]) => {
-        for (const employee of employees) {
-            const status = await computeNotifications(employee.employeeId);
-            if (status.objectiveStatus !== "OBJECTIVE_IDLE") {
-                objectivesNum++;
-            }
-            if (status.selfEvaluationStatus !== "SELF_EVALUATION_IDLE") {
-                selfevaluationNum++;
-            }
-            if (status.supervisorStatus && status.supervisorStatus.length > 0) {
-                if (
-                    status.supervisorStatus.some(
-                        (s) =>
-                            s.evaluationStatus !==
-                                "SUPERVISOR_EVALUATION_IDLE" ||
-                            s.objectiveStatus !== "SUPERVISOR_OBJECTIVE_IDLE"
-                    )
-                ) {
-                    supervisorNum++;
-                }
-            }
+    for (const employee of employees) {
+        const finished = await computeFinished(employee.employeeId);
+        if (!finished) {
+            console.log(
+                "Employee " +
+                    employee.employeeId +
+                    " has not finished all the steps"
+            );
+            recipients.push(employee.email);
         }
-        return true;
-    };
+    }
 
-    statusFun(employees).then(() => {
-        chalk.bgGreen.black(`\u03BB ${objectivesNum} objectives are pending`);
-        chalk.bgGreen.black(
-            `\u03BB ${selfevaluationNum} self evaluations are pending`
+    if (recipients.length < 0) {
+        return;
+    }
+
+    emailjs
+        .send(
+            "service_swkr8dc",
+            "template_6ryb4f6",
+            {
+                title: "Update from AfricaRice HR",
+                content: `<h1>Reminder: You have pending tasks to complete</h1>`,
+                recipients: recipients.join(";"),
+            },
+            {
+                publicKey: "8VojYnxF076zkbnHg",
+                privateKey: "n1u5laTNhfdUwaxmHyn3U", // optional, highly recommended for security reasons
+            }
+        )
+        .then(
+            (response) => {
+                console.log("SUCCESS!", response.status, response.text);
+            },
+            (err) => {
+                console.log("FAILED...", err);
+            }
         );
-        chalk.bgGreen.black(
-            `\u03BB ${supervisorNum} supervisor evaluations are pending`
-        );
-    });
 }

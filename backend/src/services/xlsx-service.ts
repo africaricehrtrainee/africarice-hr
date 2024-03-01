@@ -200,7 +200,7 @@ export function xlsxToJsonArray(fileUrl: any): any[] {
     // return jsonArray;
 }
 
-export default function init() {
+export default function employeeDatabaseInit() {
     // Usage example
     const filePath = path.join(__dirname, "..", "..", "db", "filesheet.xlsx");
     const jsonArray = xlsxToJsonArray(filePath);

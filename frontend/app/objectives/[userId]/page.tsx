@@ -32,7 +32,10 @@ export default function Objectives({ params }: { params: { userId: string } }) {
 
     const [comments, setComments] = useState<Comment[] | null>(null);
     const [year, setYear] = useQueryState("year");
-
+    const [step, setStep] = useQueryState<number>("step", {
+        defaultValue: 0,
+        parse: (value) => parseInt(value),
+    });
     const data = useObjectivesDataStore();
 
     async function fetchStep() {
@@ -178,7 +181,9 @@ export default function Objectives({ params }: { params: { userId: string } }) {
     useEffect(() => {
         fetchEvaluations();
         fetchObjectives();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [year]);
+
     useEffect(() => {
         if (
             JSON.stringify(data.objectives) !==
@@ -231,9 +236,7 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                             <Schedule fetch={fetchStep} />
                         </div>
                         {/* Main row */}
-                        {(data.selectedEvaluationStep == 0 ||
-                            data.selectedEvaluationStep == 1 ||
-                            data.selectedEvaluationStep == 2) && (
+                        {(step == 0 || step == 1 || step == 2) && (
                             <div className="flex w-full gap-2">
                                 {/* Sidebar with objective list */}
                                 <ObjectiveList
@@ -266,8 +269,7 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                             </div>
                         )}
 
-                        {(data.selectedEvaluationStep == 3 ||
-                            data.selectedEvaluationStep == 4) && <Evaluation />}
+                        {(step == 3 || step == 4) && <Evaluation />}
                     </>
                 )
             ) : (
@@ -345,10 +347,12 @@ function Step({
     step,
     postSteps,
     index,
+    edit,
 }: {
     step: Step;
     postSteps: (number: number) => any;
     index: number;
+    edit?: boolean;
 }) {
     const data = useObjectivesDataStore();
     const activeStep = useObjectivesDataStore(selectActiveStep);
@@ -356,7 +360,10 @@ function Step({
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isEditingMessage, setIsEditingMessage] = useState<boolean>(false);
     const divRef = useRef<HTMLDivElement>(null);
-
+    const [ostep, setStep] = useQueryState<number>("step", {
+        defaultValue: 0,
+        parse: (value) => parseInt(value),
+    });
     const handleClickOutside = (event: MouseEvent) => {
         setIsOpen(false);
     };
@@ -390,22 +397,18 @@ function Step({
                     </Modal>
 
                     <button
-                        onContextMenu={(e) => {
-                            e.preventDefault();
-                            if (user.role == "hr") {
-                                setIsOpen(true);
-                            }
-                        }}
                         onClick={(e) => {
-                            if (activeStep >= index) {
-                                data.setSelectedEvaluationStep(index);
+                            if (edit) {
+                                setIsOpen(!isOpen);
+                            } else if (activeStep >= index) {
+                                setStep(index);
                             }
                         }}
                         className={cn(
                             "p-2 px-4 border-transparent rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition-all active:scale-95 bg-transparent border-zinc-200 text-zinc-500 hover:bg-zinc-50 ",
                             `${activeStep < index && "opacity-50"}`,
                             `${
-                                data.selectedEvaluationStep == index &&
+                                ostep == index &&
                                 "bg-white text-zinc-800 border-green-300 shadow-sm"
                             }`
                         )}
@@ -462,7 +465,13 @@ function Step({
     );
 }
 
-function Schedule({ fetch }: { fetch: () => any }) {
+export function Schedule({
+    fetch,
+    edit,
+}: {
+    fetch: () => any;
+    edit?: boolean;
+}) {
     const data = useObjectivesDataStore();
     const activeStep = useObjectivesDataStore(selectActiveStep);
     const router = useRouter();
@@ -487,20 +496,24 @@ function Schedule({ fetch }: { fetch: () => any }) {
     return (
         <div className="flex w-full flex-1 items-center justify-between rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
             <div className="flex flex-col items-start justify-start gap-2">
-                <div className="">
-                    <Select
-                        defaultValue={year ?? getYear(new Date()).toString()}
-                        onValueChange={(value) => setYear(value)}
-                    >
-                        <SelectTrigger className="w-[120px] border border-zinc-100 shadow-sm">
-                            <SelectValue placeholder="Pick term" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="2024">2024-2025</SelectItem>
-                            <SelectItem value="2023">2023-2024</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
+                {!edit && (
+                    <div className="">
+                        <Select
+                            defaultValue={
+                                year ?? getYear(new Date()).toString()
+                            }
+                            onValueChange={(value) => setYear(value)}
+                        >
+                            <SelectTrigger className="w-[80px] border border-zinc-100 shadow-sm">
+                                <SelectValue placeholder="Pick term" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="2024">2024</SelectItem>
+                                <SelectItem value="2023">2023</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                )}
                 <div className="flex w-full items-center justify-start gap-2 rounded-md bg-zinc-100 p-1">
                     {data.evaluationSteps
                         .sort((a, b) => a.stepId - b.stepId)
@@ -511,6 +524,7 @@ function Schedule({ fetch }: { fetch: () => any }) {
                                     step={stepObj}
                                     postSteps={postSteps}
                                     index={index as number}
+                                    edit={edit}
                                 />
                                 {/* {index < data.evaluationSteps.length - 1 && (
                                     <>

@@ -27,6 +27,45 @@ export function keygen(): string {
     return password;
 }
 
+export async function computeFinished(employeeId: number): Promise<boolean> {
+    let status = await computeNotifications(employeeId);
+    if (
+        status.objectiveStatus === "OBJECTIVE_EMPTY" ||
+        status.objectiveStatus === "OBJECTIVE_INVALID" ||
+        status.objectiveStatus === "OBJECTIVE_UNRATED"
+    ) {
+        return false;
+    } else if (status.selfEvaluationStatus === "SELF_EVALUATION_EMPTY") {
+        return false;
+    } else if (
+        status.evaluation360Status === "EVALUATION360_EMPTY" ||
+        status.evaluation360Status === "EVALUATION360_INVALID"
+    ) {
+        return false;
+    } else if (
+        status.otherEvaluation360Status.length > 0 &&
+        status.otherEvaluation360Status.some(
+            (obj) => obj.evaluationStatus === "EVALUATION360_UNRATED"
+        )
+    ) {
+        return false;
+    } else if (
+        status.supervisorStatus &&
+        status.supervisorStatus?.length > 0 &&
+        status.supervisorStatus.some(
+            (obj) =>
+                obj.evaluationStatus === "SUPERVISOR_EVALUATION_UNRATED" ||
+                obj.objectiveStatus === "SUPERVISOR_OBJECTIVE_UNREVIEWED" ||
+                obj.evaluation360Status ===
+                    "SUPERVISOR_EVALUATION360_UNREVIEWED"
+        )
+    ) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 export async function computeNotifications(
     employeeId: number
 ): Promise<Status> {
@@ -117,26 +156,25 @@ export async function computeNotifications(
 
     // Other forms status
     if (evaluator360.length > 0) {
-        evaluator360.forEach(async (element) => {
+        const arr = evaluator360.map(async (element) => {
             const evaluation = await prisma.evaluation360.findFirst({
                 where: { evaluation360Id: element.evaluationId },
             });
-            if (!evaluation) {
-                return;
-            }
 
             if (!element.evaluatorGrade || !element.evaluatorComment) {
-                otherEvaluation360Status.push({
-                    employeeId: evaluation?.employeeId,
+                return {
+                    employeeId: evaluation?.employeeId ?? -1,
                     evaluationStatus: "EVALUATION360_UNRATED",
-                });
+                };
             } else {
-                otherEvaluation360Status.push({
-                    employeeId: evaluation?.employeeId,
+                return {
+                    employeeId: evaluation?.employeeId ?? -1,
                     evaluationStatus: "EVALUATION360_RATED",
-                });
+                };
             }
         });
+        // @ts-ignore
+        otherEvaluation360Status = await Promise.all(arr);
     }
 
     // Objective status computation
@@ -261,6 +299,7 @@ export async function computeNotifications(
             employeeId: member.employeeId,
         };
     });
+
     supervisorStatus = await Promise.all(arr);
     return {
         objectiveStatus,

@@ -12,6 +12,7 @@ import { TextareaHTMLAttributes, useEffect, useState } from "react";
 import Modal from "../../../../components/ui/Modal";
 import { useToast } from "../../../../components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { useQueryState } from "nuqs";
 
 export function NewObjective({
     employee,
@@ -27,6 +28,10 @@ export function NewObjective({
     const selectedObjective = useObjectivesDataStore(selectActiveObjective);
     const activeStep = useObjectivesDataStore(selectActiveStep);
     const [loading, setLoading] = useState<boolean>(false);
+    const [step, setStep] = useQueryState<number>("step", {
+        defaultValue: 0,
+        parse: (value) => parseInt(value),
+    });
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -341,7 +346,7 @@ export function NewObjective({
                                         </>
                                     )}
                                 {selectedObjective.status == "ok" &&
-                                    data.selectedEvaluationStep == 2 && (
+                                    step == 2 && (
                                         <>
                                             <div
                                                 className={
@@ -666,11 +671,6 @@ export function NewObjective({
                                         spellCheck="false"
                                         disabled={isEditable}
                                         type="date"
-                                        min={
-                                            new Date()
-                                                .toISOString()
-                                                .split("T")[0]
-                                        }
                                         value={selectedObjective.deadline ?? ""}
                                         onChange={(
                                             e: React.ChangeEvent<HTMLInputElement>
@@ -681,8 +681,8 @@ export function NewObjective({
                                             ].deadline = e.target.value;
                                             data.setObjectivesLocal(arr);
                                         }}
-                                        placeholder="Enter the deadline of the objective"
-                                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                        placeholder="Pick the deadline for your objective"
+                                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold placeholder-zinc-500 outline-none transition-all hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
@@ -765,7 +765,7 @@ export function NewObjective({
                     </div>
 
                     {selectedObjective.status == "ok" &&
-                        data.selectedEvaluationStep == 3 &&
+                        step == 3 &&
                         user?.employeeId == employee.employeeId && (
                             <>
                                 <div
@@ -801,7 +801,7 @@ export function NewObjective({
                             </>
                         )}
                     {selectedObjective.status == "ok" &&
-                        data.selectedEvaluationStep == 4 &&
+                        step == 4 &&
                         user?.employeeId == employee.supervisorId && (
                             <>
                                 <div
@@ -841,7 +841,7 @@ export function NewObjective({
                     {/* Staff self-evaluation */}
                     {(user?.employeeId == employee.employeeId ||
                         selectedObjective.selfEvaluationStatus == "sent") &&
-                        data.selectedEvaluationStep == 3 &&
+                        step == 3 &&
                         objectives.every((obj) => obj.status == "ok") && (
                             <div className="mt-4 flex w-full items-start justify-between">
                                 {/* Status badge */}
@@ -915,7 +915,7 @@ export function NewObjective({
                     {/* Staff evaluation */}
                     {(user?.employeeId == employee.supervisorId ||
                         selectedObjective.evaluationStatus == "sent") &&
-                        data.selectedEvaluationStep == 4 &&
+                        step == 4 &&
                         selectedObjective.status == "ok" && (
                             <div className="mt-4 flex w-full items-start justify-between">
                                 <div className="flex flex-col items-start justify-start gap-1">

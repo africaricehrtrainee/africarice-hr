@@ -376,6 +376,10 @@ function ObjectiveBottomActionBar({
             });
     }
 
+    const [step, setStep] = useQueryState<number>("step", {
+        defaultValue: 0,
+        parse: (value) => parseInt(value),
+    });
     return (
         <>
             <div className="mb-4 mt-auto flex w-full items-center justify-center px-4">
@@ -428,15 +432,11 @@ function ObjectiveBottomActionBar({
                 {user.employeeId == employee.employeeId && (
                     <>
                         {objectives.some((obj) => obj.status != "ok") &&
-                            data.selectedEvaluationStep == 0 && (
+                            step == 0 && (
                                 <Button
                                     loading={loading}
                                     className=""
                                     disabled={
-                                        JSON.stringify(objectives) ===
-                                            JSON.stringify(
-                                                data.objectivesLocal
-                                            ) ||
                                         filteredObjectives.length < 3 ||
                                         filteredObjectives.length > 5 ||
                                         objectives.some(
