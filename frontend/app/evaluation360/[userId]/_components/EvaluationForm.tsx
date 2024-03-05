@@ -43,7 +43,7 @@ function EvaluationHeader({ evaluation }: { evaluation: Evaluator360 }) {
                         fontSize={14}
                     />
                 </Chip>
-                {evaluation.evaluatorStatus !== "sent" ? (
+                {evaluation.evaluatorStatus !== "evaluated" ? (
                     <Chip variant="primary">
                         Unsubmitted
                         <Icon

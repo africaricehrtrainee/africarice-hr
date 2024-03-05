@@ -141,9 +141,7 @@ export async function computeNotifications(
             ) {
                 evaluation360Status = "EVALUATION360_OK";
             } else if (
-                evaluator360.every(
-                    (obj) => obj.evaluatorGrade && obj.evaluatorComment
-                )
+                evaluator360.every((obj) => obj.evaluatorStatus == "evaluated")
             ) {
                 evaluation360Status = "EVALUATION360_RATED";
             }
@@ -161,7 +159,7 @@ export async function computeNotifications(
                 where: { evaluation360Id: element.evaluationId },
             });
 
-            if (!element.evaluatorGrade || !element.evaluatorComment) {
+            if (element && element.evaluatorStatus == "sent") {
                 return {
                     employeeId: evaluation?.employeeId ?? -1,
                     evaluationStatus: "EVALUATION360_UNRATED",
