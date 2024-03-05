@@ -1,5 +1,4 @@
 "use client";
-import { Schedule } from "@/app/objectives/[userId]/page";
 import Button from "@/components/ui/Button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from "axios";

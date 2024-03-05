@@ -347,12 +347,10 @@ function Step({
     step,
     postSteps,
     index,
-    edit,
 }: {
     step: Step;
     postSteps: (number: number) => any;
     index: number;
-    edit?: boolean;
 }) {
     const data = useObjectivesDataStore();
     const activeStep = useObjectivesDataStore(selectActiveStep);
@@ -398,9 +396,7 @@ function Step({
 
                     <button
                         onClick={(e) => {
-                            if (edit) {
-                                setIsOpen(!isOpen);
-                            } else if (activeStep >= index) {
+                            if (activeStep >= index) {
                                 setStep(index);
                             }
                         }}
@@ -465,13 +461,7 @@ function Step({
     );
 }
 
-export function Schedule({
-    fetch,
-    edit,
-}: {
-    fetch: () => any;
-    edit?: boolean;
-}) {
+function Schedule({ fetch, edit }: { fetch: () => any; edit?: boolean }) {
     const data = useObjectivesDataStore();
     const activeStep = useObjectivesDataStore(selectActiveStep);
     const router = useRouter();
@@ -524,7 +514,6 @@ export function Schedule({
                                     step={stepObj}
                                     postSteps={postSteps}
                                     index={index as number}
-                                    edit={edit}
                                 />
                                 {/* {index < data.evaluationSteps.length - 1 && (
                                     <>
