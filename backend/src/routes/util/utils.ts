@@ -202,7 +202,7 @@ export async function computeNotifications(
             objectiveStatus = "OBJECTIVE_OK";
 
             // Self-evaluation period is there
-            if (compareAsc(new Date(), steps[1].dateFrom) !== -1) {
+            if (compareAsc(new Date(), steps[3].dateFrom) !== -1) {
                 // Some objectives are unrated
                 if (objectives.some((obj) => obj.selfComment == null)) {
                     objectiveStatus = "OBJECTIVE_UNRATED";
@@ -275,11 +275,15 @@ export async function computeNotifications(
 
         if (
             compareAsc(new Date(), steps[1].dateFrom) !== -1 &&
-            objectives.filter((obj) => obj.status !== "cancelled").length > 3
+            objectives.filter((obj) => obj.status !== "cancelled").length >= 3
         ) {
             if (objectives.some((obj) => obj.status == "sent")) {
                 objectiveStatus = "SUPERVISOR_OBJECTIVE_UNREVIEWED";
-            } else if (objectives.every((obj) => obj.status == "ok")) {
+            } else if (
+                objectives.every(
+                    (obj) => obj.status == "ok" || obj.status == "invalid"
+                )
+            ) {
                 objectiveStatus = "SUPERVISOR_OBJECTIVE_REVIEWED";
             }
         }

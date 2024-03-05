@@ -26,51 +26,22 @@ function EvaluatorsList({
                     <div className="flex h-full w-full items-start justify-between">
                         <ListComponent evaluation={evaluation} />
                         <div className="flex h-full items-start justify-center gap-2">
-                            {evaluators &&
-                            evaluators.length > 0 &&
-                            evaluators.some((obj) => obj.evaluatorGrade) &&
-                            (user.employeeId == employee.employeeId ||
-                                user.employeeId == employee.supervisorId) ? (
-                                <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
-                                    <p className="text-[10px] font-bold text-zinc-400">
-                                        Evaluation grade
-                                    </p>
-                                    <p className="text-2xl font-bold text-zinc-700">
-                                        {evaluators
-                                            .filter((obj) => obj.evaluatorGrade)
-                                            .reduce(
-                                                (prev, cur) =>
-                                                    prev +
-                                                    (cur.evaluatorGrade ?? 0),
-                                                0
-                                            ) /
-                                            evaluators.filter(
-                                                (obj) => obj.evaluatorGrade
-                                            ).length}
-                                        <span className="text-xs font-bold text-zinc-400">
-                                            /5
-                                        </span>
-                                    </p>
-                                </div>
-                            ) : (
-                                <>
-                                    {user.employeeId == employee.employeeId && (
-                                        <UserSideBar
-                                            user={user}
-                                            employee={employee}
-                                            evaluation={evaluation}
-                                        />
-                                    )}
-                                    {user.employeeId ==
-                                        employee.supervisorId && (
-                                        <SupervisorSidebar
-                                            user={user}
-                                            employee={employee}
-                                            evaluation={evaluation}
-                                        />
-                                    )}
-                                </>
-                            )}
+                            <>
+                                {user.employeeId == employee.employeeId && (
+                                    <UserSideBar
+                                        user={user}
+                                        employee={employee}
+                                        evaluation={evaluation}
+                                    />
+                                )}
+                                {user.employeeId == employee.supervisorId && (
+                                    <SupervisorSidebar
+                                        user={user}
+                                        employee={employee}
+                                        evaluation={evaluation}
+                                    />
+                                )}
+                            </>
                         </div>
                     </div>
                 </div>
@@ -453,7 +424,7 @@ function ListItem({
                         "bg-green-50 text-opacity-100"
                 )}
             >
-                {evaluator.evaluatorGrade && evaluator.evaluatorComment ? (
+                {evaluator.evaluatorStatus == "evaluated" ? (
                     <Chip variant="brand" size="xs" className="mb-2">
                         Submitted
                         <Icon
@@ -486,7 +457,11 @@ function ListItem({
                         )}
 
                         {evaluator.evaluatorStatus == "ok" && (
-                            <Chip variant="blue" size="xs" className="mb-2">
+                            <Chip
+                                variant="background"
+                                size="xs"
+                                className="mb-2"
+                            >
                                 Pending
                                 <Icon
                                     icon="mdi-check-all"
@@ -765,7 +740,7 @@ function AssignmentModal(props: {
                                     key={i}
                                 >
                                     <div className="flex items-center justify-start">
-                                        <div className="flex h-8 w-8 truncate max-w-full items-center justify-center rounded-full bg-green-500 text-sm font-bold text-zinc-50">
+                                        <div className="flex h-8 w-8 max-w-full items-center justify-center truncate rounded-full bg-green-500 text-sm font-bold text-zinc-50">
                                             {employee.firstName.charAt(0) +
                                                 employee.lastName.charAt(0)}
                                         </div>

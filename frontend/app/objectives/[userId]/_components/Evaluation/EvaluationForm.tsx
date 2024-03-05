@@ -17,6 +17,7 @@ function EvaluationForm() {
         defaultValue: 0,
         parse: parseInt,
     });
+
     const fetchEvaluations = async () => {
         try {
             const response = await axios.get<Evaluation>(

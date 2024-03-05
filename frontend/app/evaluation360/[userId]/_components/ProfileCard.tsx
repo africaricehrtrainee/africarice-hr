@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 function ProfileCard({ employee }: { employee: Employee }) {
     return (
-        <div className="ml-auto flex h-fit w-[350px] items-start justify-evenly gap-4 rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
+        <div className="ml-auto flex h-full w-[350px] items-start justify-evenly gap-4 rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
             <div className="flex h-full flex-col items-center justify-center gap-2">
                 <Chip>
                     Staff

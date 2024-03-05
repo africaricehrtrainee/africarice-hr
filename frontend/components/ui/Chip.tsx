@@ -9,7 +9,7 @@ const chipVariants = cva(
         variants: {
             variant: {
                 primary: "bg-zinc-200 text-zinc-500",
-                background: "bg-zinc-50 text-zinc-400",
+                background: "bg-zinc-50 text-zinc-400 border border-zinc-200",
                 brand: "bg-brand-light text-brand",
                 alternate: "bg-purple-100 text-purple-400",
                 blue: "bg-blue-100 text-blue-400",

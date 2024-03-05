@@ -23,7 +23,7 @@ function EvaluationForm() {
         evaluation
     )
         return (
-            <div className="relative flex max-w-[500px] flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
+            <div className="relative flex max-w-[700px] flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
                 <EvaluationHeader evaluation={evaluation} />
                 <EvaluationInput evaluation={evaluation} />
             </div>
@@ -35,15 +35,15 @@ function EvaluationHeader({ evaluation }: { evaluation: Evaluator360 }) {
     return (
         <div className="flex w-full flex-col items-start justify-start gap-2">
             <div className="flex w-full items-center justify-between">
-                <Chip variant="primary">
-                    Evaluation Form
+                <Chip variant="background">
+                    Form
                     <Icon
                         icon="subway:write-1"
                         className="ml-1"
                         fontSize={14}
                     />
                 </Chip>
-                {!evaluation.evaluatorGrade || !evaluation.evaluatorComment ? (
+                {evaluation.evaluatorStatus !== "sent" ? (
                     <Chip variant="primary">
                         Unsubmitted
                         <Icon
@@ -66,14 +66,6 @@ function EvaluationHeader({ evaluation }: { evaluation: Evaluator360 }) {
             <p className="text-xl font-bold text-zinc-700">
                 {employee?.firstName.split(" ")[0]}&apos;s evaluation
             </p>
-            <Chip variant="background">
-                Leave a rating of this staff member.
-                <Icon
-                    icon="clarity:info-solid"
-                    className="ml-1"
-                    fontSize={14}
-                />
-            </Chip>
         </div>
     );
 }
@@ -81,30 +73,49 @@ function EvaluationHeader({ evaluation }: { evaluation: Evaluator360 }) {
 function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
     const { user } = useAuth();
     const data = useEvaluationDataStore();
-
-    const [grade, setGrade] = useState<number>(evaluation.evaluatorGrade);
-    const [comment, setComment] = useState<string>(evaluation.evaluatorComment);
+    const [form, setForm] = useState<Evaluator360>(evaluation);
+    const [index, setIndex] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const { toast } = useToast();
 
-    async function updateEvaluator360() {
+    const fields = [
+        {
+            key: "interpersonalComment",
+            question:
+                "How does the individual interact with team members and other colleagues? To what extent does he promote collaboration, communication and conflict resolution?",
+        },
+        {
+            key: "collaborationComment",
+            question:
+                "How does the individual communicate with colleagues, peers and subordinates? To what extent does he or she foster a collaborative and open work environment?",
+        },
+        {
+            key: "leadershipComment",
+            question:
+                "To what extent does the individual demonstrate leadership and initiative within the organization? Can you cite situations where he or she has taken proactive steps to solve problems or improve processes?",
+        },
+        {
+            key: "commitmentComment",
+            question:
+                "How does the individual encourage professional and personal development within the team? To what extent does he show an interest in the well-being and growth of his colleagues?",
+        },
+        {
+            key: "teamworkComment",
+            question:
+                "How does the individual communicate team goals and individual roles clearly ?",
+        },
+    ];
+
+    async function updateEvaluator360(evaluator: Evaluator360) {
         try {
-            if (
-                grade &&
-                comment &&
-                data.evaluation &&
-                data.evaluation.evaluation360Id
-            ) {
+            if (form && data.evaluation && data.evaluation.evaluation360Id) {
                 const id = data.evaluation.evaluation360Id;
                 setLoading(true);
                 const result = await axios
                     .put(
                         `${process.env.NEXT_PUBLIC_API_URL}/api/evaluator360/${evaluation.evaluator360Id}`,
                         {
-                            evaluator: {
-                                evaluatorGrade: grade,
-                                evaluatorComment: comment,
-                            },
+                            evaluator,
                         }
                     )
                     .then((res) => {
@@ -138,126 +149,44 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
         }
     }
     useEffect(() => {
-        setGrade(evaluation.evaluatorGrade ?? -1);
-        setComment(evaluation.evaluatorComment ?? "");
+        setForm(evaluation);
     }, [evaluation]);
 
     return (
-        <form action={updateEvaluator360} className="mt-4 w-full">
-            <div className="flex w-full flex-col items-start justify-start gap-2">
-                <label className="text-[10px] font-medium text-zinc-300">
-                    OVERALL STAFF GRADE
-                    <span className="text-[8px] text-brand">* (required)</span>
+        <div className="w-full">
+            <div className="mt-1 flex w-full flex-col items-start justify-start gap-2">
+                <div className="flex w-full items-start justify-start gap-1">
+                    {fields.map((field, i) => {
+                        return (
+                            <Button
+                                onClick={() => setIndex(i)}
+                                variant={"outline"}
+                                disabled={index == i}
+                                type="button"
+                                key={i}
+                                className="relative flex items-center justify-center rounded-md p-1 px-2 text-xs font-semibold"
+                            >
+                                {/* @ts-ignore */}
+                                {!form[field.key] ? (
+                                    <div className="absolute -bottom-1 -right-1 h-2 w-2 animate-pulse rounded-full bg-red-400"></div>
+                                ) : (
+                                    <div className="absolute -bottom-1 -right-1 h-2 w-2 rounded-full bg-green-400"></div>
+                                )}
+                                Section {i + 1}
+                            </Button>
+                        );
+                    })}
+                </div>
+                <label className="mt-3 text-[10px] font-medium text-zinc-300">
+                    EVALUATION SECTION QUESTION
                 </label>
-                <div className="flex w-full items-center justify-center gap-1">
-                    <button
-                        type="button"
-                        disabled={
-                            user?.employeeId != evaluation.evaluatorId ||
-                            !!evaluation.evaluatorGrade ||
-                            !!evaluation.evaluatorComment
-                        }
-                        onClick={() => {
-                            setGrade(1);
-                        }}
-                        className={
-                            "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                            ` ${
-                                grade == 1
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-transparent border-green-300"
-                            }`
-                        }
-                    >
-                        1
-                    </button>
-                    <button
-                        type="button"
-                        disabled={
-                            user?.employeeId != evaluation.evaluatorId ||
-                            !!evaluation.evaluatorGrade ||
-                            !!evaluation.evaluatorComment
-                        }
-                        onClick={() => {
-                            setGrade(2);
-                        }}
-                        className={
-                            "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                            ` ${
-                                grade == 2
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-transparent border-green-300"
-                            }`
-                        }
-                    >
-                        2
-                    </button>
-                    <button
-                        type="button"
-                        disabled={
-                            user?.employeeId != evaluation.evaluatorId ||
-                            !!evaluation.evaluatorGrade ||
-                            !!evaluation.evaluatorComment
-                        }
-                        onClick={() => {
-                            setGrade(3);
-                        }}
-                        className={
-                            "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                            ` ${
-                                grade == 3
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-transparent border-green-300"
-                            }`
-                        }
-                    >
-                        3
-                    </button>
-                    <button
-                        type="button"
-                        disabled={
-                            user?.employeeId != evaluation.evaluatorId ||
-                            !!evaluation.evaluatorGrade ||
-                            !!evaluation.evaluatorComment
-                        }
-                        onClick={() => {
-                            setGrade(4);
-                        }}
-                        className={
-                            "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                            ` ${
-                                grade == 4
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-transparent border-green-300"
-                            }`
-                        }
-                    >
-                        4
-                    </button>
-                    <button
-                        type="button"
-                        disabled={
-                            user?.employeeId != evaluation.evaluatorId ||
-                            !!evaluation.evaluatorGrade ||
-                            !!evaluation.evaluatorComment
-                        }
-                        onClick={() => {
-                            setGrade(5);
-                        }}
-                        className={
-                            "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                            ` ${
-                                grade == 5
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-transparent border-green-300"
-                            }`
-                        }
-                    >
-                        5
-                    </button>
+                <div className="flex w-full items-center justify-start gap-1">
+                    <p className="text-sm font-bold text-zinc-700">
+                        {fields[index].question}
+                    </p>
                 </div>
                 <label className="text-[10px] font-medium text-zinc-300">
-                    GENERAL COMMENTS
+                    EVALUATION COMMENT
                     <span className="text-[8px] text-brand">* (required)</span>
                 </label>
                 <textarea
@@ -265,39 +194,93 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                     spellCheck="false"
                     disabled={
                         user?.employeeId != evaluation.evaluatorId ||
-                        !!evaluation.evaluatorGrade ||
-                        !!evaluation.evaluatorComment
+                        evaluation.evaluatorStatus == "sent"
                     }
-                    value={comment}
+                    // @ts-ignore
+                    value={form[fields[index]["key"]] ?? ""}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                        setComment(e.target.value);
+                        const f = { ...form };
+                        // @ts-ignore
+                        f[fields[index].key] = e.target.value;
+                        setForm(f);
                     }}
-                    placeholder={`Write your evaluation for this staff member`}
-                    className="h-[150px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                    placeholder={`Answer this question for this staff member`}
+                    className="h-[150px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-sm font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                 />
-                {user?.employeeId == evaluation.evaluatorId && (
-                    <Button
-                        variant="primary"
-                        loading={loading}
-                        disabled={
-                            !grade ||
-                            !comment ||
-                            !!evaluation.evaluatorGrade ||
-                            !!evaluation.evaluatorComment
-                        }
-                        type="submit"
-                        className="mt-4"
-                    >
-                        Submit evaluation
-                        <Icon
-                            icon="mdi:check-all"
-                            className="ml-1"
-                            fontSize={14}
-                        />
-                    </Button>
-                )}
+                <div className="mt-4 flex w-full items-center justify-between">
+                    <div className="flex items-center justify-center gap-1">
+                        <Button
+                            onClick={() => {
+                                setIndex(index - 1);
+                            }}
+                            disabled={index == 0}
+                            variant="outline"
+                            type="button"
+                        >
+                            <Icon icon="mdi:arrow-left" fontSize={14} />
+                            Previous
+                        </Button>
+                        <Button
+                            type="button"
+                            disabled={index == 4}
+                            onClick={() => {
+                                setIndex(index + 1);
+                            }}
+                            variant="outline"
+                        >
+                            Next
+                            <Icon icon="mdi:arrow-right" fontSize={14} />
+                        </Button>
+                    </div>
+                    {user?.employeeId == evaluation.evaluatorId && (
+                        <div className="flex items-start justify-end gap-1">
+                            <Button
+                                onClick={() => {
+                                    updateEvaluator360(form);
+                                }}
+                                variant="outline"
+                                disabled={
+                                    JSON.stringify(form) ===
+                                    JSON.stringify(evaluation)
+                                }
+                                type="button"
+                            >
+                                Save for later
+                                <Icon
+                                    icon="material-symbols:download"
+                                    className="ml-1"
+                                    fontSize={14}
+                                />
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={() => {
+                                    const f = { ...form };
+                                    f.evaluatorStatus = "evaluated";
+                                    updateEvaluator360(f);
+                                }}
+                                loading={loading}
+                                disabled={
+                                    !form.interpersonalComment ||
+                                    !form.collaborationComment ||
+                                    !form.leadershipComment ||
+                                    !form.commitmentComment ||
+                                    !form.teamworkComment
+                                }
+                                type="button"
+                            >
+                                Submit evaluation
+                                <Icon
+                                    icon="mdi:check-all"
+                                    className="ml-1"
+                                    fontSize={14}
+                                />
+                            </Button>
+                        </div>
+                    )}
+                </div>
             </div>
-        </form>
+        </div>
     );
 }
 export default EvaluationForm;

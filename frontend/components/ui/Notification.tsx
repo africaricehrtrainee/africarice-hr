@@ -497,7 +497,7 @@ function Notification({ user }: { user: Employee }) {
     useEffect(() => {
         getStatus();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, objectives, evaluation, evaluators]);
+    }, [user]);
 
     if (!status) return;
     return (

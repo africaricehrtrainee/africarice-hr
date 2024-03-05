@@ -71,11 +71,15 @@ interface Evaluation360 {
 interface Evaluator360 {
     evaluator360Id: number;
     evaluationId: number;
-    evaluatorStatus: "draft" | "sent" | "ok" | "invalid"; // default draft
+    evaluatorStatus: "draft" | "sent" | "ok" | "invalid" | "evaluated"; // default draft
     evaluatorId: number;
     evaluatorJobTitle: string;
-    evaluatorGrade: number;
-    evaluatorComment: string;
+
+    interpersonalComment: string | null;
+    collaborationComment: string | null;
+    leadershipComment: string | null;
+    commitmentComment: string | null;
+    teamworkComment: string | null;
 }
 
 interface Objective {
@@ -100,6 +104,7 @@ interface Objective {
     selfComment: string | null;
     employee?: Employee;
     supervisor?: Employee;
+    midtermComment: string | null;
     ObjectiveComment?: Comment[];
 }
 

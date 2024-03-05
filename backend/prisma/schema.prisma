@@ -78,13 +78,17 @@ model Evaluation360 {
 }
 
 model Evaluator360 {
-  evaluator360Id    Int     @id @default(autoincrement())
-  evaluatorStatus   String  @default("draft")
+  evaluator360Id    Int    @id @default(autoincrement())
+  evaluatorStatus   String @default("draft")
   evaluationId      Int
   evaluatorId       Int
   evaluatorJobTitle String
-  evaluatorGrade    Int?
-  evaluatorComment  String?
+
+  interpersonalComment String?
+  collaborationComment String?
+  leadershipComment    String?
+  commitmentComment    String?
+  teamworkComment      String?
 
   evaluation Evaluation360 @relation(fields: [evaluationId], references: [evaluation360Id], onDelete: Cascade)
   evaluator  Employees     @relation(fields: [evaluatorId], references: [employeeId], onDelete: Cascade)
