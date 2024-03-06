@@ -109,6 +109,33 @@ router.put("/:id", isAuthenticated, async (req, res) => {
     }
 });
 
+router.post("/bulk", isAuthenticated, async (req, res) => {
+    // Bulk update with a prisma transaction
+    try {
+        const { objectives } = req.body;
+
+        if (!objectives) {
+            res.status(400).json({ error: "Objective array is required" });
+            return;
+        }
+
+        const result = await prisma.$transaction(
+            objectives.map((objective: Objectives) => {
+                return prisma.objectives.update({
+                    where: { objectiveId: objective.objectiveId },
+                    data: objective,
+                });
+            })
+        );
+
+        res.status(201).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Midterm review update and keep history
 router.put("/:id/update", isAuthenticated, async (req, res) => {
     try {
         const { id } = req.params;

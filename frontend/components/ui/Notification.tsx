@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-import React, { use, useEffect } from "react";
+import React, { use, useEffect, useMemo } from "react";
 import Button from "./Button";
 import Link from "next/link";
 import axios from "axios";
@@ -477,6 +477,11 @@ function Notification({ user }: { user: Employee }) {
     const [status, setStatus] = React.useState<Status>();
     const { objectives, evaluation } = useObjectivesDataStore();
     const { evaluators } = useEvaluationDataStore();
+
+    useMemo(() => {
+        getStatus();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [objectives, evaluation, evaluators]);
     async function getStatus() {
         axios
             .get<Status>(
@@ -495,9 +500,8 @@ function Notification({ user }: { user: Employee }) {
             .catch((err) => console.log(err));
     }
     useEffect(() => {
-        getStatus();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
+    }, [user, objectives, evaluation, evaluators]);
 
     if (!status) return;
     return (

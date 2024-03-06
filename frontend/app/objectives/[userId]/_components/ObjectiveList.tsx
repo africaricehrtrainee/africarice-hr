@@ -116,35 +116,52 @@ function ObjectiveHeaderBar(props: {
 
     async function createObjective() {
         setCreating(true);
-        axios
-            .post<any, any, { objective: Partial<Objective> }>(
-                process.env.NEXT_PUBLIC_API_URL + "/api/objectives/",
-                {
-                    objective: {
-                        objectiveYear: year ?? undefined,
-                        employeeId: props.employeeId,
-                        supervisorId: props.user.supervisorId,
-                    },
-                }
-            )
-            .then((response) => {
-                if (response.status == 201) {
-                    fetchObjectives(props.user.employeeId.toString());
-                    ``;
-                }
-            })
-            .catch((err) => {
-                toast({
-                    variant: "destructive",
-                    title: "Uh oh! Something went wrong.",
-                    description:
-                        "There was a problem with creating an objective.",
+
+        try {
+            axios
+                .post(
+                    process.env.NEXT_PUBLIC_API_URL + "/api/objectives/bulk",
+                    {
+                        objectives: props.data.objectivesLocal ?? [],
+                    }
+                )
+                .then(() => {
+                    axios
+                        .post<any, any, { objective: Partial<Objective> }>(
+                            process.env.NEXT_PUBLIC_API_URL +
+                                "/api/objectives/",
+                            {
+                                objective: {
+                                    objectiveYear: year ?? undefined,
+                                    employeeId: props.employeeId,
+                                    supervisorId: props.user.supervisorId,
+                                },
+                            }
+                        )
+                        .then((response) => {
+                            if (response.status == 201) {
+                                fetchObjectives(
+                                    props.user.employeeId.toString()
+                                );
+                                ``;
+                            }
+                        })
+                        .catch((err) => {
+                            toast({
+                                variant: "destructive",
+                                title: "Uh oh! Something went wrong.",
+                                description:
+                                    "There was a problem with creating an objective.",
+                            });
+                            console.log(err);
+                        })
+                        .finally(() => {
+                            setCreating(false);
+                        });
                 });
-                console.log(err);
-            })
-            .finally(() => {
-                setCreating(false);
-            });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
