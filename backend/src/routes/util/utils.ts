@@ -159,7 +159,7 @@ export async function computeNotifications(
                 where: { evaluation360Id: element.evaluationId },
             });
 
-            if (element && element.evaluatorStatus == "sent") {
+            if (element && element.evaluatorStatus !== "evaluated") {
                 return {
                     employeeId: evaluation?.employeeId ?? -1,
                     evaluationStatus: "EVALUATION360_UNRATED",

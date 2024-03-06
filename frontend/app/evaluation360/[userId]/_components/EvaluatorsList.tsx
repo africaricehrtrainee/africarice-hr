@@ -405,7 +405,10 @@ function ListItem({
         <div className="flex flex-col items-start justify-start gap-2">
             <button
                 onClick={() => {
-                    if (evaluator.evaluatorStatus == "ok") {
+                    if (
+                        evaluator.evaluatorStatus == "ok" ||
+                        evaluator.evaluatorStatus == "evaluated"
+                    ) {
                         setSelectedEmployeeId(evaluatorProfile.employeeId);
                     }
                     if (evaluator.evaluatorStatus == "sent") {
@@ -426,7 +429,7 @@ function ListItem({
             >
                 {evaluator.evaluatorStatus == "evaluated" ? (
                     <Chip variant="brand" size="xs" className="mb-2">
-                        Submitted
+                        Evaluated
                         <Icon
                             icon="bi:check-all"
                             className="ml-1"
@@ -497,7 +500,8 @@ function ListItem({
                 </p>
             </button>
             {user?.employeeId == employee.supervisorId &&
-                evaluator.evaluatorStatus !== "ok" && (
+                (evaluator.evaluatorStatus == "sent" ||
+                    evaluator.evaluatorStatus == "invalid") && (
                     <>
                         <div className="flex w-full items-start justify-center gap-1">
                             <Button

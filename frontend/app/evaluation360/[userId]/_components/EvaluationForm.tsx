@@ -194,7 +194,7 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                     spellCheck="false"
                     disabled={
                         user?.employeeId != evaluation.evaluatorId ||
-                        evaluation.evaluatorStatus == "sent"
+                        evaluation.evaluatorStatus == "evaluated"
                     }
                     // @ts-ignore
                     value={form[fields[index]["key"]] ?? ""}
@@ -265,7 +265,8 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                                     !form.collaborationComment ||
                                     !form.leadershipComment ||
                                     !form.commitmentComment ||
-                                    !form.teamworkComment
+                                    !form.teamworkComment ||
+                                    form.evaluatorStatus == "evaluated"
                                 }
                                 type="button"
                             >
