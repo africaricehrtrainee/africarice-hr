@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import EvaluatorsList from "./_components/EvaluatorsList";
 import ProfileCard from "./_components/ProfileCard";
 import EvaluationForm from "./_components/EvaluationForm";
+import { useQueryState } from "nuqs";
 
 function Evaluation360({ params }: { params: { userId: string } }) {
     const {
@@ -20,9 +21,12 @@ function Evaluation360({ params }: { params: { userId: string } }) {
     } = useEvaluationDataStore();
 
     const { user } = useAuth();
+    const [year, setYear] = useQueryState("year", {
+        defaultValue: new Date().getFullYear().toString(),
+    });
 
     useEffect(() => {
-        fetchEvaluation(params.userId);
+        fetchEvaluation(params.userId, year);
         fetchEmployee(params.userId);
 
         return () => {
@@ -30,7 +34,7 @@ function Evaluation360({ params }: { params: { userId: string } }) {
             setEvaluators(null);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [year]);
 
     useEffect(() => {
         if (evaluation) {

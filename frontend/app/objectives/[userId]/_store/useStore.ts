@@ -26,8 +26,8 @@ interface Actions {
     setEvaluationSteps: (to: Step[]) => void;
     setEmployee: (to: Employee) => void;
     setSelectedObjectiveIndex: (to: number) => void;
-    fetchObjectives: (userId: string) => void;
-    fetchEvaluation: (userId: string) => void;
+    fetchObjectives: (userId: string, year: string) => void;
+    fetchEvaluation: (userId: string, year: string) => void;
     reset: () => void;
 }
 const initialState: Data = {
@@ -58,13 +58,18 @@ export const useObjectivesDataStore = create<Data & Actions>((set) => ({
     reset: () => {
         set(initialState);
     },
-    fetchObjectives: async (userId) => {
+    fetchObjectives: async (userId, year) => {
         axios
             .get<Objective[]>(
                 process.env.NEXT_PUBLIC_API_URL +
                     "/api/employees/" +
                     userId +
-                    "/objectives"
+                    "/objectives",
+                {
+                    params: {
+                        year,
+                    },
+                }
             )
             .then((response) => {
                 if (response.data.length > 0) {

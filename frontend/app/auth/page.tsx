@@ -7,6 +7,7 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { log } from "console";
 
 export default function Home() {
     const [loading, setLoading] = useState<boolean>(false);
@@ -35,13 +36,14 @@ export default function Home() {
                         description: "Successfully logged in.",
                     });
                     if (params.get("redirect")) {
+                        console.log("redirect");
                         router.back();
                     } else if (response.data.user.role === "admin") {
+                        console.log("admin");
                         router.push(`/management/admin`);
                     } else {
-                        router.push(
-                            `/objectives/${response.data.user.employeeId}`
-                        );
+                        console.log("employee");
+                        router.push(`/`);
                     }
                 } else {
                     toast({

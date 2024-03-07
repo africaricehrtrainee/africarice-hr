@@ -52,6 +52,10 @@ export function NewObjective({
     const isEditPaneShown = user?.employeeId === employee.employeeId;
     const isSupervisorPaneShown = user?.employeeId === employee.supervisorId;
     const isReviewPaneShown = user?.employeeId === employee.supervisorId;
+    const [year, setYear] = useQueryState<string>("year", {
+        defaultValue: new Date().getFullYear().toString(),
+        parse: (value) => value,
+    });
 
     function renderStatusBadge() {
         if (selectedObjective?.status == "draft") {
@@ -106,7 +110,10 @@ export function NewObjective({
                 )
                 .then((response) => {
                     if (response.status == 201) {
-                        data.fetchObjectives(employee.employeeId.toString());
+                        data.fetchObjectives(
+                            employee.employeeId.toString(),
+                            year
+                        );
                         toast({
                             description: "Successfully updated objectives",
                         });
@@ -166,7 +173,10 @@ export function NewObjective({
             )
             .then((response) => {
                 if (response.status == 201) {
-                    data.fetchObjectives(employee.employeeId.toString());
+                    data.fetchObjectives(
+                        employee.employeeId.toString(),
+                        year ?? new Date().getFullYear().toString()
+                    );
                     toast({
                         description: "Successfully updated objectives",
                     });
@@ -195,7 +205,7 @@ export function NewObjective({
             )
             .then((response) => {
                 if (response.status == 201) {
-                    data.fetchObjectives(employee.employeeId.toString());
+                    data.fetchObjectives(employee.employeeId.toString(), year);
                     toast({
                         description: "Successfully updated objectives",
                     });
@@ -671,6 +681,9 @@ export function NewObjective({
                                         spellCheck="false"
                                         disabled={isEditable}
                                         type="date"
+                                        // 0101
+                                        min={`${year}-01-01`}
+                                        max={`${year}-12-31`}
                                         value={selectedObjective.deadline ?? ""}
                                         onChange={(
                                             e: React.ChangeEvent<HTMLInputElement>

@@ -187,13 +187,15 @@ router.put("/:id/objectives/send", isAuthenticated, async (req, res) => {
 
 router.get("/:id/evaluations", isAuthenticated, async (req, res) => {
     const { id } = req.params; // Get the employee ID from request params
-
+    const { year } = req.query; // Get the year from the query string
     try {
         const result = await prisma.evaluations.findFirst({
             where: {
                 employeeId: {
                     equals: parseInt(id),
                 },
+                evaluationYear:
+                    (year as string) ?? getYear(new Date()).toString(),
             },
         });
 
@@ -273,12 +275,15 @@ router.get("/:id/subordinates", isAuthenticated, async (req, res) => {
 // Get evaluation360s of a specific employee by ID
 router.get("/:id/evaluation360/", isAuthenticated, async (req, res) => {
     const { id } = req.params;
+    const { year } = req.query;
     try {
         const result = await prisma.evaluation360.findFirst({
             where: {
                 employeeId: {
                     equals: parseInt(id),
                 },
+                evaluationYear:
+                    (year as string) ?? getYear(new Date()).toString(),
             },
         });
         res.status(200).json(result);

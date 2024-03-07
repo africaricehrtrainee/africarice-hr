@@ -6,7 +6,15 @@ const router = Router();
 // Get all evaluation360s
 router.get("/", async (req, res) => {
     try {
-        const evaluation360s = await prisma.evaluation360.findMany();
+        const { year } = req.query;
+
+        const evaluation360s = await prisma.evaluation360.findMany({
+            where: {
+                evaluationYear: year
+                    ? (year as string)
+                    : new Date().getFullYear().toString(),
+            },
+        });
         res.json(evaluation360s);
     } catch (error) {
         console.error(error);

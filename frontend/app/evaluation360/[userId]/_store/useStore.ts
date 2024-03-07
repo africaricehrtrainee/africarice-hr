@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useQueryState } from "nuqs";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
@@ -10,7 +11,7 @@ interface Data {
 }
 
 interface Actions {
-    fetchEvaluation: (userId: string) => Promise<void>;
+    fetchEvaluation: (userId: string, year: string) => Promise<void>;
     fetchEvaluators: (userId: string) => Promise<void>;
     fetchEmployee: (userId: string) => Promise<void>;
     setEvaluation: (to: Evaluation360 | null) => void;
@@ -34,10 +35,15 @@ export const useEvaluationDataStore = create<Data & Actions>()(
         setSelectedEmployeeId: (to) =>
             set((state) => ({ selectedEmployeeId: to })),
         // API CALLS
-        fetchEvaluation: async (userId) => {
+        fetchEvaluation: async (userId, year) => {
             const evaluation = await axios
                 .get<Evaluation360>(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${userId}/evaluation360`
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${userId}/evaluation360`,
+                    {
+                        params: {
+                            year,
+                        },
+                    }
                 )
                 .then((res) => res.data ?? null)
                 .catch((err) => {

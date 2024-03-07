@@ -284,7 +284,10 @@ function Profile({ user }: { user: Employee }) {
     return (
         <div className="ml-auto flex w-[400px] items-start justify-evenly gap-4 rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
             <div className="flex h-full flex-col items-center justify-center gap-2">
-                <Chip variant={"background"} className="font-mono">
+                <Chip
+                    variant={"background"}
+                    className="font-mono text-zinc-800"
+                >
                     {user.matricule}
                 </Chip>
                 <div className="te flex h-10 w-10 items-center justify-center rounded-full bg-brand font-bold text-white">

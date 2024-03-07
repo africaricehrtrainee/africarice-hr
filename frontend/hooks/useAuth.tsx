@@ -33,6 +33,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     useEffect(() => {
         // Check session using cookies on initial load
+        if (pathName.includes("/auth")) return;
         axios
             .get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/session`)
             .then((response) => {

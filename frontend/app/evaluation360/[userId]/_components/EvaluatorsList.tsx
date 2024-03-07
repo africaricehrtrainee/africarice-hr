@@ -10,6 +10,15 @@ import { useEvaluationDataStore } from "../_store/useStore";
 import { useAuth } from "@/hooks/useAuth";
 import { User } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { useQueryState } from "nuqs";
+import { addYears } from "date-fns";
 
 function EvaluatorsList({
     evaluation,
@@ -18,9 +27,25 @@ function EvaluatorsList({
 }) {
     const { user } = useAuth();
     const { employee, evaluators } = useEvaluationDataStore();
+    const [year, setYear] = useQueryState("year", {
+        parse: (value) => value,
+        defaultValue: new Date().getFullYear().toString(),
+    });
     if (!user || !employee) return null;
     return (
-        <div className="flex w-full flex-1 items-center justify-between rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
+        <div className="flex w-full flex-col flex-1 items-start justify-start rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
+            <Select
+                defaultValue={year}
+                onValueChange={(value) => setYear(value)}
+            >
+                <SelectTrigger className="w-[80px] mb-2 border border-zinc-100 shadow-sm">
+                    <SelectValue placeholder="Pick term" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="2024">2024</SelectItem>
+                    <SelectItem value="2023">2023</SelectItem>
+                </SelectContent>
+            </Select>
             {evaluation ? (
                 <div className="flex h-full w-full flex-col items-start justify-end gap-2">
                     <div className="flex h-full w-full items-start justify-between">
@@ -63,6 +88,10 @@ function UserSideBar({
 }) {
     const { evaluators, fetchEvaluation } = useEvaluationDataStore();
     const { toast } = useToast();
+    const [year, setYear] = useQueryState("year", {
+        parse: (value) => value,
+        defaultValue: new Date().getFullYear().toString(),
+    });
 
     async function submitEvaluations(evaluators: Evaluator360[]): Promise<any> {
         try {
@@ -90,7 +119,7 @@ function UserSideBar({
                     return null;
                 })
                 .finally(() => {
-                    fetchEvaluation(employee.employeeId.toString());
+                    fetchEvaluation(employee.employeeId.toString(), year);
                 });
             return result;
         } catch (error) {}
@@ -143,6 +172,10 @@ function SupervisorSidebar({
     const { evaluators, fetchEvaluation } = useEvaluationDataStore();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const { toast } = useToast();
+    const [year, setYear] = useQueryState("year", {
+        parse: (value) => value,
+        defaultValue: new Date().getFullYear().toString(),
+    });
 
     async function postEvaluation(evaluation: Evaluation360): Promise<any> {
         try {
@@ -170,7 +203,7 @@ function SupervisorSidebar({
                     return null;
                 })
                 .finally(() => {
-                    fetchEvaluation(employee.employeeId.toString());
+                    fetchEvaluation(employee.employeeId.toString(), year);
                 });
             return result;
         } catch (error) {}
@@ -187,6 +220,11 @@ function EvaluationCreateComponent({ employee }: { employee: Employee }) {
     const { user } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
     const { fetchEvaluation } = useEvaluationDataStore();
+    const [year, setYear] = useQueryState("year", {
+        parse: (value) => value,
+        defaultValue: new Date().getFullYear().toString(),
+    });
+
     async function createEvaluation() {
         try {
             setLoading(true);
@@ -199,7 +237,7 @@ function EvaluationCreateComponent({ employee }: { employee: Employee }) {
                 })
                 .then((res) => {
                     if (res.status == 201) {
-                        fetchEvaluation(employee.employeeId.toString());
+                        fetchEvaluation(employee.employeeId.toString(), year);
                         return true;
                     } else {
                     }
@@ -245,6 +283,10 @@ function ListComponent({ evaluation }: { evaluation: Evaluation360 }) {
     const { user } = useAuth();
     const { evaluators, fetchEvaluators, employee } = useEvaluationDataStore();
     const [isAdding, setIsAdding] = React.useState(false);
+    const [year, setYear] = useQueryState("year", {
+        parse: (value) => value,
+        defaultValue: new Date().getFullYear().toString(),
+    });
 
     useEffect(() => {
         fetchEvaluators(evaluation.evaluation360Id.toString());
@@ -255,10 +297,6 @@ function ListComponent({ evaluation }: { evaluation: Evaluation360 }) {
     if (evaluators == undefined || !user || !employee) return null;
     return (
         <div className="flex h-full flex-col items-start justify-start gap-2">
-            <Chip>
-                My evaluators
-                <Icon icon="solar:list-bold" className="ml-1" fontSize={14} />
-            </Chip>
             <div className="flex items-start justify-start gap-2">
                 {evaluators
                     .filter((obj) => {

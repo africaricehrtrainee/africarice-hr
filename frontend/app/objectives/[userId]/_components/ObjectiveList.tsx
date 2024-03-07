@@ -141,7 +141,8 @@ function ObjectiveHeaderBar(props: {
                         .then((response) => {
                             if (response.status == 201) {
                                 fetchObjectives(
-                                    props.user.employeeId.toString()
+                                    props.user.employeeId.toString(),
+                                    year ?? new Date().getFullYear().toString()
                                 );
                                 ``;
                             }
@@ -362,6 +363,7 @@ function ObjectiveBottomActionBar({
     const data = useObjectivesDataStore();
     const [loading, setLoading] = useState<boolean>(false);
     const { toast } = useToast();
+    const [year, setYear] = useQueryState("year");
     const filteredObjectives = objectives.filter(
         (obj) => obj.status !== "cancelled"
     );
@@ -373,7 +375,10 @@ function ObjectiveBottomActionBar({
             })
             .then((response) => {
                 if (response.status == 201) {
-                    data.fetchObjectives(employee.employeeId.toString());
+                    data.fetchObjectives(
+                        employee.employeeId.toString(),
+                        year ?? new Date().getFullYear().toString()
+                    );
                     toast({
                         description: "Successfully updated objectives",
                     });
