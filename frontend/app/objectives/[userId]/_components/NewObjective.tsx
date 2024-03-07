@@ -35,11 +35,8 @@ export function NewObjective({
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-    const [isSubmitModalOpen, setIsSubmitModalOpen] = useState<boolean>(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
-    const [isSupervisorSubmitModalOpen, setIsSupervisorSubmitModalOpen] =
-        useState<boolean>(false);
     const { toast } = useToast();
 
     const isEditable =
@@ -49,9 +46,6 @@ export function NewObjective({
         selectedObjective.grade != null ||
         user?.employeeId !== employee.employeeId;
 
-    const isEditPaneShown = user?.employeeId === employee.employeeId;
-    const isSupervisorPaneShown = user?.employeeId === employee.supervisorId;
-    const isReviewPaneShown = user?.employeeId === employee.supervisorId;
     const [year, setYear] = useQueryState<string>("year", {
         defaultValue: new Date().getFullYear().toString(),
         parse: (value) => value,
@@ -221,6 +215,13 @@ export function NewObjective({
                 console.log(err);
             });
     }
+
+    useEffect(() => {
+        setIsCancelModalOpen(false);
+        setIsDeleteModalOpen(false);
+        setIsEditing(false);
+        setIsUpdateModalOpen(false);
+    }, [selectedObjective]);
 
     if (!selectedObjective) return null;
     return (
@@ -584,7 +585,7 @@ export function NewObjective({
                             <>
                                 {selectedObjective.status !== "draft" &&
                                     selectedObjective.status !== "ok" &&
-                                    activeStep >= 1 && (
+                                    step == 1 && (
                                         <>
                                             <div
                                                 className={
@@ -783,7 +784,7 @@ export function NewObjective({
                             <>
                                 <div
                                     className={
-                                        "flex items-center justify-center absolute bottom-2 right-2 gap-2"
+                                        "flex flex-col items-end justify-center absolute bottom-2 right-2 gap-2"
                                     }
                                 >
                                     <Button
@@ -792,7 +793,34 @@ export function NewObjective({
                                                 JSON.stringify(
                                                     data.objectivesLocal
                                                 ) ||
-                                            !selectedObjective.selfComment
+                                            !selectedObjective.selfComment ||
+                                            selectedObjective.selfEvaluationStatus ==
+                                                "sent"
+                                        }
+                                        onClick={() => {
+                                            const obj = {
+                                                ...selectedObjective,
+                                            };
+                                            updateObjective(obj);
+                                        }}
+                                        variant="outline"
+                                    >
+                                        Save changes
+                                        <Icon
+                                            icon="ic:baseline-save-alt"
+                                            className="ml-1"
+                                            fontSize={14}
+                                        />
+                                    </Button>
+                                    <Button
+                                        disabled={
+                                            JSON.stringify(data.objectives) ==
+                                                JSON.stringify(
+                                                    data.objectivesLocal
+                                                ) ||
+                                            !selectedObjective.selfComment ||
+                                            selectedObjective.selfEvaluationStatus ==
+                                                "sent"
                                         }
                                         onClick={() => {
                                             const obj = {
@@ -805,7 +833,7 @@ export function NewObjective({
                                     >
                                         Submit self-evaluation
                                         <Icon
-                                            icon="ic:baseline-save-alt"
+                                            icon="material-symbols:upload"
                                             className="ml-1"
                                             fontSize={14}
                                         />
@@ -834,7 +862,7 @@ export function NewObjective({
                             <>
                                 <div
                                     className={
-                                        "flex items-center justify-center absolute bottom-4 right-4 gap-2"
+                                        "flex flex-col items-end justify-center absolute bottom-2 right-2 gap-2"
                                     }
                                 >
                                     <Button
@@ -843,21 +871,49 @@ export function NewObjective({
                                                 JSON.stringify(
                                                     data.objectivesLocal
                                                 ) ||
-                                            !selectedObjective.grade ||
-                                            !selectedObjective.comment
+                                            (!selectedObjective.grade &&
+                                                !selectedObjective.comment) ||
+                                            selectedObjective.evaluationStatus ==
+                                                "sent"
                                         }
                                         onClick={() => {
                                             const obj = {
                                                 ...selectedObjective,
                                             };
-                                            obj.evaluationStatus = "sent";
+                                            updateObjective(obj);
+                                        }}
+                                        variant="outline"
+                                    >
+                                        Save changes
+                                        <Icon
+                                            icon="ic:baseline-save-alt"
+                                            className="ml-1"
+                                            fontSize={14}
+                                        />
+                                    </Button>
+                                    <Button
+                                        disabled={
+                                            JSON.stringify(data.objectives) ==
+                                                JSON.stringify(
+                                                    data.objectivesLocal
+                                                ) ||
+                                            !selectedObjective.comment ||
+                                            !selectedObjective.grade ||
+                                            selectedObjective.evaluationStatus ==
+                                                "sent"
+                                        }
+                                        onClick={() => {
+                                            const obj = {
+                                                ...selectedObjective,
+                                            };
+                                            obj.selfEvaluationStatus = "sent";
                                             updateObjective(obj);
                                         }}
                                         variant="primary"
                                     >
                                         Submit evaluation
                                         <Icon
-                                            icon="ic:baseline-save-alt"
+                                            icon="material-symbols:upload"
                                             className="ml-1"
                                             fontSize={14}
                                         />

@@ -72,10 +72,9 @@ router.post("/bulk", isAuthenticated, async (req, res) => {
 
         const result = await prisma.$transaction(
             objectives.map((objective: Objectives) => {
-                return prisma.objectives.upsert({
+                return prisma.objectives.update({
                     where: { objectiveId: objective.objectiveId },
-                    update: objective,
-                    create: objective,
+                    data: objective,
                 });
             })
         );

@@ -81,7 +81,6 @@ router.post("/xlsx", isAuthenticated, async (req, res) => {
 router.get("/", isAuthenticated, async (req, res) => {
     try {
         if (req.query.search) {
-            console.log(req.query.search);
             const result = await prisma.employees.findMany({
                 where: {
                     OR: [
@@ -302,7 +301,6 @@ router.get("/:id/status", isAuthenticated, async (req, res) => {
         }
 
         const status = await computeNotifications(parseInt(id));
-        console.log(status);
         res.status(200).json(status);
     } catch (error) {
         console.error(error);

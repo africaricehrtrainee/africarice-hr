@@ -49,8 +49,8 @@ function Evaluation360({ params }: { params: { userId: string } }) {
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-start gap-2 p-4 px-8">
-            <div className="flex w-full gap-2 transition-all">
-                <ProfileCard employee={employee} />
+            <div className="flex w-full items-start justify-start gap-2 transition-all">
+                <ProfileCard user={employee} />
                 <EvaluatorsList evaluation={evaluation} />
             </div>
             <div className="flex w-full items-start justify-center gap-2">

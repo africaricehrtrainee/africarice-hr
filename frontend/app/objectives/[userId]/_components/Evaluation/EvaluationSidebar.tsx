@@ -36,6 +36,7 @@ function EvaluationComponent() {
             ? evaluation?.selfEvaluationStatus
             : evaluation?.evaluationStatus;
     const title = step == 3 ? "Self-Evaluation" : "Evaluation";
+    const label = step == 3 ? "Submitted" : "Evaluated";
     return (
         <div className="flex w-full flex-col items-start justify-start">
             <div className="flex w-full justify-between p-4">

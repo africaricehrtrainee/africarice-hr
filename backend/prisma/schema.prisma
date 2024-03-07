@@ -106,20 +106,20 @@ model Objectives {
   updatedAt            DateTime  @updatedAt
   deletedAt            DateTime?
 
-  title             String?
-  description       String?
-  successConditions String?
-  deadline          String?
-  kpi               String?
-  grade             Int?
-  comment           String?
-  selfComment       String?
-  midtermComment    String?
-
-  employee         Employees           @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
-  supervisor       Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
-  ObjectiveComment ObjectiveComments[]
-  ObjectiveHistory ObjectiveHistory[]
+  title              String?
+  description        String?
+  successConditions  String?
+  deadline           String?
+  kpi                String?
+  grade              Int?
+  comment            String?
+  selfComment        String?
+  midtermSelfComment String?
+  midtermComment     String?
+  employee           Employees           @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
+  supervisor         Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
+  ObjectiveComment   ObjectiveComments[]
+  ObjectiveHistory   ObjectiveHistory[]
 }
 
 model ObjectiveHistory {

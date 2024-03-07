@@ -69,7 +69,7 @@ export const useEvaluationDataStore = create<Data & Actions>()(
         fetchEmployee: async (userId) => {
             const employee = await axios
                 .get<Employee>(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${userId}`
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${userId}/supervisors`
                 )
                 .then((res) => res.data)
                 .catch((err) => {

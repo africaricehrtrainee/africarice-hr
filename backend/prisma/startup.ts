@@ -19,7 +19,7 @@ export default function startup() {
         .createMany({
             data: [
                 {
-                    stepId: 0,
+                    stepId: 1,
                     name: "Objective Submission",
                     message: "You have a new objective to submit",
                     active: false,
@@ -28,7 +28,7 @@ export default function startup() {
                 },
 
                 {
-                    stepId: 1,
+                    stepId: 2,
                     name: "Objective Validation",
                     message: "You have an objective to approve",
                     active: false,
@@ -37,7 +37,7 @@ export default function startup() {
                 },
 
                 {
-                    stepId: 2,
+                    stepId: 3,
                     name: "Midterm Review",
                     message: "You have a midterm review to do",
                     active: false,
@@ -46,7 +46,7 @@ export default function startup() {
                 },
 
                 {
-                    stepId: 3,
+                    stepId: 4,
                     name: "Staff Self-Evaluation",
                     message: "You have a new self-evaluation to submit",
                     active: false,
@@ -55,7 +55,7 @@ export default function startup() {
                 },
 
                 {
-                    stepId: 4,
+                    stepId: 5,
                     name: "Supervisor Evaluation",
                     message: "You have an evaluation to submit",
                     active: true,

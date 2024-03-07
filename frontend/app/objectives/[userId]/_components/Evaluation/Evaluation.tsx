@@ -13,7 +13,14 @@ function Evaluation() {
     } = useObjectivesDataStore();
 
     useEffect(() => {
-        setSelectedObjectiveIndex(-1);
+        if (
+            objectivesLocal.length > 0 &&
+            objectivesLocal.some((o) => o.status == "ok")
+        ) {
+            setSelectedObjectiveIndex(0);
+        } else {
+            setSelectedObjectiveIndex(-1);
+        }
         return () => {
             setSelectedObjectiveIndex(-1);
         };

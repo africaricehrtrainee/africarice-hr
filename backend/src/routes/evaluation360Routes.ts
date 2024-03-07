@@ -62,6 +62,9 @@ router.post("/", async (req, res) => {
             data: {
                 employeeId: evaluation.employeeId,
                 supervisorId: evaluation.supervisorId,
+                evaluationYear:
+                    (evaluation.evaluationYear as string) ??
+                    new Date().getFullYear().toString(),
             },
         });
         res.status(201).json(evaluation360);

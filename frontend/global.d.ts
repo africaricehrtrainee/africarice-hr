@@ -102,8 +102,10 @@ interface Objective {
     comment: string | null;
     selfGrade: number | null;
     selfComment: string | null;
+
     employee?: Employee;
     supervisor?: Employee;
+    midtermSelfComment: string | null;
     midtermComment: string | null;
     ObjectiveComment?: Comment[];
 }

@@ -42,7 +42,7 @@ export default async function cronJobInit() {
             "\u03BB Evaluation schedule notification every 10 minutes"
         )
     );
-    // cron.schedule("*/5 * * * *", evaluationAlertJob);
+    cron.schedule("*/1 * * * *", evaluationAlertJob);
 
     log(
         chalk.black.bgYellow(
@@ -50,5 +50,5 @@ export default async function cronJobInit() {
         )
     );
     // Alternatively, you can use a more human-readable syntax (recommended)
-    // cron.schedule('*/5 * * * *', myTask);
+    cron.schedule("*/2 * * * *", evaluationAlertJob);
 }

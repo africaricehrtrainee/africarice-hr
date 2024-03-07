@@ -23,7 +23,7 @@ function EvaluationForm() {
         evaluation
     )
         return (
-            <div className="relative flex max-w-[700px] flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
+            <div className="relative flex max-w-[900px] flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
                 <EvaluationHeader evaluation={evaluation} />
                 <EvaluationInput evaluation={evaluation} />
             </div>
@@ -83,26 +83,36 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
             key: "interpersonalComment",
             question:
                 "How does the individual interact with team members and other colleagues? To what extent does he promote collaboration, communication and conflict resolution?",
+            questionFr:
+                "Comment l'individu interagit-il avec les membres de l'équipe et les autres collègues? Dans quelle mesure favorise-t-il la collaboration, la communication et la résolution des conflits?",
         },
         {
             key: "collaborationComment",
             question:
                 "How does the individual communicate with colleagues, peers and subordinates? To what extent does he or she foster a collaborative and open work environment?",
+            questionFr:
+                "Comment l'individu communique-t-il avec ses collègues, ses pairs et ses subordonnés? Dans quelle mesure favorise-t-il un environnement de travail collaboratif et ouvert?",
         },
         {
             key: "leadershipComment",
             question:
                 "To what extent does the individual demonstrate leadership and initiative within the organization? Can you cite situations where he or she has taken proactive steps to solve problems or improve processes?",
+            questionFr:
+                "Dans quelle mesure l'individu fait-il preuve de leadership et d'initiative au sein de l'organisation? Pouvez-vous citer des situations où il ou elle a pris des mesures proactives pour résoudre des problèmes ou améliorer des processus?",
         },
         {
             key: "commitmentComment",
             question:
                 "How does the individual encourage professional and personal development within the team? To what extent does he show an interest in the well-being and growth of his colleagues?",
+            questionFr:
+                "Comment l'individu encourage-t-il le développement professionnel et personnel au sein de l'équipe? Dans quelle mesure montre-t-il un intérêt pour le bien-être et la croissance de ses collègues?",
         },
         {
             key: "teamworkComment",
             question:
                 "How does the individual communicate team goals and individual roles clearly ?",
+            questionFr:
+                "Comment l'individu communique-t-il clairement les objectifs de l'équipe et les rôles individuels?",
         },
     ];
 
@@ -183,6 +193,9 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                 <div className="flex w-full items-center justify-start gap-1">
                     <p className="text-sm font-bold text-zinc-700">
                         {fields[index].question}
+                    </p>
+                    <p className="text-end text-sm font-bold text-zinc-700">
+                        {fields[index].questionFr}
                     </p>
                 </div>
                 <label className="text-[10px] font-medium text-zinc-300">

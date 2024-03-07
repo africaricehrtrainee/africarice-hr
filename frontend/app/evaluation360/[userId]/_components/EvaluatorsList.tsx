@@ -33,12 +33,12 @@ function EvaluatorsList({
     });
     if (!user || !employee) return null;
     return (
-        <div className="flex w-full flex-col flex-1 items-start justify-start rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
+        <div className="flex h-full w-full flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
             <Select
                 defaultValue={year}
                 onValueChange={(value) => setYear(value)}
             >
-                <SelectTrigger className="w-[80px] mb-2 border border-zinc-100 shadow-sm">
+                <SelectTrigger className="mb-2 w-[80px] border border-zinc-100 shadow-sm">
                     <SelectValue placeholder="Pick term" />
                 </SelectTrigger>
                 <SelectContent>
@@ -50,7 +50,7 @@ function EvaluatorsList({
                 <div className="flex h-full w-full flex-col items-start justify-end gap-2">
                     <div className="flex h-full w-full items-start justify-between">
                         <ListComponent evaluation={evaluation} />
-                        <div className="flex h-full items-start justify-center gap-2">
+                        <div className="flex h-full items-start justify-start gap-2">
                             <>
                                 {user.employeeId == employee.employeeId && (
                                     <UserSideBar
@@ -233,6 +233,7 @@ function EvaluationCreateComponent({ employee }: { employee: Employee }) {
                     evaluation: {
                         employeeId: employee.employeeId,
                         supervisorId: employee.supervisorId,
+                        evaluationYear: year,
                     },
                 })
                 .then((res) => {
@@ -498,12 +499,8 @@ function ListItem({
                         )}
 
                         {evaluator.evaluatorStatus == "ok" && (
-                            <Chip
-                                variant="background"
-                                size="xs"
-                                className="mb-2"
-                            >
-                                Pending
+                            <Chip variant="alert" size="xs" className="mb-2">
+                                Requested
                                 <Icon
                                     icon="mdi-check-all"
                                     className="ml-1"
