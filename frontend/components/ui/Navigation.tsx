@@ -95,7 +95,7 @@ function Profile() {
                     <button
                         onClick={() => setIsOpen((prev) => !prev)}
                         className={
-                            "flex h-9 w-9 items-center justify-center rounded-full outline outline-4 bg-zinc-500 text-xs font-bold text-white transition-all " +
+                            "flex h-9 items-center px-4 justify-center rounded-full outline outline-4 bg-green-100 p-2 text-xs font-bold text-green-800 transition-all " +
                             `${
                                 isOpen
                                     ? "outline-zinc-300"
@@ -104,7 +104,9 @@ function Profile() {
                         }
                     >
                         {user.firstName && user.lastName
-                            ? user.lastName.charAt(0) + user.firstName.charAt(0)
+                            ? `${user.lastName.split(" ")[0]} ${
+                                  user.firstName.split(" ")[0]
+                              }`
                             : ""}
                     </button>
 
@@ -301,7 +303,7 @@ function Menu() {
 export default function Navigation() {
     const loaderRef = useLoaderRef();
     const router = useRouter();
-    const user = useAuth();
+    const { user, setUser } = useAuth();
     const pathName = usePathname();
 
     axios.interceptors.request.use(
@@ -340,6 +342,7 @@ export default function Navigation() {
         function (error) {
             if (error.response.status === 401 && !pathName.includes("auth")) {
                 console.log("Path", pathName);
+                setUser(null);
                 router.push("/auth?redirect=true");
             }
             return Promise.reject(error);

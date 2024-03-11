@@ -39,7 +39,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                     Staff accounts
                 </p>
                 <div className="flex gap-2">
-                    <Button
+                    {/* <Button
                         variant="outline"
                         onClick={() => setShowModal(true)}
                     >
@@ -61,7 +61,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                             className="ml-1"
                             fontSize={16}
                         />
-                    </Button>
+                    </Button> */}
                 </div>
                 <Modal show={showModal} onClose={() => setShowModal(false)}>
                     <EmployeeForm
@@ -214,7 +214,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                     <p className="text-[8px] font-medium text-zinc-300">
                                         EMAIL
                                     </p>
-                                    <p className="max-w-[150px] font-mono truncate text-xs font-medium text-zinc-700">
+                                    <p className="max-w-[150px] truncate font-mono text-xs font-medium text-zinc-700">
                                         {employee.email}
                                     </p>
                                 </div>

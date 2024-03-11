@@ -1,9 +1,5 @@
-import { Evaluator360 } from "@prisma/client";
-import { compareAsc, compareDesc } from "date-fns";
-import prisma from "../../../prisma/middleware";
 import {
     OtherEvaluation360,
-    OtherEvaluation360Status,
     StaffEvaluation360Status,
     StaffObjectiveStatus,
     StaffSelfEvaluationStatus,
@@ -13,6 +9,9 @@ import {
     SupervisorObjectiveStatus,
     SupervisorStatus,
 } from "./../../global.d";
+import { Evaluator360 } from "@prisma/client";
+import { compareAsc, compareDesc } from "date-fns";
+import prisma from "../../../prisma/middleware";
 
 export function keygen(): string {
     const charset =
@@ -55,6 +54,8 @@ export async function computeFinished(employeeId: number): Promise<boolean> {
         status.supervisorStatus.some(
             (obj) =>
                 obj.evaluationStatus === "SUPERVISOR_EVALUATION_UNRATED" ||
+                obj.objectiveStatus === "SUPERVISOR_OBJECTIVE_UNRATED" ||
+                obj.objectiveStatus == "SUPERVISOR_OBJECTIVE_UNVALIDATED" ||
                 obj.objectiveStatus === "SUPERVISOR_OBJECTIVE_UNREVIEWED" ||
                 obj.evaluation360Status ===
                     "SUPERVISOR_EVALUATION360_UNREVIEWED"
@@ -91,6 +92,7 @@ export async function computeNotifications(
     const objectives = await prisma.objectives.findMany({
         where: {
             employeeId,
+            objectiveYear: new Date().getFullYear().toString(),
         },
     });
 
@@ -104,6 +106,7 @@ export async function computeNotifications(
     const evaluation360 = await prisma.evaluation360.findFirst({
         where: {
             employeeId,
+            evaluationYear: new Date().getFullYear().toString(),
         },
     });
 
@@ -199,16 +202,24 @@ export async function computeNotifications(
         } else if (objectives.every((obj) => obj.status == "ok")) {
             objectiveStatus = "OBJECTIVE_OK";
 
-            // Self-evaluation period is there
-            if (compareAsc(new Date(), steps[3].dateFrom) !== -1) {
-                // Some objectives are unrated
-                if (objectives.some((obj) => obj.selfComment == null)) {
-                    objectiveStatus = "OBJECTIVE_UNRATED";
+            if (compareAsc(new Date(), steps[2].dateFrom) !== -1) {
+                if (objectives.every((obj) => obj.midtermSelfComment)) {
+                    objectiveStatus = "OBJECTIVE_REVIEWED";
+
+                    if (compareAsc(new Date(), steps[3].dateFrom) !== -1) {
+                        // Some objectives are unrated
+                        if (objectives.some((obj) => obj.selfComment == null)) {
+                            objectiveStatus = "OBJECTIVE_UNRATED";
+                        }
+                        // All objectives are rated
+                        else {
+                            objectiveStatus = "OBJECTIVE_RATED";
+                        }
+                    }
+                } else {
+                    objectiveStatus = "OBJECTIVE_UNREVIEWED";
                 }
-                // All objectives are rated
-                else {
-                    objectiveStatus = "OBJECTIVE_RATED";
-                }
+                // Self-evaluation period is there
             }
         }
     } else {
@@ -237,6 +248,10 @@ export async function computeNotifications(
         const objectives = await prisma.objectives.findMany({
             where: {
                 employeeId: member.employeeId,
+                status: {
+                    not: "cancelled",
+                },
+                objectiveYear: new Date().getFullYear().toString(),
             },
         });
         //
@@ -250,6 +265,7 @@ export async function computeNotifications(
         const evaluation360 = await prisma.evaluation360.findFirst({
             where: {
                 employeeId: member.employeeId,
+                evaluationYear: new Date().getFullYear().toString(),
             },
         });
 
@@ -271,19 +287,39 @@ export async function computeNotifications(
             }
         }
 
+        // Objective supervisor status computation
         if (
             compareAsc(new Date(), steps[1].dateFrom) !== -1 &&
-            objectives.filter((obj) => obj.status !== "cancelled").length >= 3
+            objectives.length >= 3
         ) {
+            // Objective Validation
             if (objectives.some((obj) => obj.status == "sent")) {
-                objectiveStatus = "SUPERVISOR_OBJECTIVE_UNREVIEWED";
-            } else if (
-                objectives.every(
-                    (obj) => obj.status == "ok" || obj.status == "invalid"
-                )
-            ) {
-                objectiveStatus = "SUPERVISOR_OBJECTIVE_REVIEWED";
+                objectiveStatus = "SUPERVISOR_OBJECTIVE_UNVALIDATED";
+            } else {
+                objectiveStatus = "SUPERVISOR_OBJECTIVE_VALIDATED";
+                // Objective Midterm Review
+                if (compareAsc(new Date(), steps[2].dateFrom) !== -1) {
+                    if (objectives.some((obj) => !obj.midtermComment)) {
+                        objectiveStatus = "SUPERVISOR_OBJECTIVE_UNREVIEWED";
+                    } else {
+                        objectiveStatus = "SUPERVISOR_OBJECTIVE_REVIEWED";
+                        if (compareAsc(new Date(), steps[4].dateFrom) !== -1) {
+                            if (
+                                objectives.some(
+                                    (obj) => obj.evaluationStatus !== "sent"
+                                )
+                            ) {
+                                objectiveStatus =
+                                    "SUPERVISOR_OBJECTIVE_UNRATED";
+                            } else {
+                                objectiveStatus = "SUPERVISOR_OBJECTIVE_RATED";
+                            }
+                        }
+                    }
+                }
             }
+        } else {
+            objectiveStatus = "SUPERVISOR_OBJECTIVE_IDLE";
         }
 
         if (compareAsc(new Date(), steps[4].dateFrom) !== -1) {

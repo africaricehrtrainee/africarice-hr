@@ -78,7 +78,7 @@ function EvaluationComponent() {
                             />
                         </div>
                     )}
-                    {status == "sent" && (
+                    {status == "evaluated" && (
                         <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
                             Submitted
                             <Icon

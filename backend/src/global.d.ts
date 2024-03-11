@@ -104,28 +104,34 @@ type ObjectiveComment = {
 
 // Status types and notifications
 
-type StaffObjectiveStatus =
+export type StaffObjectiveStatus =
     | "OBJECTIVE_IDLE"
     | "OBJECTIVE_EMPTY"
     | "OBJECTIVE_SENT"
     | "OBJECTIVE_INVALID"
     | "OBJECTIVE_OK"
+    | "OBJECTIVE_UNREVIEWED"
+    | "OBJECTIVE_REVIEWED"
     | "OBJECTIVE_UNRATED"
     | "OBJECTIVE_RATED";
-type StaffSelfEvaluationStatus =
+export type StaffSelfEvaluationStatus =
     | "SELF_EVALUATION_IDLE"
     | "SELF_EVALUATION_EMPTY"
     | "SELF_EVALUATION_SENT";
-type SupervisorObjectiveStatus =
+export type SupervisorObjectiveStatus =
     | "SUPERVISOR_OBJECTIVE_IDLE"
+    | "SUPERVISOR_OBJECTIVE_UNVALIDATED"
+    | "SUPERVISOR_OBJECTIVE_VALIDATED"
     | "SUPERVISOR_OBJECTIVE_UNREVIEWED"
-    | "SUPERVISOR_OBJECTIVE_REVIEWED";
-type SupervisorEvaluationStatus =
+    | "SUPERVISOR_OBJECTIVE_REVIEWED"
+    | "SUPERVISOR_OBJECTIVE_UNRATED"
+    | "SUPERVISOR_OBJECTIVE_RATED";
+export type SupervisorEvaluationStatus =
     | "SUPERVISOR_EVALUATION_IDLE"
     | "SUPERVISOR_EVALUATION_UNRATED"
     | "SUPERVISOR_EVALUATION_RATED";
 
-type StaffEvaluation360Status =
+export type StaffEvaluation360Status =
     | "EVALUATION360_IDLE"
     | "EVALUATION360_EMPTY"
     | "EVALUATION360_SENT"
@@ -133,29 +139,29 @@ type StaffEvaluation360Status =
     | "EVALUATION360_OK"
     | "EVALUATION360_RATED";
 
-type SupervisorEvaluation360Status =
+export type SupervisorEvaluation360Status =
     | "SUPERVISOR_EVALUATION360_IDLE"
     | "SUPERVISOR_EVALUATION360_UNREVIEWED"
     | "SUPERVISOR_EVALUATION360_REVIEWED";
 
-type OtherEvaluation360Status =
+export type OtherEvaluation360Status =
     | "EVALUATION360_IDLE"
     | "EVALUATION360_UNRATED"
     | "EVALUATION360_RATED";
 
-type SupervisorStatus = {
+export type SupervisorStatus = {
     objectiveStatus: SupervisorObjectiveStatus;
     evaluationStatus: SupervisorEvaluationStatus;
     evaluation360Status: SupervisorEvaluation360Status;
     employeeId: number;
 };
 
-type Evaluation360Status = {
+export type Evaluation360Status = {
     evaluationStatus: StaffEvaluation360Status;
     employeeId: number;
 };
 
-type OtherEvaluation360 = {
+export type OtherEvaluation360 = {
     evaluationStatus: OtherEvaluation360Status;
     employeeId: number;
 };

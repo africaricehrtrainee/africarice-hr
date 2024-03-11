@@ -71,6 +71,25 @@ function SupervisorNotification({
     return (
         <>
             {supervisorStatus.objectiveStatus ===
+                "SUPERVISOR_OBJECTIVE_UNVALIDATED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                        <Icon
+                            icon="mdi:alert"
+                            fontSize={16}
+                            className="text-yellow-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have not validated{" "}
+                        <b>{employee.firstName}&apos;s</b> objectives yet.
+                    </p>
+                </Link>
+            )}
+            {supervisorStatus.objectiveStatus ===
                 "SUPERVISOR_OBJECTIVE_UNREVIEWED" && (
                 <Link
                     className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
@@ -85,11 +104,30 @@ function SupervisorNotification({
                     </div>
                     <p className="whitespace-nowrap text-xs">
                         You have not reviewed <b>{employee.firstName}&apos;s</b>{" "}
-                        objectives yet.
+                        objective progress yet.
                     </p>
                 </Link>
             )}
             {supervisorStatus.objectiveStatus ===
+                "SUPERVISOR_OBJECTIVE_UNRATED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                        <Icon
+                            icon="mdi:alert"
+                            fontSize={16}
+                            className="text-yellow-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have not evaluated{" "}
+                        <b>{employee.firstName}&apos;s</b> objectives.
+                    </p>
+                </Link>
+            )}
+            {/* {supervisorStatus.objectiveStatus ===
                 "SUPERVISOR_OBJECTIVE_REVIEWED" && (
                 <Link
                     className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
@@ -108,6 +146,44 @@ function SupervisorNotification({
                     </p>
                 </Link>
             )}
+            {supervisorStatus.objectiveStatus ===
+                "SUPERVISOR_OBJECTIVE_RATED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                        <Icon
+                            icon="mdi:check-all"
+                            fontSize={16}
+                            className="text-green-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have evaluated <b>{employee.firstName}&apos;s</b>{" "}
+                        objectives.
+                    </p>
+                </Link>
+            )}
+            {supervisorStatus.objectiveStatus ===
+                "SUPERVISOR_OBJECTIVE_VALIDATED" && (
+                <Link
+                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                    href={`/objectives/${employee.employeeId}`}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                        <Icon
+                            icon="mdi:check-all"
+                            fontSize={16}
+                            className="text-green-600"
+                        />
+                    </div>
+                    <p className="whitespace-nowrap text-xs">
+                        You have validated <b>{employee.firstName}&apos;s</b>{" "}
+                        objectives.
+                    </p>
+                </Link>
+            )} */}
             {supervisorStatus.evaluationStatus ===
                 "SUPERVISOR_EVALUATION_UNRATED" && (
                 <Link
@@ -123,24 +199,6 @@ function SupervisorNotification({
                     </div>
                     <p className="whitespace-nowrap text-xs">
                         You have not evaluated <b>{employee.firstName}</b> yet.
-                    </p>
-                </Link>
-            )}
-            {supervisorStatus.evaluationStatus ===
-                "SUPERVISOR_EVALUATION_RATED" && (
-                <Link
-                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
-                    href={`/objectives/${employee.employeeId}`}
-                >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
-                        <Icon
-                            icon="mdi:check-all"
-                            fontSize={16}
-                            className="text-green-600"
-                        />
-                    </div>
-                    <p className="whitespace-nowrap text-xs">
-                        You have evaluated <b>{employee.firstName}</b> yet
                     </p>
                 </Link>
             )}
@@ -164,8 +222,7 @@ function SupervisorNotification({
                     </p>
                 </Link>
             )}
-            {supervisorStatus.evaluationStatus ===
-                "SUPERVISOR_EVALUATION_RATED" && (
+            {/* {supervisorStatus.evaluationStatus === "SUPERVISOR_EVALUATION_RATED" && (
                 <Link
                     className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
                     href={`/evaluation360/${employee.employeeId}`}
@@ -182,7 +239,7 @@ function SupervisorNotification({
                         evaluators.
                     </p>
                 </Link>
-            )}
+            )} */}
         </>
     );
 }
@@ -299,84 +356,119 @@ function ObjectiveNotification({
 }) {
     return (
         <>
-            {status.objectiveStatus !== "OBJECTIVE_IDLE" && (
-                <Link
-                    className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
-                    href={`/objectives/${user.employeeId}`}
-                >
-                    {status.objectiveStatus === "OBJECTIVE_EMPTY" && (
-                        <>
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
-                                <Icon
-                                    icon="mdi:alert"
-                                    fontSize={16}
-                                    className="text-yellow-600"
-                                />
-                            </div>
-                            <p className="whitespace-nowrap text-xs">
-                                You have not submitted <b>your objectives</b>{" "}
-                                yet.
-                            </p>
-                        </>
-                    )}
-                    {status.objectiveStatus === "OBJECTIVE_SENT" && (
-                        <>
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
-                                <Icon
-                                    icon="mdi:check-all"
-                                    fontSize={16}
-                                    className="text-green-600"
-                                />
-                            </div>
-                            <p className="whitespace-nowrap text-xs">
-                                You have submitted <b>your objectives</b>.
-                            </p>
-                        </>
-                    )}
-                    {status.objectiveStatus === "OBJECTIVE_INVALID" && (
-                        <>
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-300">
-                                <Icon
-                                    icon="mdi:alert"
-                                    fontSize={16}
-                                    className="text-red-600"
-                                />
-                            </div>
-                            <p className="whitespace-nowrap text-xs">
-                                Your objectives need to be <b>modified</b>.
-                            </p>
-                        </>
-                    )}
-                    {status.objectiveStatus === "OBJECTIVE_OK" && (
-                        <>
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
-                                <Icon
-                                    icon="mdi:check-all"
-                                    fontSize={16}
-                                    className="text-green-600"
-                                />
-                            </div>
-                            <p className="whitespace-nowrap text-xs">
-                                Your objectives are <b>approved</b>.
-                            </p>
-                        </>
-                    )}
-                    {status.objectiveStatus === "OBJECTIVE_UNRATED" && (
-                        <>
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
-                                <Icon
-                                    icon="mdi:alert"
-                                    fontSize={16}
-                                    className="text-yellow-600"
-                                />
-                            </div>
-                            <p className="whitespace-nowrap text-xs">
-                                You have not <b>evaluated your objectives</b>{" "}
-                                yet.
-                            </p>
-                        </>
-                    )}
-                </Link>
+            {status.objectiveStatus === "OBJECTIVE_EMPTY" && (
+                <>
+                    <Link
+                        className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                        href={`/objectives/${user.employeeId}`}
+                    >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                            <Icon
+                                icon="mdi:alert"
+                                fontSize={16}
+                                className="text-yellow-600"
+                            />
+                        </div>
+                        <p className="whitespace-nowrap text-xs">
+                            You have not submitted <b>your objectives</b> yet.
+                        </p>
+                    </Link>
+                </>
+            )}
+            {status.objectiveStatus === "OBJECTIVE_SENT" && (
+                <>
+                    <Link
+                        className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                        href={`/objectives/${user.employeeId}`}
+                    >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                            <Icon
+                                icon="mdi:check-all"
+                                fontSize={16}
+                                className="text-green-600"
+                            />
+                        </div>
+                        <p className="whitespace-nowrap text-xs">
+                            You have submitted <b>your objectives</b>.
+                        </p>
+                    </Link>
+                </>
+            )}
+            {status.objectiveStatus === "OBJECTIVE_INVALID" && (
+                <>
+                    <Link
+                        className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                        href={`/objectives/${user.employeeId}`}
+                    >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-300">
+                            <Icon
+                                icon="mdi:alert"
+                                fontSize={16}
+                                className="text-red-600"
+                            />
+                        </div>
+                        <p className="whitespace-nowrap text-xs">
+                            Your objectives need to be <b>modified</b>.
+                        </p>
+                    </Link>
+                </>
+            )}
+            {status.objectiveStatus === "OBJECTIVE_OK" && (
+                <>
+                    <Link
+                        className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                        href={`/objectives/${user.employeeId}`}
+                    >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-300">
+                            <Icon
+                                icon="mdi:check-all"
+                                fontSize={16}
+                                className="text-green-600"
+                            />
+                        </div>
+                        <p className="whitespace-nowrap text-xs">
+                            Your objectives are <b>approved</b>.
+                        </p>
+                    </Link>
+                </>
+            )}
+            {status.objectiveStatus === "OBJECTIVE_UNRATED" && (
+                <>
+                    <Link
+                        className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                        href={`/objectives/${user.employeeId}?step=3`}
+                    >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                            <Icon
+                                icon="mdi:alert"
+                                fontSize={16}
+                                className="text-yellow-600"
+                            />
+                        </div>
+                        <p className="whitespace-nowrap text-xs">
+                            You have not <b>evaluated your objectives</b> yet.
+                        </p>
+                    </Link>
+                </>
+            )}
+            {status.objectiveStatus === "OBJECTIVE_UNREVIEWED" && (
+                <>
+                    <Link
+                        className="flex items-center justify-start gap-4 p-2 px-4 hover:bg-zinc-50"
+                        href={`/objectives/${user.employeeId}?step=2`}
+                    >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300">
+                            <Icon
+                                icon="mdi:alert"
+                                fontSize={16}
+                                className="text-yellow-600"
+                            />
+                        </div>
+                        <p className="whitespace-nowrap text-xs">
+                            You have not <b>reviewed your objectives</b> yet.
+                        </p>
+                    </Link>
+                </>
             )}
         </>
     );
@@ -492,7 +584,7 @@ function Notification({ user }: { user: Employee }) {
             )
             .then((response) => {
                 if (response.data) {
-                    console.log(response.data);
+                    console.log("status", response.data);
                     setStatus(response.data);
                 } else {
                 }

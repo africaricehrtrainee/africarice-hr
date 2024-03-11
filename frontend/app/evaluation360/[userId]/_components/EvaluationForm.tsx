@@ -23,7 +23,7 @@ function EvaluationForm() {
         evaluation
     )
         return (
-            <div className="relative flex max-w-[900px] flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
+            <div className="relative flex max-w-[1100px] flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
                 <EvaluationHeader evaluation={evaluation} />
                 <EvaluationInput evaluation={evaluation} />
             </div>

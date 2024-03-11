@@ -138,13 +138,14 @@ interface Position {
     children?: Position[];
 }
 // Status types and notifications
-
 type StaffObjectiveStatus =
     | "OBJECTIVE_IDLE"
     | "OBJECTIVE_EMPTY"
     | "OBJECTIVE_SENT"
     | "OBJECTIVE_INVALID"
     | "OBJECTIVE_OK"
+    | "OBJECTIVE_UNREVIEWED"
+    | "OBJECTIVE_REVIEWED"
     | "OBJECTIVE_UNRATED"
     | "OBJECTIVE_RATED";
 type StaffSelfEvaluationStatus =
@@ -153,8 +154,12 @@ type StaffSelfEvaluationStatus =
     | "SELF_EVALUATION_SENT";
 type SupervisorObjectiveStatus =
     | "SUPERVISOR_OBJECTIVE_IDLE"
+    | "SUPERVISOR_OBJECTIVE_UNVALIDATED"
+    | "SUPERVISOR_OBJECTIVE_VALIDATED"
     | "SUPERVISOR_OBJECTIVE_UNREVIEWED"
-    | "SUPERVISOR_OBJECTIVE_REVIEWED";
+    | "SUPERVISOR_OBJECTIVE_REVIEWED"
+    | "SUPERVISOR_OBJECTIVE_UNRATED"
+    | "SUPERVISOR_OBJECTIVE_RATED";
 type SupervisorEvaluationStatus =
     | "SUPERVISOR_EVALUATION_IDLE"
     | "SUPERVISOR_EVALUATION_UNRATED"

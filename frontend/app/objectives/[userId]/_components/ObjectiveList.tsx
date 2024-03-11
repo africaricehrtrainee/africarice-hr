@@ -459,6 +459,10 @@ function ObjectiveBottomActionBar({
                                     loading={loading}
                                     className=""
                                     disabled={
+                                        JSON.stringify(data.objectives) ==
+                                            JSON.stringify(
+                                                data.objectivesLocal
+                                            ) ||
                                         filteredObjectives.length < 3 ||
                                         filteredObjectives.length > 5 ||
                                         objectives.some(

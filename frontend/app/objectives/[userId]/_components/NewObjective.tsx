@@ -843,9 +843,7 @@ export function NewObjective({
                         )}
 
                     {/* Staff self-evaluation */}
-                    {(user?.employeeId == employee.employeeId ||
-                        selectedObjective.midtermComment !== null) &&
-                        user &&
+                    {user &&
                         step == 2 &&
                         objectives.every((obj) => obj.status == "ok") && (
                             <MidtermReview
@@ -906,7 +904,7 @@ export function NewObjective({
                                             const obj = {
                                                 ...selectedObjective,
                                             };
-                                            obj.selfEvaluationStatus = "sent";
+                                            obj.evaluationStatus = "sent";
                                             updateObjective(obj);
                                         }}
                                         variant="primary"
@@ -1251,95 +1249,177 @@ function MidtermReview({
 }) {
     const data = useObjectivesDataStore();
     const selectedObjective = data.objectivesLocal[data.selectedObjectiveIndex];
+    const [selfReview, setSelfReview] = useState<string | undefined | null>(
+        selectedObjective.midtermSelfComment
+    );
     const [review, setReview] = useState<string | undefined | null>(
         selectedObjective.midtermComment
     );
     useEffect(() => {
+        setSelfReview(selectedObjective.midtermSelfComment);
         setReview(selectedObjective.midtermComment);
     }, [selectedObjective]);
+
     return (
-        <div className="relative mt-4 flex w-full items-start justify-between">
-            {selectedObjective.status == "ok" &&
-                step == 2 &&
-                user?.employeeId == employee.employeeId && (
-                    <>
-                        <div
-                            className={
-                                "flex items-center justify-center absolute bottom-0 right-0 gap-2"
-                            }
-                        >
-                            <Button
+        <div className="relative mt-4 flex w-full items-start justify-between gap-2">
+            {selectedObjective.status == "ok" && step == 2 && (
+                <>
+                    {/* Status badge */}
+                    <div className="flex flex-1 flex-col items-start justify-start gap-1">
+                        {selectedObjective.midtermSelfComment == null && (
+                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                Unreviewed
+                                <Icon
+                                    icon="octicon:issue-draft-16"
+                                    className="ml-1"
+                                    fontSize={10}
+                                />
+                            </div>
+                        )}
+                        {selectedObjective.midtermSelfComment !== null && (
+                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                Reviewed
+                                <Icon
+                                    icon="mdi:check-all"
+                                    className="ml-1"
+                                    fontSize={10}
+                                />
+                            </div>
+                        )}
+                        <p className="mb-2 text-2xl font-bold text-zinc-700">
+                            {employee.firstName.split(" ")[0]}&apos;s Review
+                        </p>
+                        <div className="flex w-full flex-col items-start justify-start gap-1">
+                            <label className="text-[10px] font-medium text-zinc-300">
+                                Objective Review
+                            </label>
+                            <textarea
+                                autoCorrect="off"
+                                spellCheck="false"
                                 disabled={
-                                    review == null ||
+                                    user?.employeeId != employee.employeeId ||
+                                    selectedObjective.midtermSelfComment !==
+                                        null
+                                }
+                                value={selfReview ?? ""}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLTextAreaElement>
+                                ) => {
+                                    setReview(e.target.value);
+                                }}
+                                placeholder={`Write about your progress on this objective`}
+                                className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                            />
+                        </div>
+                        {user?.employeeId == employee.employeeId && (
+                            <div
+                                className={
+                                    "flex items-center justify-center gap-2 mt-1"
+                                }
+                            >
+                                <Button
+                                    disabled={
+                                        review == null ||
+                                        selectedObjective.midtermSelfComment !==
+                                            null
+                                    }
+                                    onClick={() => {
+                                        const obj = {
+                                            ...selectedObjective,
+                                        };
+                                        obj.midtermComment = review;
+                                        updateObjective(obj);
+                                    }}
+                                    variant="primary"
+                                >
+                                    Submit my review
+                                    <Icon
+                                        icon="ic:baseline-save-alt"
+                                        className="ml-1"
+                                        fontSize={14}
+                                    />
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex flex-1 flex-col items-start justify-start gap-1">
+                        {selectedObjective.midtermComment == null && (
+                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                Unreviewed
+                                <Icon
+                                    icon="octicon:issue-draft-16"
+                                    className="ml-1"
+                                    fontSize={10}
+                                />
+                            </div>
+                        )}
+                        {selectedObjective.midtermComment !== null && (
+                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                Reviewed
+                                <Icon
+                                    icon="mdi:check-all"
+                                    className="ml-1"
+                                    fontSize={10}
+                                />
+                            </div>
+                        )}
+                        <p className="mb-2 text-2xl font-bold text-zinc-700">
+                            Supervisor Review
+                        </p>
+                        <div className="flex w-full flex-col items-start justify-start gap-1">
+                            <label className="text-[10px] font-medium text-zinc-300">
+                                Supervisor Review
+                            </label>
+                            <textarea
+                                autoCorrect="off"
+                                spellCheck="false"
+                                disabled={
+                                    user?.employeeId != employee.supervisorId ||
                                     selectedObjective.midtermComment !== null
                                 }
-                                onClick={() => {
-                                    const obj = {
-                                        ...selectedObjective,
-                                    };
-                                    obj.midtermComment = review;
-                                    updateObjective(obj);
+                                value={review ?? ""}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLTextAreaElement>
+                                ) => {
+                                    setReview(e.target.value);
                                 }}
-                                variant="primary"
-                            >
-                                Submit midterm review
-                                <Icon
-                                    icon="ic:baseline-save-alt"
-                                    className="ml-1"
-                                    fontSize={14}
-                                />
-                            </Button>
+                                placeholder={`Write about this staff's progress on this objective`}
+                                className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                            />
                         </div>
-                    </>
-                )}
-
-            {/* Status badge */}
-            <div className="flex flex-col items-start justify-start gap-1">
-                {selectedObjective.midtermComment == null && (
-                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                        Unreviewed
-                        <Icon
-                            icon="octicon:issue-draft-16"
-                            className="ml-1"
-                            fontSize={10}
-                        />
+                        {user?.employeeId == employee.supervisorId && (
+                            <div
+                                className={
+                                    "flex items-center justify-center gap-2 mt-1"
+                                }
+                            >
+                                <Button
+                                    disabled={
+                                        review == null ||
+                                        selectedObjective.midtermComment !==
+                                            null
+                                    }
+                                    onClick={() => {
+                                        const obj = {
+                                            ...selectedObjective,
+                                        };
+                                        obj.midtermComment = review;
+                                        updateObjective(obj);
+                                    }}
+                                    variant="primary"
+                                >
+                                    Submit my review
+                                    <Icon
+                                        icon="ic:baseline-save-alt"
+                                        className="ml-1"
+                                        fontSize={14}
+                                    />
+                                </Button>
+                            </div>
+                        )}
                     </div>
-                )}
-                {selectedObjective.midtermComment !== null && (
-                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                        Reviewed
-                        <Icon
-                            icon="mdi:check-all"
-                            className="ml-1"
-                            fontSize={10}
-                        />
-                    </div>
-                )}
-                <p className="mb-2 text-2xl font-bold text-zinc-700">
-                    Midterm Review
-                </p>
-                <div className="flex w-[350px] flex-col items-start justify-start gap-1">
-                    <label className="text-[10px] font-medium text-zinc-300">
-                        Objective Review
-                    </label>
-                    <textarea
-                        autoCorrect="off"
-                        spellCheck="false"
-                        disabled={
-                            user?.employeeId != employee.employeeId ||
-                            selectedObjective.midtermComment !== null
-                        }
-                        value={review ?? ""}
-                        onChange={(
-                            e: React.ChangeEvent<HTMLTextAreaElement>
-                        ) => {
-                            setReview(e.target.value);
-                        }}
-                        placeholder={`Write about your progress on this objective`}
-                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
-                    />
-                </div>
-            </div>
+                </>
+            )}
         </div>
     );
 }

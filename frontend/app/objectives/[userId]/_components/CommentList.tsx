@@ -65,7 +65,7 @@ export const CommentList: React.FC<CommentListProps> = ({
     }
     if (!selectedObjective) return null;
     return (
-        <div className="flex h-[550px] w-[250px] flex-col items-start justify-start overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 shadow-sm transition-all">
+        <div className="flex h-[550px] w-[300px] flex-col items-start justify-start overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 shadow-sm transition-all">
             <div className="flex w-full items-center justify-between border-b border-b-zinc-100 bg-white p-4">
                 <div className="">
                     <Chip>

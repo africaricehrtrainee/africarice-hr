@@ -37,18 +37,18 @@ export default async function cronJobInit() {
 
     // cron.schedule("*/10 * * * *", evaluationStepJob);
 
-    log(
-        chalk.black.bgYellow(
-            "\u03BB Evaluation schedule notification every 10 minutes"
-        )
-    );
-    cron.schedule("*/1 * * * *", evaluationAlertJob);
+    // log(
+    //     chalk.black.bgYellow(
+    //         "\u03BB Evaluation schedule notification every 10 minutes"
+    //     )
+    // );
+    // cron.schedule("*/1 * * * *", evaluationStepJob);
 
-    log(
-        chalk.black.bgYellow(
-            "\u03BB Alert service notification run every 5 minute"
-        )
-    );
+    // log(
+    //     chalk.black.bgYellow(
+    //         "\u03BB Alert service notification run every 5 minute"
+    //     )
+    // );
     // Alternatively, you can use a more human-readable syntax (recommended)
-    cron.schedule("*/2 * * * *", evaluationAlertJob);
+    // cron.schedule("*/2 * * * *", evaluationAlertJob);
 }
