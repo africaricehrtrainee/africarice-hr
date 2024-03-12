@@ -7,14 +7,67 @@ import { cn } from "@/lib/utils";
 import { useQueryState } from "nuqs";
 
 function EvaluationSidebar() {
-    const { objectives } = useObjectivesDataStore();
+    const { objectives, evaluation } = useObjectivesDataStore();
     return (
         <div className="relative flex h-fit w-[450px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white shadow-sm transition-all">
+            {objectives &&
+                objectives?.filter((obj) => obj.status !== "cancelled")
+                    .length >= 3 &&
+                objectives?.every((obj) => obj.evaluationStatus == "sent") &&
+                evaluation?.evaluationStatus == "sent" && (
+                    <GradeHeader
+                        objectives={objectives}
+                        evaluation={evaluation}
+                    />
+                )}
             {objectives &&
                 objectives?.filter((obj) => obj.status == "ok").length > 0 && (
                     <ObjectiveComponent />
                 )}
             <EvaluationComponent />
+        </div>
+    );
+}
+function GradeHeader({
+    objectives,
+    evaluation,
+}: {
+    objectives: Objective[];
+    evaluation: Evaluation;
+}) {
+    const objectivesGrade =
+        objectives.reduce((acc, obj) => acc + (obj.grade ?? 0), 0) /
+        objectives.length;
+
+    const evaluationGrade =
+        Math.round(
+            (((evaluation.respectRating ?? 0) +
+                (evaluation.efficiencyRating ?? 0) +
+                (evaluation.commitmentRating ?? 0) +
+                (evaluation.initiativeRating ?? 0) +
+                (evaluation.leadershipRating ?? 0) +
+                (evaluation.competencyRating ?? 0)) /
+                (evaluation.leadershipRating ? 6 : 5)) *
+                100
+        ) / 100;
+
+    const totalGrade = (objectivesGrade + evaluationGrade) / 2;
+    return (
+        <div className="flex w-full items-center justify-between border-b border-zinc-100 p-4">
+            <div className="flex items-center justify-start">
+                <h1 className="text-lg font-bold text-zinc-700">Final grade</h1>
+            </div>
+            <div className="flex items-center justify-center gap-1">
+                <Icon
+                    icon="mdi:star"
+                    className="text-yellow-500"
+                    fontSize={20}
+                />
+                <p className="text-2xl font-bold text-zinc-700">
+                    {Math.round(totalGrade * 100) / 100}
+                    <span className="text-xs font-bold text-zinc-400">/5</span>
+                </p>
+            </div>
         </div>
     );
 }
@@ -35,7 +88,8 @@ function EvaluationComponent() {
         step == 3
             ? evaluation?.selfEvaluationStatus
             : evaluation?.evaluationStatus;
-    const title = step == 3 ? "Self-Evaluation" : "Evaluation";
+    const title =
+        step == 3 ? "Competency Self-Evaluation" : "Competency Evaluation";
     const label = step == 3 ? "Submitted" : "Evaluated";
     return (
         <div className="flex w-full flex-col items-start justify-start">
@@ -60,7 +114,7 @@ function EvaluationComponent() {
             <button
                 onClick={() => setSelectedObjectiveIndex(-1)}
                 className={cn(
-                    "flex w-full relative items-between justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
+                    "flex w-full  relative items-between justify-between border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
                     {
                         "bg-zinc-50 border-l-4 border-l-green-300":
                             selectedObjectiveIndex === -1,
@@ -78,9 +132,9 @@ function EvaluationComponent() {
                             />
                         </div>
                     )}
-                    {status == "evaluated" && (
+                    {status == "sent" && (
                         <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                            Submitted
+                            {label}
                             <Icon
                                 icon="mdi:check-all"
                                 className="ml-1"
@@ -110,7 +164,7 @@ function EvaluationComponent() {
                                         (evaluation.initiativeRating ?? 0) +
                                         (evaluation.leadershipRating ?? 0) +
                                         (evaluation.competencyRating ?? 0)) /
-                                        6) *
+                                        (evaluation.leadershipRating ? 6 : 5)) *
                                         100
                                 ) / 100}
                                 <span className="text-xs font-bold text-zinc-400">
@@ -139,6 +193,7 @@ function ObjectiveComponent() {
             : objectives?.filter((obj) => obj.evaluationStatus == "draft")
                   .length;
     const title = step == 3 ? "Self-Evaluation" : "Evaluation";
+    const label = step == 3 ? "Submitted" : "Evaluated";
 
     return (
         <div className="flex w-full flex-col items-start justify-start pb-8">
@@ -172,7 +227,7 @@ function ObjectiveComponent() {
                                 key={index}
                                 onClick={() => setSelectedObjectiveIndex(index)}
                                 className={cn(
-                                    "flex w-fullrelative items-between justify-start border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
+                                    "flex w-fullrelative items-between justify-between border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50",
                                     {
                                         "bg-zinc-50 border-l-4 border-l-green-300":
                                             selectedObjectiveIndex === index,
@@ -192,7 +247,7 @@ function ObjectiveComponent() {
                                     )}
                                     {status == "sent" && (
                                         <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                                            Submitted
+                                            {label}
                                             <Icon
                                                 icon="mdi:check-all"
                                                 className="ml-1"

@@ -10,7 +10,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from "axios";
 import { TextareaHTMLAttributes, useEffect, useState } from "react";
 import Modal from "../../../../components/ui/Modal";
-import { useToast } from "../../../../components/ui/use-toast";
+import { toast, useToast } from "../../../../components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { useQueryState } from "nuqs";
 
@@ -356,6 +356,10 @@ export function NewObjective({
                                             </div>
                                         </>
                                     )}
+                            </>
+                        )}
+                        {user?.employeeId == employee.supervisorId && (
+                            <>
                                 {selectedObjective.status == "ok" &&
                                     step == 2 && (
                                         <>
@@ -364,157 +368,25 @@ export function NewObjective({
                                                     "flex items-center justify-center gap-2"
                                                 }
                                             >
-                                                {!isEditing ? (
-                                                    <>
-                                                        <Button
-                                                            onClick={() => {
-                                                                setIsEditing(
-                                                                    true
-                                                                );
-                                                            }}
-                                                            variant="outline"
-                                                        >
-                                                            Edit objective
-                                                            <Icon
-                                                                icon="ic:baseline-edit-road"
-                                                                className="ml-1"
-                                                                fontSize={14}
-                                                            />
-                                                        </Button>
-                                                        <Button
-                                                            disabled={objectives.some(
-                                                                (obj) =>
-                                                                    obj.grade
-                                                            )}
-                                                            onClick={() => {
-                                                                setIsCancelModalOpen(
-                                                                    true
-                                                                );
-                                                            }}
-                                                            variant="alert"
-                                                        >
-                                                            Cancel objective
-                                                            <Icon
-                                                                icon="charm:cross"
-                                                                className="ml-1"
-                                                                fontSize={14}
-                                                            />
-                                                        </Button>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Button
-                                                            disabled={
-                                                                JSON.stringify(
-                                                                    data.objectives
-                                                                ) ===
-                                                                JSON.stringify(
-                                                                    data.objectivesLocal
-                                                                )
-                                                            }
-                                                            onClick={() => {
-                                                                setIsUpdateModalOpen(
-                                                                    true
-                                                                );
-                                                            }}
-                                                            variant="primary"
-                                                        >
-                                                            Update objective
-                                                            <Icon
-                                                                icon="ic:baseline-edit-road"
-                                                                className="ml-1"
-                                                                fontSize={14}
-                                                            />
-                                                        </Button>
-                                                        <Button
-                                                            disabled={objectives.some(
-                                                                (obj) =>
-                                                                    obj.grade
-                                                            )}
-                                                            onClick={() => {
-                                                                setIsEditing(
-                                                                    false
-                                                                );
-                                                            }}
-                                                            variant="outline"
-                                                        >
-                                                            Cancel editing
-                                                            <Icon
-                                                                icon="charm:cross"
-                                                                className="ml-1"
-                                                                fontSize={14}
-                                                            />
-                                                        </Button>
-                                                    </>
-                                                )}
-
-                                                <Modal
-                                                    show={isUpdateModalOpen}
-                                                    onClose={() =>
-                                                        setIsUpdateModalOpen(
-                                                            false
-                                                        )
-                                                    }
+                                                <Button
+                                                    disabled={objectives.some(
+                                                        (obj) => obj.grade
+                                                    )}
+                                                    onClick={() => {
+                                                        setIsCancelModalOpen(
+                                                            true
+                                                        );
+                                                    }}
+                                                    variant="alert"
                                                 >
-                                                    <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
-                                                        <div className="flex w-full flex-col items-start justify-between">
-                                                            <p className="text-xl font-bold text-zinc-700">
-                                                                Update this
-                                                                objective ?
-                                                            </p>
-                                                            <p className="text-xs text-muted-foreground">
-                                                                This action
-                                                                cannot be
-                                                                undone.
-                                                            </p>
-                                                            <div className="mt-4 flex w-full items-center justify-end gap-2">
-                                                                <Button
-                                                                    onClick={() => {
-                                                                        setIsUpdateModalOpen(
-                                                                            false
-                                                                        );
-                                                                        setIsEditing(
-                                                                            false
-                                                                        );
-                                                                    }}
-                                                                    variant="outline"
-                                                                >
-                                                                    Cancel
-                                                                    <Icon
-                                                                        icon="charm:cross"
-                                                                        className="ml-1"
-                                                                        fontSize={
-                                                                            14
-                                                                        }
-                                                                    />
-                                                                </Button>
-                                                                <Button
-                                                                    onClick={() => {
-                                                                        reviewObjective(
-                                                                            selectedObjective
-                                                                        );
-                                                                        setIsUpdateModalOpen(
-                                                                            false
-                                                                        );
-                                                                        setIsEditing(
-                                                                            false
-                                                                        );
-                                                                    }}
-                                                                    variant="primary"
-                                                                >
-                                                                    Update
-                                                                    <Icon
-                                                                        icon="mdi:check-all"
-                                                                        className="ml-1"
-                                                                        fontSize={
-                                                                            14
-                                                                        }
-                                                                    />
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Modal>
+                                                    Cancel objective
+                                                    <Icon
+                                                        icon="charm:cross"
+                                                        className="ml-1"
+                                                        fontSize={14}
+                                                    />
+                                                </Button>
+
                                                 <Modal
                                                     show={isCancelModalOpen}
                                                     onClose={() =>
@@ -579,13 +451,9 @@ export function NewObjective({
                                             </div>
                                         </>
                                     )}
-                            </>
-                        )}
-                        {user?.employeeId == employee.supervisorId && (
-                            <>
                                 {selectedObjective.status !== "draft" &&
                                     selectedObjective.status !== "ok" &&
-                                    step == 1 && (
+                                    (step == 1 || step == 0) && (
                                         <>
                                             <div
                                                 className={
@@ -646,7 +514,7 @@ export function NewObjective({
                         <form className="mt-2 grid w-full grid-cols-2 gap-4 border-b border-dashed border-b-zinc-200 pb-4 pt-2">
                             <div className="mt-1 flex flex-col gap-2">
                                 <div className="flex flex-col justify-start gap-1">
-                                    <label className="text-[10px] font-medium text-zinc-300">
+                                    <label className="text-[10px] font-medium text-zinc-700">
                                         TITLE OF THE OBJECTIVE
                                     </label>
                                     <input
@@ -671,14 +539,11 @@ export function NewObjective({
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
-                                    <label className="text-[10px] font-medium text-zinc-300">
+                                    <label className="text-[10px] font-medium text-zinc-700">
                                         DEADLINE OF THE OBJECTIVE
                                     </label>
                                     <input
                                         autoCorrect="off"
-                                        onClick={(e) =>
-                                            e.currentTarget.showPicker()
-                                        }
                                         spellCheck="false"
                                         disabled={isEditable}
                                         type="date"
@@ -700,7 +565,7 @@ export function NewObjective({
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
-                                    <label className="text-[10px] font-medium text-zinc-300">
+                                    <label className="text-[10px] font-medium text-zinc-700">
                                         OBJECTIVE KPI (KEY PERFORMANCE
                                         INDICATORS)
                                     </label>
@@ -725,7 +590,7 @@ export function NewObjective({
                             </div>
                             <div className="mt-1 flex flex-col gap-2">
                                 <div className="flex flex-col justify-start gap-1">
-                                    <label className="text-[10px] font-medium text-zinc-300">
+                                    <label className="text-[10px] font-medium text-zinc-700">
                                         OBJECTIVE DESCRIPTION / MAIN ACTIVITY
                                     </label>
                                     <textarea
@@ -749,7 +614,7 @@ export function NewObjective({
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
-                                    <label className="text-[10px] font-medium text-zinc-300">
+                                    <label className="text-[10px] font-medium text-zinc-700">
                                         OBJECTIVE SUCCESS CONDITIONS
                                     </label>
                                     <textarea
@@ -814,10 +679,6 @@ export function NewObjective({
                                     </Button>
                                     <Button
                                         disabled={
-                                            JSON.stringify(data.objectives) ==
-                                                JSON.stringify(
-                                                    data.objectivesLocal
-                                                ) ||
                                             !selectedObjective.selfComment ||
                                             selectedObjective.selfEvaluationStatus ==
                                                 "sent"
@@ -850,7 +711,6 @@ export function NewObjective({
                                 employee={employee}
                                 user={user}
                                 step={step}
-                                updateObjective={updateObjective}
                             />
                         )}
 
@@ -891,10 +751,6 @@ export function NewObjective({
                                     </Button>
                                     <Button
                                         disabled={
-                                            JSON.stringify(data.objectives) ==
-                                                JSON.stringify(
-                                                    data.objectivesLocal
-                                                ) ||
                                             !selectedObjective.comment ||
                                             !selectedObjective.grade ||
                                             selectedObjective.evaluationStatus ==
@@ -954,7 +810,7 @@ export function NewObjective({
                                         Objective self-evaluation
                                     </p>
                                     <div className="flex w-[350px] flex-col items-start justify-start gap-1">
-                                        <label className="text-[10px] font-medium text-zinc-300">
+                                        <label className="text-[10px] font-medium text-zinc-700">
                                             OBJECTIVE REVIEW
                                         </label>
                                         <textarea
@@ -1024,7 +880,7 @@ export function NewObjective({
                                         </div>
                                     )}
                                     <p className="mb-2 text-2xl font-bold text-zinc-700">
-                                        Objective evaluation
+                                        Supervisor evaluation
                                     </p>
                                     <div className="flex w-[350px] flex-col items-start justify-start gap-2">
                                         <div className="flex w-full items-center justify-center gap-1">
@@ -1239,187 +1095,244 @@ export function NewObjective({
 function MidtermReview({
     user,
     employee,
-    updateObjective,
     step,
 }: {
     user: Employee;
     employee: Employee;
-    updateObjective: (obj: Partial<Objective>) => void;
     step: number;
 }) {
     const data = useObjectivesDataStore();
     const selectedObjective = data.objectivesLocal[data.selectedObjectiveIndex];
-    const [selfReview, setSelfReview] = useState<string | undefined | null>(
-        selectedObjective.midtermSelfComment
-    );
-    const [review, setReview] = useState<string | undefined | null>(
-        selectedObjective.midtermComment
-    );
-    useEffect(() => {
-        setSelfReview(selectedObjective.midtermSelfComment);
-        setReview(selectedObjective.midtermComment);
-    }, [selectedObjective]);
+    const cachedObjective = data.objectives
+        ? data.objectives[data.selectedObjectiveIndex]
+        : null;
+
+    async function saveReviews() {
+        try {
+            axios
+                .post<Partial<Objective>[]>(
+                    process.env.NEXT_PUBLIC_API_URL + "/api/objectives/bulk",
+                    {
+                        objectives: data.objectivesLocal,
+                    }
+                )
+                .then((response) => {
+                    if (response.status == 201) {
+                        toast({
+                            description: "Succesfully saved reviews.",
+                        });
+                        axios
+                            .get(
+                                process.env.NEXT_PUBLIC_API_URL +
+                                    "/api/employees/" +
+                                    employee.employeeId +
+                                    "/objectives/"
+                            )
+                            .then((response) =>
+                                data.setObjectives(response.data)
+                            );
+                    }
+                })
+                .catch((err) => {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description:
+                            "There was a problem with creating an objective.",
+                    });
+                    console.log(err);
+                });
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
-        <div className="relative mt-4 flex w-full items-start justify-between gap-2">
-            {selectedObjective.status == "ok" && step == 2 && (
-                <>
-                    {/* Status badge */}
-                    <div className="flex flex-1 flex-col items-start justify-start gap-1">
-                        {selectedObjective.midtermSelfComment == null && (
-                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                                Unreviewed
-                                <Icon
-                                    icon="octicon:issue-draft-16"
-                                    className="ml-1"
-                                    fontSize={10}
-                                />
-                            </div>
-                        )}
-                        {selectedObjective.midtermSelfComment !== null && (
-                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                                Reviewed
-                                <Icon
-                                    icon="mdi:check-all"
-                                    className="ml-1"
-                                    fontSize={10}
-                                />
-                            </div>
-                        )}
-                        <p className="mb-2 text-2xl font-bold text-zinc-700">
-                            {employee.firstName.split(" ")[0]}&apos;s Review
-                        </p>
-                        <div className="flex w-full flex-col items-start justify-start gap-1">
-                            <label className="text-[10px] font-medium text-zinc-300">
-                                Objective Review
-                            </label>
-                            <textarea
-                                autoCorrect="off"
-                                spellCheck="false"
-                                disabled={
-                                    user?.employeeId != employee.employeeId ||
-                                    selectedObjective.midtermSelfComment !==
-                                        null
-                                }
-                                value={selfReview ?? ""}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLTextAreaElement>
-                                ) => {
-                                    setReview(e.target.value);
-                                }}
-                                placeholder={`Write about your progress on this objective`}
-                                className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
-                            />
-                        </div>
-                        {user?.employeeId == employee.employeeId && (
-                            <div
-                                className={
-                                    "flex items-center justify-center gap-2 mt-1"
-                                }
-                            >
-                                <Button
-                                    disabled={
-                                        review == null ||
-                                        selectedObjective.midtermSelfComment !==
-                                            null
-                                    }
-                                    onClick={() => {
-                                        const obj = {
-                                            ...selectedObjective,
-                                        };
-                                        obj.midtermComment = review;
-                                        updateObjective(obj);
-                                    }}
-                                    variant="primary"
-                                >
-                                    Submit my review
+        <div className="relative mt-4 flex w-full items-start justify-between gap-4">
+            {selectedObjective.status == "ok" &&
+                step == 2 &&
+                cachedObjective && (
+                    <>
+                        {/* Status badge */}
+                        <div className="flex flex-1 flex-col items-start justify-start gap-1">
+                            {selectedObjective.selfReviewStatus == "draft" && (
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                    Unreviewed
                                     <Icon
-                                        icon="ic:baseline-save-alt"
+                                        icon="octicon:issue-draft-16"
                                         className="ml-1"
-                                        fontSize={14}
+                                        fontSize={10}
                                     />
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-                    <div className="flex flex-1 flex-col items-start justify-start gap-1">
-                        {selectedObjective.midtermComment == null && (
-                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                                Unreviewed
-                                <Icon
-                                    icon="octicon:issue-draft-16"
-                                    className="ml-1"
-                                    fontSize={10}
+                                </div>
+                            )}
+                            {cachedObjective.selfReviewStatus == "sent" && (
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                    Reviewed
+                                    <Icon
+                                        icon="mdi:check-all"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
+                            <p className="mb-2 text-2xl font-bold text-zinc-700">
+                                {employee.firstName.split(" ")[0]}&apos;s Review
+                            </p>
+                            <div className="flex w-full flex-col items-start justify-start gap-1">
+                                <label className="text-[10px] font-medium text-zinc-700">
+                                    Objective Review
+                                </label>
+                                <textarea
+                                    autoCorrect="off"
+                                    spellCheck="false"
+                                    disabled={
+                                        user?.employeeId !=
+                                            employee.employeeId ||
+                                        selectedObjective.selfReviewStatus ==
+                                            "sent"
+                                    }
+                                    value={
+                                        selectedObjective.midtermSelfComment ??
+                                        ""
+                                    }
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLTextAreaElement>
+                                    ) => {
+                                        if (data.objectivesLocal) {
+                                            const arr = [
+                                                ...data.objectivesLocal,
+                                            ];
+                                            arr[
+                                                data.selectedObjectiveIndex
+                                            ].midtermSelfComment =
+                                                e.currentTarget.value;
+                                            data.setObjectivesLocal(arr);
+                                        }
+                                    }}
+                                    placeholder={`Write about your progress on this objective`}
+                                    className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                 />
                             </div>
-                        )}
-                        {selectedObjective.midtermComment !== null && (
-                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                                Reviewed
-                                <Icon
-                                    icon="mdi:check-all"
-                                    className="ml-1"
-                                    fontSize={10}
-                                />
-                            </div>
-                        )}
-                        <p className="mb-2 text-2xl font-bold text-zinc-700">
-                            Supervisor Review
-                        </p>
-                        <div className="flex w-full flex-col items-start justify-start gap-1">
-                            <label className="text-[10px] font-medium text-zinc-300">
+                            {user?.employeeId == employee.employeeId && (
+                                <div
+                                    className={
+                                        "flex items-center justify-center gap-2 mt-1"
+                                    }
+                                >
+                                    <Button
+                                        disabled={
+                                            selectedObjective.selfReviewStatus ==
+                                                "sent" ||
+                                            JSON.stringify(data.objectives) ==
+                                                JSON.stringify(
+                                                    data.objectivesLocal
+                                                )
+                                        }
+                                        onClick={() => {
+                                            saveReviews();
+                                        }}
+                                        variant="outline"
+                                    >
+                                        Save for later
+                                        <Icon
+                                            icon="ic:baseline-save-alt"
+                                            className="ml-1"
+                                            fontSize={14}
+                                        />
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex flex-1 flex-col items-start justify-start gap-1">
+                            {selectedObjective.reviewStatus == "draft" && (
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                    Unreviewed
+                                    <Icon
+                                        icon="octicon:issue-draft-16"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
+                            {selectedObjective.reviewStatus !== "draft" && (
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                    Reviewed
+                                    <Icon
+                                        icon="mdi:check-all"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
+                            <p className="mb-2 text-2xl font-bold text-zinc-700">
                                 Supervisor Review
-                            </label>
-                            <textarea
-                                autoCorrect="off"
-                                spellCheck="false"
-                                disabled={
-                                    user?.employeeId != employee.supervisorId ||
-                                    selectedObjective.midtermComment !== null
-                                }
-                                value={review ?? ""}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLTextAreaElement>
-                                ) => {
-                                    setReview(e.target.value);
-                                }}
-                                placeholder={`Write about this staff's progress on this objective`}
-                                className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
-                            />
-                        </div>
-                        {user?.employeeId == employee.supervisorId && (
-                            <div
-                                className={
-                                    "flex items-center justify-center gap-2 mt-1"
-                                }
-                            >
-                                <Button
+                            </p>
+                            <div className="flex w-full flex-col items-start justify-start gap-1">
+                                <label className="text-[10px] font-medium text-zinc-700">
+                                    Supervisor Review
+                                </label>
+                                <textarea
+                                    autoCorrect="off"
+                                    spellCheck="false"
                                     disabled={
-                                        review == null ||
-                                        selectedObjective.midtermComment !==
-                                            null
+                                        user?.employeeId !=
+                                            employee.supervisorId ||
+                                        selectedObjective.reviewStatus == "sent"
                                     }
-                                    onClick={() => {
-                                        const obj = {
-                                            ...selectedObjective,
-                                        };
-                                        obj.midtermComment = review;
-                                        updateObjective(obj);
+                                    value={
+                                        selectedObjective.midtermComment ?? ""
+                                    }
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLTextAreaElement>
+                                    ) => {
+                                        if (data.objectivesLocal) {
+                                            const arr = [
+                                                ...data.objectivesLocal,
+                                            ];
+                                            arr[
+                                                data.selectedObjectiveIndex
+                                            ].midtermComment =
+                                                e.currentTarget.value;
+                                            data.setObjectivesLocal(arr);
+                                        }
                                     }}
-                                    variant="primary"
-                                >
-                                    Submit my review
-                                    <Icon
-                                        icon="ic:baseline-save-alt"
-                                        className="ml-1"
-                                        fontSize={14}
-                                    />
-                                </Button>
+                                    placeholder={`Write about this staff's progress on this objective`}
+                                    className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                />
                             </div>
-                        )}
-                    </div>
-                </>
-            )}
+                            {user?.employeeId == employee.supervisorId && (
+                                <div
+                                    className={
+                                        "flex items-center justify-center gap-2 mt-1"
+                                    }
+                                >
+                                    <Button
+                                        disabled={
+                                            !selectedObjective.midtermComment ||
+                                            JSON.stringify(data.objectives) ==
+                                                JSON.stringify(
+                                                    data.objectivesLocal
+                                                ) ||
+                                            selectedObjective.reviewStatus ==
+                                                "sent"
+                                        }
+                                        onClick={() => {
+                                            saveReviews();
+                                        }}
+                                        variant="outline"
+                                    >
+                                        Save for later
+                                        <Icon
+                                            icon="ic:baseline-save-alt"
+                                            className="ml-1"
+                                            fontSize={14}
+                                        />
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
         </div>
     );
 }

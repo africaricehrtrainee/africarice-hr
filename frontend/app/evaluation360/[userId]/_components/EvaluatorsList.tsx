@@ -127,7 +127,7 @@ function UserSideBar({
 
     return (
         <div className="flex h-full w-full flex-col items-end justify-start gap-2">
-            <EvaluationStatusBadge evaluators={evaluators} />
+            {/* <EvaluationStatusBadge evaluators={evaluators} /> */}
             <Button
                 variant="primary"
                 disabled={
@@ -211,7 +211,7 @@ function SupervisorSidebar({
 
     return (
         <div className="flex h-full w-full flex-col items-end justify-start gap-2">
-            <EvaluationStatusBadge evaluators={evaluators} />
+            {/* <EvaluationStatusBadge evaluators={evaluators} /> */}
         </div>
     );
 }
@@ -499,8 +499,8 @@ function ListItem({
                         )}
 
                         {evaluator.evaluatorStatus == "ok" && (
-                            <Chip variant="alert" size="xs" className="mb-2">
-                                Requested
+                            <Chip variant="brand" size="xs" className="mb-2">
+                                Approved
                                 <Icon
                                     icon="mdi-check-all"
                                     className="ml-1"

@@ -106,7 +106,7 @@ export function NewSelfEvaluation({
                         <div className="flex items-center justify-between">
                             <p className="text-2xl font-bold text-zinc-700">
                                 {employee.firstName.split(" ")[0]}&apos;s
-                                self-evaluation
+                                competency self-evaluation
                             </p>
                             <div className="">
                                 <Chip variant="background">
@@ -115,7 +115,8 @@ export function NewSelfEvaluation({
                                         className="mr-1"
                                         fontSize={14}
                                     />
-                                    You must fill all fields before submission.
+                                    You must fill required all fields before
+                                    submission.
                                 </Chip>
                             </div>
                         </div>
@@ -126,11 +127,14 @@ export function NewSelfEvaluation({
                                         key={metric.name}
                                         className="flex flex-col justify-start gap-1"
                                     >
-                                        <label className="text-[10px] font-medium text-zinc-300">
+                                        <label className="text-[10px] font-medium text-zinc-700">
                                             {metric.label}{" "}
-                                            <span className="text-[8px] text-brand">
-                                                * (required)
-                                            </span>
+                                            {metric.label !== "LEADERSHIP" && (
+                                                <span className="text-[8px] text-brand">
+                                                    {" "}
+                                                    * (required)
+                                                </span>
+                                            )}
                                         </label>
 
                                         <textarea
@@ -173,11 +177,14 @@ export function NewSelfEvaluation({
                                         key={metric.name}
                                         className="flex flex-col justify-start gap-1"
                                     >
-                                        <label className="text-[10px] font-medium text-zinc-300">
+                                        <label className="text-[10px] font-medium text-zinc-700">
                                             {metric.label}{" "}
-                                            <span className="text-[8px] text-brand">
-                                                * (required)
-                                            </span>
+                                            {metric.label !== "LEADERSHIP" && (
+                                                <span className="text-[8px] text-brand">
+                                                    {" "}
+                                                    * (required)
+                                                </span>
+                                            )}
                                         </label>
 
                                         <textarea
@@ -243,8 +250,7 @@ export function NewSelfEvaluation({
                                         !data.evaluationLocal.selfCompetency ||
                                         !data.evaluationLocal.selfCommitment ||
                                         !data.evaluationLocal.selfInitiative ||
-                                        !data.evaluationLocal.selfRespect ||
-                                        !data.evaluationLocal.selfLeadership
+                                        !data.evaluationLocal.selfRespect
                                     }
                                     onClick={() => {
                                         setIsSubmitModalOpen(true);

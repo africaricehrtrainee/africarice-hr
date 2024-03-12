@@ -95,19 +95,21 @@ function Profile() {
                     <button
                         onClick={() => setIsOpen((prev) => !prev)}
                         className={
-                            "flex h-9 items-center px-4 justify-center rounded-full outline outline-4 bg-green-100 p-2 text-xs font-bold text-green-800 transition-all " +
+                            "flex h-9 border items-center gap-2 px-4 justify-center rounded-full  bg-green-100 p-2 text-xs font-bold text-green-800 transition-all " +
                             `${
                                 isOpen
-                                    ? "outline-zinc-300"
-                                    : "outline-transparent"
+                                    ? "border-green-800"
+                                    : "border-transparent"
                             }`
                         }
                     >
+                        <Icon icon="ci:hamburger-lg" fontSize={14} />
                         {user.firstName && user.lastName
                             ? `${user.lastName.split(" ")[0]} ${
                                   user.firstName.split(" ")[0]
                               }`
                             : ""}
+                        <p className="font-mono">{user.matricule}</p>
                     </button>
 
                     <div

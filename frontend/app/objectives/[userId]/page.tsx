@@ -219,7 +219,7 @@ export default function Objectives({ params }: { params: { userId: string } }) {
             fetchEvaluations();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data.employee]);
+    }, [data.employee, user]);
 
     useEffect(() => {}, []);
     return (
@@ -255,16 +255,20 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                                     objectives={data.objectivesLocal}
                                 />
                                 {/* List of comments of the supervisor */}
-                                <CommentList
-                                    user={user}
-                                    employee={data.employee}
-                                    objectives={data.objectivesLocal}
-                                    // @ts-expect-error
-                                    setComments={setComments}
-                                    comments={comments}
-                                    cache={data.comments}
-                                    fetch={fetchComments}
-                                />
+                                {step !== 2 ? (
+                                    <CommentList
+                                        user={user}
+                                        employee={data.employee}
+                                        objectives={data.objectivesLocal}
+                                        // @ts-expect-error
+                                        setComments={setComments}
+                                        comments={comments}
+                                        cache={data.comments}
+                                        fetch={fetchComments}
+                                    />
+                                ) : (
+                                    <></>
+                                )}
                                 {/* Version history of the objective */}
                                 <HistoryList
                                     user={user}
@@ -404,8 +408,6 @@ function Step({
 
 function Schedule({ fetch, edit }: { fetch: () => any; edit?: boolean }) {
     const data = useObjectivesDataStore();
-    const activeStep = useObjectivesDataStore(selectActiveStep);
-    const router = useRouter();
     const [year, setYear] = useQueryState("year");
 
     const { toast } = useToast();

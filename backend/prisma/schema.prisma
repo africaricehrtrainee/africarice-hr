@@ -102,6 +102,8 @@ model Objectives {
   supervisorId         Int?
   evaluationStatus     String    @default("draft")
   selfEvaluationStatus String    @default("draft")
+  reviewStatus         String    @default("draft")
+  selfReviewStatus     String    @default("draft")
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
   deletedAt            DateTime?
@@ -119,21 +121,6 @@ model Objectives {
   employee           Employees           @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
   supervisor         Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
   ObjectiveComment   ObjectiveComments[]
-  ObjectiveHistory   ObjectiveHistory[]
-}
-
-model ObjectiveHistory {
-  objectiveHistoryId Int      @id @default(autoincrement())
-  objectiveId        Int
-  createdAt          DateTime @default(now())
-
-  title             String
-  description       String
-  successConditions String
-  deadline          String
-  kpi               String
-
-  objective Objectives @relation(fields: [objectiveId], references: [objectiveId], onDelete: Cascade)
 }
 
 model Steps {

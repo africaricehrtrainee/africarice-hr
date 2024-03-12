@@ -100,6 +100,8 @@ interface Objective {
     kpi: string | null;
     grade: number | null;
     comment: string | null;
+    reviewStatus: "draft" | "sent";
+    selfReviewStatus: "draft" | "sent";
     selfGrade: number | null;
     selfComment: string | null;
 

@@ -58,18 +58,7 @@ const ObjectiveList: React.FC<ObjectiveListProps> = ({
                                     You must have at least 3 objectives.
                                 </Chip>
                             </div>
-                        ) : (
-                            <div className="w-full items-center justify-center p-2 pb-8">
-                                <Chip variant="background">
-                                    <Icon
-                                        icon="mdi:alert"
-                                        className="mr-1"
-                                        fontSize={14}
-                                    />
-                                    You can only have up to 5 objectives.
-                                </Chip>
-                            </div>
-                        )
+                        ) : null
                     ) : null}
 
                     {user.employeeId == employee.supervisorId &&
@@ -173,7 +162,6 @@ function ObjectiveHeaderBar(props: {
                 ) && (
                     <Button
                         loading={creating}
-                        disabled={filteredObjectives.length >= 5}
                         onClick={() => {
                             createObjective();
                         }}
@@ -404,7 +392,7 @@ function ObjectiveBottomActionBar({
     });
     return (
         <>
-            <div className="mb-4 mt-auto flex w-full items-center justify-center px-4">
+            <div className="my-4 flex w-full items-center justify-center px-4">
                 {/* Status Chip */}
                 {/* {objectives.length > 0 && (
                     <div className="flex items-center justify-between">
@@ -459,19 +447,13 @@ function ObjectiveBottomActionBar({
                                     loading={loading}
                                     className=""
                                     disabled={
-                                        JSON.stringify(data.objectives) ==
-                                            JSON.stringify(
-                                                data.objectivesLocal
-                                            ) ||
                                         filteredObjectives.length < 3 ||
-                                        filteredObjectives.length > 5 ||
                                         objectives.some(
                                             (objective) =>
                                                 !objective.title ||
                                                 !objective.deadline ||
                                                 !objective.kpi ||
-                                                !objective.description ||
-                                                !objective.successConditions
+                                                !objective.description
                                         )
                                     }
                                     onClick={() => {
@@ -501,6 +483,69 @@ function ObjectiveBottomActionBar({
                                     />
                                 </Button>
                             )}
+                        {step == 2 && (
+                            <Button
+                                loading={loading}
+                                className=""
+                                disabled={
+                                    filteredObjectives.length < 3 ||
+                                    objectives.some(
+                                        (objective) =>
+                                            objective.selfReviewStatus ==
+                                                "sent" ||
+                                            !objective.midtermSelfComment
+                                    )
+                                }
+                                onClick={() => {
+                                    const temp = [...objectives];
+                                    temp.forEach((obj, i, arr) => {
+                                        arr[i].selfReviewStatus = "sent";
+                                    });
+                                    submitObjectives(temp);
+                                }}
+                                variant="primary"
+                            >
+                                Submit my reviews
+                                <Icon
+                                    icon="material-symbols:upload"
+                                    className="ml-1"
+                                    fontSize={14}
+                                />
+                            </Button>
+                        )}
+                    </>
+                )}
+                {user.employeeId == employee.supervisorId && (
+                    <>
+                        {step == 2 && (
+                            <Button
+                                loading={loading}
+                                className=""
+                                disabled={
+                                    filteredObjectives.length < 3 ||
+                                    objectives.some(
+                                        (objective) =>
+                                            objective.reviewStatus == "sent" ||
+                                            !objective.midtermComment
+                                    )
+                                }
+                                onClick={() => {
+                                    const temp = [...objectives];
+                                    temp.forEach((obj, i, arr) => {
+                                        arr[i].reviewStatus = "sent";
+                                    });
+                                    submitObjectives(temp);
+                                }}
+                                variant="primary"
+                            >
+                                Submit my reviews
+                                <Icon
+                                    icon="material-symbols:upload"
+                                    className="ml-1"
+                                    fontSize={14}
+                                />
+                            </Button>
+                        )}
                     </>
                 )}
             </div>

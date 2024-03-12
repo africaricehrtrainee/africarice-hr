@@ -104,7 +104,7 @@ export function NewEvaluation({
                         <div className="flex items-center justify-between">
                             <p className="text-2xl font-bold text-zinc-700">
                                 {employee.firstName.split(" ")[0]}&apos;s
-                                evaluation
+                                competency evaluation
                             </p>
                             <div className="absolute right-4 top-4 flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
                                 <p className="text-[10px] font-bold text-zinc-400">
@@ -124,7 +124,10 @@ export function NewEvaluation({
                                                 .leadershipRating ?? 0) +
                                             (data.evaluationLocal
                                                 .competencyRating ?? 0)) /
-                                            6) *
+                                            (data.evaluationLocal
+                                                .leadershipRating
+                                                ? 6
+                                                : 5)) *
                                             100
                                     ) / 100}
                                     <span className="text-xs font-bold text-zinc-400">
@@ -348,9 +351,12 @@ export function NewEvaluation({
                                     >
                                         <label className="text-[10px] font-medium text-zinc-300">
                                             {metric.label}{" "}
-                                            <span className="text-[8px] text-brand">
-                                                * (required)
-                                            </span>
+                                            {metric.label !== "LEADERSHIP" && (
+                                                <span className="text-[8px] text-brand">
+                                                    {" "}
+                                                    * (required)
+                                                </span>
+                                            )}
                                         </label>
                                         <div className="flex w-full items-center justify-center gap-1">
                                             <button
@@ -554,7 +560,8 @@ export function NewEvaluation({
                                     className="mr-1"
                                     fontSize={14}
                                 />
-                                You must fill all fields before submission.
+                                You must fill all required fields before
+                                submission.
                             </Chip>
                         </div>
                         {user.employeeId ==
@@ -594,9 +601,7 @@ export function NewEvaluation({
                                         !data.evaluationLocal
                                             .initiativeRating ||
                                         !data.evaluationLocal.respect ||
-                                        !data.evaluationLocal.respectRating ||
-                                        !data.evaluationLocal.leadership ||
-                                        !data.evaluationLocal.leadershipRating
+                                        !data.evaluationLocal.respectRating
                                     }
                                     onClick={() => {
                                         setIsSubmitModalOpen(true);
