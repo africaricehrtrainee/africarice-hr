@@ -31,6 +31,7 @@ model Employees {
   evaluations           Evaluations[]
   evaluationsSupervisor Evaluations[]       @relation("Supervisor")
   comments              ObjectiveComments[]
+  alerts                Alerts[]
 }
 
 model Evaluations {
@@ -149,4 +150,15 @@ model Settings {
   settingId Int    @id @default(autoincrement())
   name      String
   value     String
+}
+
+model Alerts {
+  alertId     Int      @id @default(autoincrement())
+  hash        String
+  recipientId Int
+  createdAt   DateTime @default(now())
+
+  employee Employees @relation(fields: [recipientId], references: [employeeId], onDelete: Cascade)
+
+  @@unique([hash, recipientId])
 }
