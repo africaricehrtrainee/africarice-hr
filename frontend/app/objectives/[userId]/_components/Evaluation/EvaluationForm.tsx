@@ -22,7 +22,7 @@ function EvaluationForm() {
         try {
             const response = await axios.get<Evaluation>(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${
-                    user?.employeeId ?? ""
+                    employee?.employeeId ?? ""
                 }/evaluations`
             ); // Adjust the API endpoint
             if (response.data) {
