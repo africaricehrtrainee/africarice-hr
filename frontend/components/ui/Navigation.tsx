@@ -3,7 +3,7 @@
 import Image from "next/image";
 import AfricaRice from "@/public/africarice.webp";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Button from "./Button";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,9 +12,12 @@ import LoadingBar from "react-top-loading-bar";
 import { useLoaderRef } from "@/hooks/useLoading";
 import axios from "axios";
 import Notification from "./Notification";
+import { useObjectivesDataStore } from "@/app/objectives/[userId]/_store/useStore";
+import { useEvaluationDataStore } from "@/app/evaluation360/[userId]/_store/useStore";
 
 function NotificationBox({ user }: { user: Employee }) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [status, setStatus] = useState<Status>();
     const divRef = useRef<HTMLDivElement>(null);
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -23,6 +26,75 @@ function NotificationBox({ user }: { user: Employee }) {
         }
     };
 
+    const { objectives, evaluation } = useObjectivesDataStore();
+    const { evaluators } = useEvaluationDataStore();
+
+    function computeUndo(status: Status) {
+        if (
+            status.evaluation360Status === "EVALUATION360_INVALID" ||
+            status.evaluation360Status === "EVALUATION360_EMPTY"
+        ) {
+            return true;
+        }
+
+        if (
+            status.objectiveStatus === "OBJECTIVE_EMPTY" ||
+            status.objectiveStatus === "OBJECTIVE_INVALID" ||
+            status.objectiveStatus === "OBJECTIVE_UNRATED" ||
+            status.objectiveStatus === "OBJECTIVE_UNREVIEWED"
+        ) {
+            return true;
+        }
+
+        if (
+            status.otherEvaluation360Status.length > 0 &&
+            status.otherEvaluation360Status.some(
+                (obj) => obj.evaluationStatus === "EVALUATION360_UNRATED"
+            )
+        ) {
+            return true;
+        }
+
+        if (status.selfEvaluationStatus === "SELF_EVALUATION_EMPTY") {
+            return true;
+        }
+
+        if (status.supervisorStatus) {
+            if (
+                status.supervisorStatus.some(
+                    (obj) =>
+                        obj.evaluationStatus === "SUPERVISOR_EVALUATION_UNRATED"
+                )
+            ) {
+                return true;
+            }
+
+            if (
+                status.supervisorStatus.some(
+                    (obj) =>
+                        obj.objectiveStatus ===
+                            "SUPERVISOR_OBJECTIVE_UNRATED" ||
+                        obj.objectiveStatus ===
+                            "SUPERVISOR_OBJECTIVE_UNREVIEWED" ||
+                        obj.objectiveStatus ===
+                            "SUPERVISOR_OBJECTIVE_UNVALIDATED"
+                )
+            ) {
+                return true;
+            }
+
+            if (
+                status.supervisorStatus.some(
+                    (obj) =>
+                        obj.evaluation360Status ===
+                        "SUPERVISOR_EVALUATION360_UNREVIEWED"
+                )
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
     useEffect(() => {
         // Bind the event listener
         document.addEventListener("mousedown", handleClickOutside);
@@ -31,6 +103,28 @@ function NotificationBox({ user }: { user: Employee }) {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [divRef]);
+
+    useMemo(() => {
+        getStatus();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [objectives, evaluation, evaluators]);
+    async function getStatus() {
+        axios
+            .get<Status>(
+                process.env.NEXT_PUBLIC_API_URL +
+                    "/api/employees/" +
+                    user?.employeeId +
+                    "/status"
+            )
+            .then((response) => {
+                if (response.data) {
+                    console.log("status", response.data);
+                    setStatus(response.data);
+                } else {
+                }
+            })
+            .catch((err) => console.log(err));
+    }
 
     return (
         <div className="relative">
@@ -45,9 +139,11 @@ function NotificationBox({ user }: { user: Employee }) {
                     className="ml-1"
                     fontSize={14}
                 />
-                <div className="absolute -bottom-2 -right-2 h-4 w-4 animate-ping rounded-full bg-red-500"></div>
             </Button>
 
+            {status && computeUndo(status) && (
+                <div className="absolute -bottom-2 -right-2 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white"></div>
+            )}
             <div
                 ref={divRef}
                 className={
@@ -59,7 +155,7 @@ function NotificationBox({ user }: { user: Employee }) {
                     }`
                 }
             >
-                <Notification user={user} />
+                {status && <Notification user={user} status={status} />}
             </div>
         </div>
     );

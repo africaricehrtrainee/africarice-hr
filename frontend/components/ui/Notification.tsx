@@ -565,32 +565,10 @@ function Evaluation360Notification({
     );
 }
 
-function Notification({ user }: { user: Employee }) {
-    const [status, setStatus] = React.useState<Status>();
+function Notification({ user, status }: { user: Employee; status: Status }) {
     const { objectives, evaluation } = useObjectivesDataStore();
     const { evaluators } = useEvaluationDataStore();
 
-    useMemo(() => {
-        getStatus();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [objectives, evaluation, evaluators]);
-    async function getStatus() {
-        axios
-            .get<Status>(
-                process.env.NEXT_PUBLIC_API_URL +
-                    "/api/employees/" +
-                    user?.employeeId +
-                    "/status"
-            )
-            .then((response) => {
-                if (response.data) {
-                    console.log("status", response.data);
-                    setStatus(response.data);
-                } else {
-                }
-            })
-            .catch((err) => console.log(err));
-    }
     useEffect(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, objectives, evaluation, evaluators]);

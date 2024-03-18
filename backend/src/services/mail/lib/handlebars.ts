@@ -2,14 +2,20 @@ import path from "path";
 import nodemailer from "nodemailer";
 import hbs from "nodemailer-express-handlebars";
 import { ExpressHandlebars } from "express-handlebars";
+import {
+    SMTP_ADDRESS,
+    SMTP_EMAIL,
+    SMTP_PASSWORD,
+    SMTP_PORT,
+} from "../../../../config";
 
 const transporter = nodemailer.createTransport({
-    host: "cluster5out.us.messagelabs.com",
-    port: 25,
+    host: SMTP_ADDRESS,
+    port: SMTP_PORT,
     secure: false, // Use `true` for port 465, `false` for all other ports
     auth: {
-        user: "AfricaRicehhr@cgiar.org",
-        pass: "P@ss2020Rh#",
+        user: SMTP_EMAIL,
+        pass: SMTP_PASSWORD,
     },
 });
 
