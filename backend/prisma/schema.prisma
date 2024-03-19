@@ -86,10 +86,15 @@ model Evaluator360 {
   evaluatorJobTitle String
 
   interpersonalComment String?
+  interpersonalRating  Int?
   collaborationComment String?
+  collaborationRating  Int?
   leadershipComment    String?
+  leadershipRating     Int?
   commitmentComment    String?
+  commitmentRating     Int?
   teamworkComment      String?
+  teamworkRating       Int?
 
   evaluation Evaluation360 @relation(fields: [evaluationId], references: [evaluation360Id], onDelete: Cascade)
   evaluator  Employees     @relation(fields: [evaluatorId], references: [employeeId], onDelete: Cascade)

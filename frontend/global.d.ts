@@ -80,6 +80,11 @@ interface Evaluator360 {
     leadershipComment: string | null;
     commitmentComment: string | null;
     teamworkComment: string | null;
+    interpersonalRating: number | null;
+    collaborationRating: number | null;
+    leadershipRating: number | null;
+    commitmentRating: number | null;
+    teamworkRating: number | null;
 }
 
 interface Objective {
