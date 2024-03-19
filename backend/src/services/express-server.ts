@@ -122,14 +122,18 @@ export class ExpressServer {
 
     public start(): void {
         // Start the Express application and listen on the specified port
-        this.app.listen(this.PORT, () => {
-            console.log(
-                `API server is running on http://localhost:${this.PORT}`
-            );
+        try {
+            this.app.listen(this.PORT, () => {
+                console.log(
+                    `API server is running on http://localhost:${this.PORT}`
+                );
 
-            cronJobInit();
-            employeeDatabaseInit();
-            prismaInit();
-        });
+                cronJobInit();
+                employeeDatabaseInit();
+                prismaInit();
+            });
+        } catch (error) {
+            console.log(error);
+        }
     }
 }

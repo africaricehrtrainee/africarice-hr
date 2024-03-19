@@ -13,17 +13,21 @@ export default async function sendMail({
     content: string;
     recipients: string[];
 }) {
-    const options = {
-        from: "AfricaRice HR <AfricaRice-HRTrainee1@cgiar.org>",
-        subject: title ?? "Update from Human Resources",
-        cc: recipients.join(","),
-        bcc: "AfricaRice-HRTrainee1@cgiar.org",
-        template: "main",
-        context: {
-            content,
-        },
-    };
-    return transporter.sendMail(options);
+    try {
+        const options = {
+            from: "AfricaRice HR <AfricaRice-HRTrainee1@cgiar.org>",
+            subject: title ?? "Update from Human Resources",
+            cc: recipients.join(","),
+            bcc: "AfricaRice-HRTrainee1@cgiar.org",
+            template: "main",
+            context: {
+                content,
+            },
+        };
+        return transporter.sendMail(options);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export async function mailEvaluationStep() {
