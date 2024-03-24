@@ -1,46 +1,23 @@
 "use client";
 
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
-import SuperviseeList from "@/app/_components/SuperviseeList";
+import SuperviseeList from "@/features/employees/components/SuperviseeList";
+import { useGetSubordinates } from "@/features/employees/queries/getSubordinates";
 
 export default function Dashboard() {
-    const [supervisees, setSupervisees] = useState<Employee[] | null>(null);
     const { user } = useAuth();
     const router = useRouter();
-    const [loading, setLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (user) {
-            axios
-                .get<Employee[]>(
-                    process.env.NEXT_PUBLIC_API_URL +
-                        "/api/employees/" +
-                        user?.employeeId +
-                        "/subordinates"
-                )
-                .then((response) => {
-                    if (response.data) {
-                        console.log(response.data);
-                        setSupervisees(response.data);
-                    } else {
-                        setSupervisees((prev) => []);
-                    }
-                })
-                .catch((err) => console.log(err));
-        }
-    }, [user]);
+    const { data } = useGetSubordinates(user?.employeeId);
 
     return (
         <main className="flex h-full w-full flex-1 items-center justify-center gap-4 p-8">
-            {supervisees && (
+            {data && (
                 <>
-                    {supervisees.length > 0 ? (
-                        <SuperviseeList employees={supervisees} />
+                    {data.length > 0 ? (
+                        <SuperviseeList employees={data} />
                     ) : (
                         <div className="flex flex-1 flex-col items-center justify-center gap-4 text-zinc-300">
                             <Icon icon="fluent:dust-20-filled" fontSize={64} />

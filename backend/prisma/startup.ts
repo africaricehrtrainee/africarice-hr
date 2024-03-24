@@ -21,7 +21,8 @@ export default function startup() {
                 {
                     stepId: 1,
                     name: "Objective Submission",
-                    message: "You have a new objective to submit",
+                    message:
+                        "The objective submission period has started. Please take the time to submit your objectives on the performance platform.",
                     active: false,
                     dateFrom: "2024-01-01",
                     dateTo: "2024-01-07",
@@ -30,7 +31,8 @@ export default function startup() {
                 {
                     stepId: 2,
                     name: "Objective Validation",
-                    message: "You have an objective to approve",
+                    message:
+                        "The objective validation period has started. Please take the time to validate your team's objectives on the performance platform.",
                     active: false,
                     dateFrom: "2024-01-08",
                     dateTo: "2024-01-14",
@@ -39,7 +41,8 @@ export default function startup() {
                 {
                     stepId: 3,
                     name: "Midterm Review",
-                    message: "You have a midterm review to do",
+                    message:
+                        "The midterm review period has started. Please take the time to review your team's as well as your objectives on the performance platform.",
                     active: false,
                     dateFrom: "2024-01-08",
                     dateTo: "2024-01-14",
@@ -48,7 +51,8 @@ export default function startup() {
                 {
                     stepId: 4,
                     name: "Staff Self-Evaluation",
-                    message: "You have a new self-evaluation to submit",
+                    message:
+                        "The self-evaluation period has started. Please take the time to self-evaluate your performance and your objectives on the performance platform.",
                     active: false,
                     dateFrom: "2024-01-15",
                     dateTo: "2024-01-21",
@@ -57,7 +61,8 @@ export default function startup() {
                 {
                     stepId: 5,
                     name: "Supervisor Evaluation",
-                    message: "You have an evaluation to submit",
+                    message:
+                        "The evaluation period has started. Please take the time to evaluate your team's performance and objectives on the performance platform.",
                     active: true,
                     dateFrom: "2024-01-22",
                     dateTo: "2024-01-28",

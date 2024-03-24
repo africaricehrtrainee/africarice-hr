@@ -89,11 +89,14 @@ export async function mailEvaluationStep() {
         return;
     }
 
-    transporter
-        .sendMail({
-            text: step.message,
-            to: "AfricaRice-HRTrainee1@cgiar.org",
-        })
+    const recipients = employees
+        .filter((empl) => empl.email.includes("cgiar.org"))
+        .map((employee) => employee.email);
+
+    sendMail({
+        content: step.message,
+        recipients,
+    })
         .then(async () => {
             console.log("Message sent successfully");
             await prisma.steps.update({
@@ -153,7 +156,7 @@ export async function mailNotificationStep() {
     sendMail({
         content:
             "You have not finished all the steps of the evaluation process. Please do so as soon as possible.",
-        recipients: [...recipients, "AfricaRice-HRTrainee1@cgiar.org"],
+        recipients,
     })
         .then(() => console.log("Successfully  sent notification mail"))
         .catch((err) =>

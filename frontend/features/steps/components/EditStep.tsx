@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState, useRef } from "react";
-import Button from "../../../../components/ui/Button";
+import Button from "../../../components/ui/Button";
 import axios from "axios";
 import { cn } from "@/util/utils";
 import LoadingBar from "react-top-loading-bar";

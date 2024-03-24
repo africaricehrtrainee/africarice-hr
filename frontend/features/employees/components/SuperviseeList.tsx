@@ -1,10 +1,10 @@
 // SuperviseeList.tsx
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
-import Button from "../../components/ui/Button";
 import { cn } from "@/util/utils";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import Button from "@/components/ui/Button";
 
 interface SuperviseeListProps {
     employees: Employee[];

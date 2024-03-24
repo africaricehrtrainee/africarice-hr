@@ -2,9 +2,9 @@ import Chip from "@/components/ui/Chip";
 import { useAuth } from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
-import { useObjectivesDataStore } from "../../_store/useStore";
-import { cn } from "@/lib/utils";
+import { useObjectivesDataStore } from "../../../../app/objectives/[userId]/_store/useStore";
 import { useQueryState } from "nuqs";
+import { cn } from "@/util/utils";
 
 function EvaluationSidebar() {
     const { objectives, evaluation } = useObjectivesDataStore();

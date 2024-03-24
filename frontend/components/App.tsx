@@ -1,19 +1,19 @@
 "use client";
 import { AuthProvider } from "@/hooks/useAuth";
 import { LoaderRefProvider } from "@/hooks/useLoading";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import axios from "axios";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 interface IProps {
     children: React.ReactNode;
 }
-export default function App(props: IProps) {
 
+const queryClient = new QueryClient();
+export default function App(props: IProps) {
     return (
         <>
             <AuthProvider>
-                <LoaderRefProvider>{props.children}</LoaderRefProvider>
+                <QueryClientProvider client={queryClient}>
+                    <LoaderRefProvider>{props.children}</LoaderRefProvider>
+                </QueryClientProvider>
             </AuthProvider>
         </>
     );

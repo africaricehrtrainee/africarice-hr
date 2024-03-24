@@ -9,10 +9,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from "axios";
 import { TextareaHTMLAttributes, useEffect, useState } from "react";
-import Modal from "../../../../components/ui/Modal";
-import { toast, useToast } from "../../../../components/ui/use-toast";
-import { cn } from "@/lib/utils";
+import Modal from "../../../components/ui/Modal";
+import { toast, useToast } from "../../../components/ui/use-toast";
 import { useQueryState } from "nuqs";
+import { cn } from "@/util/utils";
 
 export function NewObjective({
     employee,

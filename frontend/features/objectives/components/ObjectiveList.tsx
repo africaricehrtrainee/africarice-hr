@@ -9,8 +9,8 @@ import {
     useObjectivesDataStore,
 } from "@/app/objectives/[userId]/_store/useStore";
 import axios from "axios";
-import { useToast } from "../../../../components/ui/use-toast";
-import Objectives from "../page";
+import { useToast } from "../../../components/ui/use-toast";
+import Objectives from "../../../app/objectives/[userId]/page";
 import { useQueryState } from "nuqs";
 
 interface ObjectiveListProps {
@@ -103,6 +103,10 @@ function ObjectiveHeaderBar(props: {
 
     const [year, setYear] = useQueryState("year");
 
+    const [step, setStep] = useQueryState<number>("step", {
+        defaultValue: 0,
+        parse: (value) => parseInt(value),
+    });
     async function createObjective() {
         setCreating(true);
 
@@ -159,7 +163,8 @@ function ObjectiveHeaderBar(props: {
             {props.user.employeeId == props.employeeId &&
                 props.objectives.every(
                     (obj) => obj?.evaluationStatus !== "sent"
-                ) && (
+                ) &&
+                step == 0 && (
                     <Button
                         loading={creating}
                         onClick={() => {

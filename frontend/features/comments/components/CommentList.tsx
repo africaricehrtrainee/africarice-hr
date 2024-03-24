@@ -4,13 +4,13 @@ import Chip from "@/components/ui/Chip";
 import { cn } from "@/util/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
-import Modal from "../../../../components/ui/Modal";
+import Modal from "../../../components/ui/Modal";
 import axios from "axios";
 import {
     selectActiveObjective,
     useObjectivesDataStore,
 } from "@/app/objectives/[userId]/_store/useStore";
-import { useToast } from "../../../../components/ui/use-toast";
+import { useToast } from "../../../components/ui/use-toast";
 
 interface CommentListProps {
     user: Employee;

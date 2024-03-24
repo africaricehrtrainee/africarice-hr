@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import React from "react";
-import { useObjectivesDataStore } from "../../_store/useStore";
+import { useObjectivesDataStore } from "../../../../app/objectives/[userId]/_store/useStore";
 import { NewSelfEvaluation } from "../NewSelfEvaluation";
 import { NewEvaluation } from "../NewEvaluation";
 import axios from "axios";

@@ -1,31 +1,17 @@
 "use client";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import Button from "@/components/ui/Button";
 import Chip from "@/components/ui/Chip";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useRef, useState } from "react";
-import ObjectiveList from "@/app/objectives/[userId]/_components/ObjectiveList";
-import { NewObjective } from "./_components/NewObjective";
-import { cn } from "@/util/utils";
-import { CommentList } from "./_components/CommentList";
+import { useEffect, useState } from "react";
+import ObjectiveList from "@/features/objectives/components/ObjectiveList";
+import { NewObjective } from "../../../features/objectives/components/NewObjective";
+import { CommentList } from "../../../features/comments/components/CommentList";
 import axios from "axios";
 import { useAuth } from "@/hooks/useAuth";
-import Modal from "@/components/ui/Modal";
-import EditStep from "@/app/objectives/[userId]/_components/EditStep";
-import { selectActiveStep, useObjectivesDataStore } from "./_store/useStore";
+import { useObjectivesDataStore } from "./_store/useStore";
 import { useToast } from "@/components/ui/use-toast";
-import Evaluation from "./_components/Evaluation/Evaluation";
-import HistoryList from "./_components/HistoryList";
-import { useRouter, usePathname } from "next/navigation";
+import Evaluation from "../../../features/evaluations/components/Evaluation/Evaluation";
 import { useQueryState } from "nuqs";
-import { getYear } from "date-fns";
 import ProfileCard from "@/app/evaluation360/[userId]/_components/ProfileCard";
+import { Schedule } from "../../../features/steps/components/Schedule";
 
 export default function Objectives({ params }: { params: { userId: string } }) {
     const { toast } = useToast();
@@ -269,12 +255,6 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                                 ) : (
                                     <></>
                                 )}
-                                {/* Version history of the objective */}
-                                <HistoryList
-                                    user={user}
-                                    employee={data.employee}
-                                    objectives={data.objectivesLocal}
-                                />
                             </div>
                         )}
 
@@ -285,195 +265,5 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                 <></>
             )}
         </main>
-        // </ProtectedRoute>
-    );
-}
-function Step({
-    step,
-    postSteps,
-    index,
-}: {
-    step: Step;
-    postSteps: (number: number) => any;
-    index: number;
-}) {
-    const data = useObjectivesDataStore();
-    const activeStep = useObjectivesDataStore(selectActiveStep);
-    const { user, logout } = useAuth();
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [isEditingMessage, setIsEditingMessage] = useState<boolean>(false);
-    const divRef = useRef<HTMLDivElement>(null);
-    const [ostep, setStep] = useQueryState<number>("step", {
-        defaultValue: 0,
-        parse: (value) => parseInt(value),
-    });
-    const handleClickOutside = (event: MouseEvent) => {
-        setIsOpen(false);
-    };
-
-    useEffect(() => {
-        // Bind the event listener
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            // Unbind the event listener on clean up
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [divRef]);
-
-    return (
-        <>
-            {user && (
-                <div className="relative flex items-center justify-center gap-4">
-                    <Modal
-                        show={isEditingMessage}
-                        onClose={() => setIsEditingMessage(false)}
-                    >
-                        <EditStep
-                            step={step}
-                            onFormSubmit={(success) => {
-                                if (success) {
-                                    setIsEditingMessage(false);
-                                } else {
-                                }
-                            }}
-                        />
-                    </Modal>
-
-                    <button
-                        onClick={(e) => {
-                            if (activeStep >= index) {
-                                setStep(index);
-                            }
-                        }}
-                        className={cn(
-                            "p-2 px-4 border-transparent rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition-all active:scale-95 bg-transparent border-zinc-200 text-zinc-500 hover:bg-zinc-50 ",
-                            `${activeStep < index && "opacity-50"}`,
-                            `${
-                                ostep == index &&
-                                "bg-white text-zinc-800 border-green-300 shadow-sm"
-                            }`
-                        )}
-                    >
-                        {step.name}
-                        <p className="-mt-0 text-[8px]">
-                            from{" "}
-                            {step.dateFrom.substring(8, 10) +
-                                "/" +
-                                step.dateFrom.substring(5, 7)}{" "}
-                            to{" "}
-                            {step.dateTo.substring(8, 10) +
-                                "/" +
-                                step.dateTo.substring(5, 7)}
-                        </p>
-                    </button>
-
-                    <div
-                        ref={divRef}
-                        className={
-                            "absolute left-0 flex flex-col justify-start items-start min-w-full top-full mt-2 rounded-sm border border-zinc-200 bg-white shadow-sm transition-all z-10 " +
-                            `${
-                                isOpen
-                                    ? "opacity-100 visible translate-y-0"
-                                    : "opacity-0 invisible -translate-y-4"
-                            }`
-                        }
-                    >
-                        <button
-                            onClick={() => {
-                                setIsEditingMessage(true);
-                            }}
-                            className={
-                                "rounded-lg whitespace-nowrap p-2 px-3 text-xs font-bold transition-all hover:text-zinc-800 text-zinc-800 hover:bg-zinc-50 active:scale-90 flex items-center justify-between gap-4 group w-full "
-                            }
-                        >
-                            Edit evaluation step
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="12"
-                                height="12"
-                                viewBox="0 0 1024 1024"
-                            >
-                                <path
-                                    fill="currentColor"
-                                    d="M880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32m-622.3-84c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9"
-                                />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            )}
-        </>
-    );
-}
-
-function Schedule({ fetch, edit }: { fetch: () => any; edit?: boolean }) {
-    const data = useObjectivesDataStore();
-    const [year, setYear] = useQueryState("year");
-
-    const { toast } = useToast();
-    const postSteps = async (index: number) => {
-        const id = data.evaluationSteps[index].stepId;
-        await axios
-            .put(`${process.env.NEXT_PUBLIC_API_URL}/api/steps/${id}/current`)
-            .then((response) => {
-                if (response.status == 200) {
-                    fetch();
-                    toast({
-                        description: "Updated successfully",
-                    });
-                }
-            })
-            .catch((err) => console.log(err));
-    };
-
-    return (
-        <div className="flex w-full flex-1 items-center justify-between rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
-            <div className="flex flex-col items-start justify-start gap-2">
-                {!edit && (
-                    <div className="">
-                        <Select
-                            defaultValue={
-                                year ?? getYear(new Date()).toString()
-                            }
-                            onValueChange={(value) => setYear(value)}
-                        >
-                            <SelectTrigger className="w-[80px] border border-zinc-100 shadow-sm">
-                                <SelectValue placeholder="Pick term" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="2024">2024</SelectItem>
-                                <SelectItem value="2023">2023</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                )}
-                <div className="flex w-full items-center justify-start gap-2 rounded-md bg-zinc-100 p-1">
-                    {data.evaluationSteps
-                        .sort((a, b) => a.stepId - b.stepId)
-                        .map((stepObj, index) => (
-                            <>
-                                <Step
-                                    key={stepObj.name}
-                                    step={stepObj}
-                                    postSteps={postSteps}
-                                    index={index as number}
-                                />
-                                {/* {index < data.evaluationSteps.length - 1 && (
-                                    <>
-                                        <div
-                                            className={
-                                                "h-2 w-2 rounded-full" +
-                                                (activeStep > index
-                                                    ? " bg-zinc-300"
-                                                    : " bg-zinc-100")
-                                            }
-                                        ></div>
-                                    </>
-                                )} */}
-                            </>
-                        ))}
-                </div>
-            </div>
-        </div>
     );
 }

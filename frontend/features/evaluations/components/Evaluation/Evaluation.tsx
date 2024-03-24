@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import EvaluationSidebar from "./EvaluationSidebar";
-import { useObjectivesDataStore } from "../../_store/useStore";
+import { useObjectivesDataStore } from "../../../../app/objectives/[userId]/_store/useStore";
 import EvaluationForm from "./EvaluationForm";
-import { NewObjective } from "../NewObjective";
+import { NewObjective } from "../../../objectives/components/NewObjective";
 
 function Evaluation() {
     const {

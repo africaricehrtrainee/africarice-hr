@@ -7,8 +7,8 @@ import Button from "@/components/ui/Button";
 import { getCurrentMySQLDate } from "@/util/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { SetStateAction, useEffect, useState } from "react";
-import Modal from "../../../../components/ui/Modal";
-import Chip from "../../../../components/ui/Chip";
+import Modal from "../../../components/ui/Modal";
+import Chip from "../../../components/ui/Chip";
 
 export function NewSelfEvaluation({
     user,
