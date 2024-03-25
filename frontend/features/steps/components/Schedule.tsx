@@ -16,6 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useQueryState } from "nuqs";
 import { getYear } from "date-fns";
 import { Step } from "./Step";
+import StepTutorial from "./StepTutorial";
 
 export function Schedule({
     fetch,
@@ -75,7 +76,7 @@ export function Schedule({
                     />
                 </Button>
                 <Modal show={isWatching} onClose={() => setIsWatching(false)}>
-                    <div>ghey</div>
+                    <StepTutorial onClose={() => setIsWatching(false)} />
                 </Modal>
             </div>
             <div className="flex flex-col items-end justify-start gap-2">

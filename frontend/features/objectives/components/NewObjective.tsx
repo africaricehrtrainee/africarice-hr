@@ -677,28 +677,6 @@ export function NewObjective({
                                             fontSize={14}
                                         />
                                     </Button>
-                                    <Button
-                                        disabled={
-                                            !selectedObjective.selfComment ||
-                                            selectedObjective.selfEvaluationStatus ==
-                                                "sent"
-                                        }
-                                        onClick={() => {
-                                            const obj = {
-                                                ...selectedObjective,
-                                            };
-                                            obj.selfEvaluationStatus = "sent";
-                                            updateObjective(obj);
-                                        }}
-                                        variant="primary"
-                                    >
-                                        Submit self-evaluation
-                                        <Icon
-                                            icon="material-symbols:upload"
-                                            className="ml-1"
-                                            fontSize={14}
-                                        />
-                                    </Button>
                                 </div>
                             </>
                         )}

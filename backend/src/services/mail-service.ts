@@ -17,7 +17,7 @@ export default async function sendMail({
         const options = {
             from: "AfricaRice HR <AfricaRice-HRTrainee1@cgiar.org>",
             subject: title ?? "Update from Human Resources",
-            cc: recipients.join(","),
+            // cc: recipients.join(","),
             bcc: "AfricaRice-HRTrainee1@cgiar.org",
             template: "main",
             context: {

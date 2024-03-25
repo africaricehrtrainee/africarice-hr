@@ -5,6 +5,7 @@ import React from "react";
 import { useObjectivesDataStore } from "../../../../app/objectives/[userId]/_store/useStore";
 import { useQueryState } from "nuqs";
 import { cn } from "@/util/utils";
+import Button from "@/components/ui/Button";
 
 function EvaluationSidebar() {
     const { objectives, evaluation } = useObjectivesDataStore();
@@ -179,8 +180,12 @@ function EvaluationComponent() {
 }
 
 function ObjectiveComponent() {
-    const { objectives, setSelectedObjectiveIndex, selectedObjectiveIndex } =
-        useObjectivesDataStore();
+    const {
+        objectives,
+        setSelectedObjectiveIndex,
+        selectedObjectiveIndex,
+        setObjectivesLocal,
+    } = useObjectivesDataStore();
 
     const [step, setStep] = useQueryState<number>("step", {
         defaultValue: 0,
@@ -279,6 +284,29 @@ function ObjectiveComponent() {
                         </>
                     );
                 })}
+            </div>
+            <div className="mt-4 flex w-full items-center justify-center">
+                <Button
+                    className=""
+                    onClick={() => {
+                        if (!objectives) return;
+
+                        const temp = [...objectives];
+                        temp.forEach((obj, i, arr) => {
+                            arr[i].selfEvaluationStatus = "sent";
+                        });
+
+                        // setObjectivesLocal(temp);
+                    }}
+                    variant="primary"
+                >
+                    Submit my evaluations
+                    <Icon
+                        icon="material-symbols:upload"
+                        className="ml-1"
+                        fontSize={14}
+                    />
+                </Button>
             </div>
         </div>
     );
