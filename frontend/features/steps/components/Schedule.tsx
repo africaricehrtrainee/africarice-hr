@@ -80,24 +80,6 @@ export function Schedule({
                 </Modal>
             </div>
             <div className="flex flex-col items-end justify-start gap-2">
-                {!edit && (
-                    <div className="">
-                        <Select
-                            defaultValue={
-                                year ?? getYear(new Date()).toString()
-                            }
-                            onValueChange={(value) => setYear(value)}
-                        >
-                            <SelectTrigger className="w-[80px] border border-zinc-100 shadow-sm">
-                                <SelectValue placeholder="Pick term" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="2024">2024</SelectItem>
-                                <SelectItem value="2023">2023</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                )}
                 <div className="flex w-full items-center justify-start gap-2 rounded-md bg-zinc-100 p-1">
                     {data.evaluationSteps
                         .sort((a, b) => a.stepId - b.stepId)
