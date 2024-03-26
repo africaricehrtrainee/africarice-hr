@@ -131,6 +131,7 @@ export function xlsxToJsonArray(fileUrl: any): any[] {
                 email,
                 password,
                 role: "staff",
+                deletedAt: null,
             };
         });
 

@@ -140,12 +140,22 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
             <div className="scroll-hover mt-8 h-full w-full flex-col items-start justify-start overflow-y-scroll transition-all">
                 {employees
                     .filter((employee) => {
-                        let fil =
-                            filter == "hr"
-                                ? employee.role == "hr"
-                                : filter == "admin"
-                                ? employee.role == "admin"
-                                : true;
+                        let fil;
+                        switch(filter) {
+                            case "hr":
+                                fil = employee.role == "hr";
+                                break;
+                            case "admin":
+                                fil = employee.role == "admin";
+                                break;
+                            case "deleted":
+                                fil = employee.deletedAt;
+                                break;
+                            default:
+                                fil = true;
+                                break;
+                        }
+
                         return (
                             fil &&
                             (employee.firstName
@@ -172,9 +182,10 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                 }}
                                 className={cn(
                                     "grid grid-cols-6 w-full relative items-center justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50 ",
+                                    `${employee.deletedAt && "opacity-50"}`,
                                     `${
                                         i == selectedEmployee
-                                            ? "bg-zinc-50 hover:bg-zinc-50 border-l-4 border-l-brand"
+                                            ? "bg-zinc-50 opacity-100 hover:bg-zinc-50 border-l-4 border-l-brand"
                                             : ""
                                     }`
                                 )}

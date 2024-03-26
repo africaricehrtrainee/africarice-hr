@@ -331,4 +331,26 @@ router.patch("/:id", isAuthenticated, async (req, res) => {
     }
 });
 
+// Soft delete employee by id (HTTP DELETE)
+router.delete("/:id", isAuthenticated, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await prisma.employees.update({
+            where: {
+                employeeId: parseInt(id),
+            },
+            data: {
+                deletedAt: new Date(),
+            },
+        });
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({ error: "Employee not found" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 export default router;

@@ -124,7 +124,7 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
             </div>
             <div className="mt-2 flex w-full items-center justify-between">
                 <p className="text-2xl font-bold text-zinc-700">Account</p>
-                {/* {selectedEmployee && selectedEmployee.deletedAt !== null && (
+                {selectedEmployee && selectedEmployee.deletedAt !== null && (
                     <Button
                         onClick={() => {
                             if (
@@ -170,7 +170,7 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                             fontSize={14}
                         />
                     </Button>
-                )} */}
+                )}
             </div>
             <form className="w-full" onSubmit={handleUpdate}>
                 <div className="mt-4 flex w-full flex-col justify-start gap-1">

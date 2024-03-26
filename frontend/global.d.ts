@@ -17,6 +17,7 @@ interface Employee {
     objectivesSupervisor?: Objectives[];
     evaluations?: Evaluations[];
     evaluationsSupervisor?: Evaluations[];
+    deletedAt: string | null;
 }
 
 interface Evaluation {
