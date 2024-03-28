@@ -55,6 +55,7 @@ export function isAuthenticated(
     next: NextFunction
 ): void {
     try {
+
         if (req.isAuthenticated()) {
             // If the user is authenticated, call the next middleware
             return next();

@@ -6,6 +6,7 @@ import App from "@/components/App";
 import { Toaster } from "@/components/ui/toaster";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { ReactQueryClientProvider } from "@/components/ReactQueryProvider";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -14,26 +15,29 @@ export const metadata: Metadata = {
     description: "The Human Resources Management Portal",
 };
 
+
 export default function RootLayout({
     children,
 }: {
     children: React.ReactNode;
-}) {    
+}) {
     return (
-        <html lang="en">
-            <body
-                className={
-                    GeistSans.className +
-                    " bg-background flex flex-col min-h-screen"
-                }
-            >
-                <App>
-                    <Navigation />
-                    {children}
-                </App>
-                <div id="modal-root"></div>
-                <Toaster />
-            </body>
-        </html>
+        <ReactQueryClientProvider>
+            <html lang="en">
+                <body
+                    className={
+                        GeistSans.className +
+                        " bg-background flex flex-col min-h-screen"
+                    }
+                >
+                    <App>
+                        <Navigation />
+                        {children}
+                    </App>
+                    <div id="modal-root"></div>
+                    <Toaster />
+                </body>
+            </html>
+        </ReactQueryClientProvider>
     );
 }

@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useEvaluationDataStore } from "./_store/useStore";
 import { useAuth } from "@/hooks/useAuth";
 import EvaluatorsList from "./_components/EvaluatorsList";
-import ProfileCard from "./_components/ProfileCard";
+import ProfileCard from "@/features/employees/components/ProfileCard";
 import EvaluationForm from "./_components/EvaluationForm";
 import { useQueryState } from "nuqs";
 

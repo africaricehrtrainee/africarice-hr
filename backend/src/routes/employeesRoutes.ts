@@ -7,6 +7,7 @@ import { xlsxToJsonArray } from "../services/xlsx-service";
 import { computeNotifications } from "./util/utils";
 import { parse } from "dotenv";
 import { getYear } from "date-fns";
+import path from "path";
 
 const router = express.Router();
 const dbService = new DbService();
@@ -100,7 +101,6 @@ router.get("/", isAuthenticated, async (req, res) => {
             res.status(200).json(result);
             return;
         }
-
         const result = await prisma.employees.findMany({
             include: {
                 subordinates: true,
@@ -187,6 +187,7 @@ router.put("/:id/objectives/send", isAuthenticated, async (req, res) => {
 router.get("/:id/evaluations", isAuthenticated, async (req, res) => {
     const { id } = req.params; // Get the employee ID from request params
     const { year } = req.query; // Get the year from the query string
+    
     try {
         const result = await prisma.evaluations.findFirst({
             where: {
@@ -353,4 +354,43 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+router.get("/:id/summary", isAuthenticated, async (req, res) => {
+	try {
+        // Fetch objectives, and evaluation file of the employee, then return a pdf file of the summary
+		const { id } = req.params;
+        // Year query optional query parameter
+        const { year } = req.query;
+
+        const employee = await prisma.employees.findFirst({
+            where: {
+                employeeId: parseInt(id),
+            },
+        });
+
+        const objectives = await prisma.objectives.findMany({
+            where: {
+                employeeId: parseInt(id),   
+                objectiveYear: (year as string) ?? getYear(new Date()).toString(),
+            },
+        });
+
+        const evaluation = await prisma.evaluations.findFirst({
+            where: {
+                employeeId: parseInt(id),
+                evaluationYear: (year as string) ?? getYear(new Date()).toString(),
+            },
+        });
+
+        if (!employee) {
+            res.status(404).json({ error: "Employee not found" });
+            return;
+        }
+
+	}
+    catch(err) {
+        console.error(err)
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
 export default router;

@@ -10,7 +10,7 @@ import { useObjectivesDataStore } from "./_store/useStore";
 import { useToast } from "@/components/ui/use-toast";
 import Evaluation from "../../../features/evaluations/components/Evaluation/Evaluation";
 import { useQueryState } from "nuqs";
-import ProfileCard from "@/app/evaluation360/[userId]/_components/ProfileCard";
+import ProfileCard from "@/features/employees/components/ProfileCard";
 import { Schedule } from "../../../features/steps/components/Schedule";
 
 export default function Objectives({ params }: { params: { userId: string } }) {

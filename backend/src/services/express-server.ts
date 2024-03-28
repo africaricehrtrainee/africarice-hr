@@ -17,7 +17,6 @@ import { DbService } from "./db-service";
 import employeeDatabaseInit from "./xlsx-service";
 import prisma from "../../prisma/middleware";
 import cronJobInit from "../routes/util/cron";
-import sql from "sql-template-tag";
 import prismaInit from "../../prisma/startup";
 
 export class ExpressServer {
