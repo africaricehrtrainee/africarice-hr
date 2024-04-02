@@ -314,6 +314,7 @@ export function NewEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
+                                            maxLength={180}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
@@ -523,6 +524,7 @@ export function NewEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
+                                            maxLength={180}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==

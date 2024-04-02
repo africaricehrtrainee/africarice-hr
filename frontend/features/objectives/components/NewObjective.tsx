@@ -186,6 +186,33 @@ export function NewObjective({
                 console.log(err);
             });
     }
+    async function saveObjectives(objectives : Partial<Objective>[]) {
+        axios.post(
+            process.env.NEXT_PUBLIC_API_URL + "/api/objectives/bulk",
+            {
+                objectives,
+            }
+       ).then(
+              (response) => {
+                if (response.status == 201) {
+                     data.fetchObjectives(employee.employeeId.toString(), year);
+                     toast({
+                          description: "Successfully updated objectives",
+                     });
+                }
+              }
+ 
+
+            ).catch((err) => {
+              toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+              });
+              console.log(err);
+         });
+    }
+
 
     async function updateObjective(objective: Partial<Objective>) {
         axios
@@ -663,10 +690,7 @@ export function NewObjective({
                                                 "sent"
                                         }
                                         onClick={() => {
-                                            const obj = {
-                                                ...selectedObjective,
-                                            };
-                                            updateObjective(obj);
+                                            saveObjectives(data.objectivesLocal);
                                         }}
                                         variant="outline"
                                     >
@@ -713,39 +737,13 @@ export function NewObjective({
                                                 "sent"
                                         }
                                         onClick={() => {
-                                            const obj = {
-                                                ...selectedObjective,
-                                            };
-                                            updateObjective(obj);
+                                            saveObjectives(data.objectivesLocal);
                                         }}
                                         variant="outline"
                                     >
                                         Save changes
                                         <Icon
                                             icon="ic:baseline-save-alt"
-                                            className="ml-1"
-                                            fontSize={14}
-                                        />
-                                    </Button>
-                                    <Button
-                                        disabled={
-                                            !selectedObjective.comment ||
-                                            !selectedObjective.grade ||
-                                            selectedObjective.evaluationStatus ==
-                                                "sent"
-                                        }
-                                        onClick={() => {
-                                            const obj = {
-                                                ...selectedObjective,
-                                            };
-                                            obj.evaluationStatus = "sent";
-                                            updateObjective(obj);
-                                        }}
-                                        variant="primary"
-                                    >
-                                        Submit evaluation
-                                        <Icon
-                                            icon="material-symbols:upload"
                                             className="ml-1"
                                             fontSize={14}
                                         />

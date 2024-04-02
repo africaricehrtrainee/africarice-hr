@@ -139,6 +139,7 @@ export function NewSelfEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
+                                            maxLength={180}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
@@ -189,6 +190,7 @@ export function NewSelfEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
+                                            maxLength={180}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==

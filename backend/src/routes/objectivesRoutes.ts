@@ -61,30 +61,6 @@ router.get("/:id", isAuthenticated, async (req, res) => {
     }
 });
 
-router.post("/bulk", isAuthenticated, async (req, res) => {
-    try {
-        const { objectives } = req.body;
-
-        if (!objectives) {
-            res.status(400).json({ error: "Objective array is required" });
-            return;
-        }
-
-        const result = await prisma.$transaction(
-            objectives.map((objective: Objectives) => {
-                return prisma.objectives.update({
-                    where: { objectiveId: objective.objectiveId },
-                    data: objective,
-                });
-            })
-        );
-
-        res.status(201).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
 
 router.put("/:id", isAuthenticated, async (req, res) => {
     try {

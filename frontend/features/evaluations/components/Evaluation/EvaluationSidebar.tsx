@@ -6,6 +6,9 @@ import { useObjectivesDataStore } from "../../../../app/objectives/[userId]/_sto
 import { useQueryState } from "nuqs";
 import { cn } from "@/util/utils";
 import Button from "@/components/ui/Button";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
+import { User } from "lucide-react";
 
 function EvaluationSidebar() {
     const { objectives, evaluation } = useObjectivesDataStore();
@@ -180,10 +183,13 @@ function EvaluationComponent() {
 }
 
 function ObjectiveComponent() {
+    const {user} = useAuth()
     const {
         objectives,
         setSelectedObjectiveIndex,
         selectedObjectiveIndex,
+        employee,
+        fetchObjectives,
         setObjectivesLocal,
     } = useObjectivesDataStore();
 
@@ -191,6 +197,41 @@ function ObjectiveComponent() {
         defaultValue: 0,
         parse: (value) => parseInt(value),
     });
+
+    const [year, setYear] = useQueryState<number>("year", {
+        defaultValue: new Date().getFullYear(),
+        parse: (value) => parseInt(value),
+    });
+
+    async function saveObjectives(objectives : Partial<Objective>[]) {
+        if(!employee || !year) return;
+
+        axios.post(
+            process.env.NEXT_PUBLIC_API_URL + "/api/objectives/bulk",
+            {
+                objectives,
+            }
+       ).then(
+              (response) => {
+                if (response.status == 201) {
+                     fetchObjectives(employee.employeeId.toString(), year.toString());
+                     toast({
+                          description: "Successfully updated objectives",
+                     });
+                }
+              }
+ 
+
+            ).catch((err) => {
+              toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+              });
+              console.log(err);
+         });
+    }
+
     const count =
         step == 3
             ? objectives?.filter((obj) => obj.selfEvaluationStatus == "draft")
@@ -286,8 +327,9 @@ function ObjectiveComponent() {
                 })}
             </div>
             <div className="mt-4 flex w-full items-center justify-center">
-                <Button
+                {user?.employeeId == employee?.employeeId && <Button
                     className=""
+                    disabled={!objectives || objectives.every((obj) => obj.selfEvaluationStatus == "sent") || objectives.some((obj) => !obj.selfComment)}
                     onClick={() => {
                         if (!objectives) return;
 
@@ -296,7 +338,7 @@ function ObjectiveComponent() {
                             arr[i].selfEvaluationStatus = "sent";
                         });
 
-                        // setObjectivesLocal(temp);
+                        saveObjectives(temp)
                     }}
                     variant="primary"
                 >
@@ -306,7 +348,30 @@ function ObjectiveComponent() {
                         className="ml-1"
                         fontSize={14}
                     />
-                </Button>
+                </Button> }
+                {user?.employeeId == employee?.supervisorId && <Button
+                    className=""
+                    disabled={!objectives || objectives.every((obj) => obj.evaluationStatus == "sent") || objectives.some((obj) => !obj.comment || !obj.grade)}
+                    onClick={() => {
+                        if (!objectives) return;
+
+                        const temp = [...objectives];
+                        temp.forEach((obj, i, arr) => {
+                            arr[i].evaluationStatus = "sent";
+                        });
+
+                        saveObjectives(temp)
+                    }}
+                    variant="primary"
+                >
+                    Submit my evaluations
+                    <Icon
+                        icon="material-symbols:upload"
+                        className="ml-1"
+                        fontSize={14}
+                    />
+                </Button> }
+
             </div>
         </div>
     );
