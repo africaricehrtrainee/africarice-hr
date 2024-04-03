@@ -71,7 +71,7 @@ function Header({ user, year, objectives, evaluation }: { user: Employee, year: 
                 (evaluation.leadershipRating ?? 0) +
                 (evaluation.competencyRating ?? 0)) /
                 (evaluation.leadershipRating ? 6 : 5)) *
-                100
+            100
         ) / 100;
 
     const totalGrade = Math.round((objectivesGrade + evaluationGrade) / 2 * 100) / 100;
@@ -191,9 +191,9 @@ function Evaluation({ evaluation }: { evaluation: Evaluation }) {
 
 function Objective({ objective }: { objective: Objective }) {
     return (<View style={[styles.container, { marginTop: 16 }]}>
-            <Text style={styles.sectionTitle}>OBJECTIVE SUMMARY</Text>
-            <Text style={styles.fieldLabel}>OBJECTIVE GRADE</Text>
-            <Text style={styles.fieldValue}>{objective.grade} / 5</Text>
+        <Text style={styles.sectionTitle}>OBJECTIVE SUMMARY</Text>
+        <Text style={styles.fieldLabel}>OBJECTIVE GRADE</Text>
+        <Text style={styles.fieldValue}>{objective.grade} / 5</Text>
 
         <View style={styles.section}>
             <View style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -276,6 +276,7 @@ export default function Summary(props: SummaryProps) {
             { src: '/fonts/GeistMono-Bold.ttf', fontWeight: 'bold' }
         ]
     })
+    if (props.evaluation.evaluationStatus !== 'sent') return null
     return (
         <Document>
             <Page size="A4" style={{ padding: 16, fontFamily: 'Geist', letterSpacing: -.3, fontSize: 12 }}>

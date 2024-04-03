@@ -63,7 +63,7 @@ export function Schedule({
                 <p className="rounded-md text-sm">
                     {data.evaluationSteps[ostep].message}
                 </p>
-                <Button
+                {/* <Button
                     variant="outline"
                     className="bg-white"
                     onClick={() => setIsWatching(true)}
@@ -74,7 +74,7 @@ export function Schedule({
                         className="ml-1 text-zinc-500"
                         fontSize={12}
                     />
-                </Button>
+                </Button> */}
                 <Modal show={isWatching} onClose={() => setIsWatching(false)}>
                     <StepTutorial onClose={() => setIsWatching(false)} />
                 </Modal>
