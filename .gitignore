@@ -12,7 +12,6 @@
 */.next/
 */dist/
 /out/
-*/app
 # production
 */build
 
