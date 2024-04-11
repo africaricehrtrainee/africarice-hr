@@ -73,11 +73,11 @@ function NotificationBox({ user }: { user: Employee }) {
                 status.supervisorStatus.some(
                     (obj) =>
                         obj.objectiveStatus ===
-                            "SUPERVISOR_OBJECTIVE_UNRATED" ||
+                        "SUPERVISOR_OBJECTIVE_UNRATED" ||
                         obj.objectiveStatus ===
-                            "SUPERVISOR_OBJECTIVE_UNREVIEWED" ||
+                        "SUPERVISOR_OBJECTIVE_UNREVIEWED" ||
                         obj.objectiveStatus ===
-                            "SUPERVISOR_OBJECTIVE_UNVALIDATED"
+                        "SUPERVISOR_OBJECTIVE_UNVALIDATED"
                 )
             ) {
                 return true;
@@ -112,9 +112,9 @@ function NotificationBox({ user }: { user: Employee }) {
         axios
             .get<Status>(
                 process.env.NEXT_PUBLIC_API_URL +
-                    "/api/employees/" +
-                    user?.employeeId +
-                    "/status"
+                "/api/employees/" +
+                user?.employeeId +
+                "/status"
             )
             .then((response) => {
                 if (response.data) {
@@ -148,10 +148,9 @@ function NotificationBox({ user }: { user: Employee }) {
                 ref={divRef}
                 className={
                     "absolute left-0 z-10 flex flex-col justify-start items-start gap-1 top-full mt-2 rounded-md border border-zinc-200 bg-white shadow-sm transition-all  " +
-                    `${
-                        isOpen
-                            ? "opacity-100 visible translate-y-0"
-                            : "opacity-0 invisible -translate-y-4"
+                    `${isOpen
+                        ? "opacity-100 visible translate-y-0"
+                        : "opacity-0 invisible -translate-y-4"
                     }`
                 }
             >
@@ -192,18 +191,16 @@ function Profile() {
                         onClick={() => setIsOpen((prev) => !prev)}
                         className={
                             "flex h-9 border items-center gap-2 px-4 justify-center rounded-full  bg-green-100 p-2 text-xs font-bold text-green-800 transition-all " +
-                            `${
-                                isOpen
-                                    ? "border-green-800"
-                                    : "border-transparent"
+                            `${isOpen
+                                ? "border-green-800"
+                                : "border-transparent"
                             }`
                         }
                     >
                         <Icon icon="ci:hamburger-lg" fontSize={14} />
                         {user.firstName && user.lastName
-                            ? `${user.lastName.split(" ")[0]} ${
-                                  user.firstName.split(" ")[0]
-                              }`
+                            ? `${user.lastName.split(" ")[0]} ${user.firstName.split(" ")[0]
+                            }`
                             : ""}
                         <p className="font-mono">{user.matricule}</p>
                     </button>
@@ -212,10 +209,9 @@ function Profile() {
                         ref={divRef}
                         className={
                             "absolute left-0 z-10 flex flex-col justify-start items-start gap-1 top-full mt-4 rounded-md border border-zinc-200 bg-white shadow-sm transition-all p-1 " +
-                            `${
-                                isOpen
-                                    ? "opacity-100 visible translate-y-0"
-                                    : "opacity-0 invisible -translate-y-4"
+                            `${isOpen
+                                ? "opacity-100 visible translate-y-0"
+                                : "opacity-0 invisible -translate-y-4"
                             }`
                         }
                     >
@@ -283,14 +279,13 @@ function Page({ item }: { item: MenuItem }) {
                     onClick={() => setIsOpen((prev) => !prev)}
                     className={
                         "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-100 text-zinc-500 hover:text-zinc-600 active:scale-90 flex items-center justify-center gap-1 group" +
-                        ` ${
-                            item.children.some(
-                                (obj) =>
-                                    pathName.includes(obj.route as string) ||
-                                    pathName.includes(
-                                        (obj.route as string).split("/")[1]
-                                    )
-                            ) && "bg-white shadow-sm text-zinc-800"
+                        ` ${item.children.some(
+                            (obj) =>
+                                pathName.includes(obj.route as string) ||
+                                pathName.includes(
+                                    (obj.route as string).split("/")[1]
+                                )
+                        ) && "bg-white shadow-sm text-zinc-800"
                         }`
                     }
                 >
@@ -300,10 +295,9 @@ function Page({ item }: { item: MenuItem }) {
                 <div
                     className={
                         "absolute left-0 z-10 flex flex-col justify-start items-start top-full mt-2 rounded-lg border border-zinc-200 bg-white shadow-sm transition-all p-2 gap-2 " +
-                        `${
-                            isOpen
-                                ? "opacity-100 visible translate-y-0"
-                                : "opacity-0 invisible -translate-y-4"
+                        `${isOpen
+                            ? "opacity-100 visible translate-y-0"
+                            : "opacity-0 invisible -translate-y-4"
                         }`
                     }
                 >
@@ -339,11 +333,10 @@ function Page({ item }: { item: MenuItem }) {
                 key={item.name}
                 className={
                     "rounded-md p-2 px-4 text-xs font-bold transition-all hover:bg-zinc-200 text-zinc-500 hover:text-zinc-600 active:scale-90 flex items-center justify-center gap-1 group" +
-                    ` ${
-                        (item.route == "/"
-                            ? pathName == "/"
-                            : pathName.includes(item.route as string)) &&
-                        "bg-white shadow-sm text-zinc-800 hover:bg-zinc-50"
+                    ` ${(item.route == "/"
+                        ? pathName == "/"
+                        : pathName.includes(item.route as string)) &&
+                    "bg-white shadow-sm text-zinc-800 hover:bg-zinc-50"
                     }`
                 }
                 href={item.route as string}
@@ -382,6 +375,11 @@ function Menu() {
         {
             name: "Settings",
             route: "/management/settings",
+            permission: ["admin"],
+        },
+        {
+            name: "Reporting",
+            route: "/management/reporting",
             permission: ["admin"],
         },
     ];
