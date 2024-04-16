@@ -55,6 +55,10 @@ const SuperviseeList: React.FC<SuperviseeListProps> = ({ employees }) => {
                                     .includes(search))
                         );
                     })
+                    .sort(
+                        // sort by lastname asc
+                        (a, b) => a.lastName.localeCompare(b.lastName)
+                    )
                     .map((employee, i) => {
                         return (
                             <div

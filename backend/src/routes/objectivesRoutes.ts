@@ -10,104 +10,103 @@ const router = express.Router();
 const db = new DbService();
 
 router.get("/", isAuthenticated, async (req, res) => {
-    try {
-        const result = await prisma.objectives.findMany({
-            orderBy: { objectiveId: "asc" },
-        });
-        res.status(200).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+	try {
+		const result = await prisma.objectives.findMany({
+			orderBy: { objectiveId: "asc" },
+		});
+		res.status(200).json(result);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 router.post("/", isAuthenticated, async (req, res) => {
-    try {
-        const { objective }: { objective: Objectives } = req.body;
+	try {
+		const { objective }: { objective: Objectives } = req.body;
 
-        if (!objective) {
-            res.status(400).json({ error: "Please provide an Objective" });
-            return;
-        }
+		if (!objective) {
+			res.status(400).json({ error: "Please provide an Objective" });
+			return;
+		}
 
-        const result = await prisma.objectives.create({
-            data: objective,
-        });
+		const result = await prisma.objectives.create({
+			data: objective,
+		});
 
-        res.status(201).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+		res.status(201).json(result);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 router.get("/:id", isAuthenticated, async (req, res) => {
-    try {
-        const { id } = req.params;
+	try {
+		const { id } = req.params;
 
-        const result = await prisma.objectives.findUnique({
-            where: { objectiveId: parseInt(id) },
-        });
+		const result = await prisma.objectives.findUnique({
+			where: { objectiveId: parseInt(id) },
+		});
 
-        if (!result) {
-            res.status(404).json({ error: "Objective not found" });
-            return;
-        }
+		if (!result) {
+			res.status(404).json({ error: "Objective not found" });
+			return;
+		}
 
-        res.status(200).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+		res.status(200).json(result);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
-
 router.put("/:id", isAuthenticated, async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { objective } = req.body;
+	try {
+		const { id } = req.params;
+		const { objective } = req.body;
 
-        if (!objective) {
-            res.status(400).json({ error: "Objective is required" });
-            return;
-        }
+		if (!objective) {
+			res.status(400).json({ error: "Objective is required" });
+			return;
+		}
 
-        const result = await prisma.objectives.update({
-            where: { objectiveId: parseInt(id) },
-            data: objective,
-        });
+		const result = await prisma.objectives.update({
+			where: { objectiveId: parseInt(id) },
+			data: objective,
+		});
 
-        res.status(201).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+		res.status(201).json(result);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 router.post("/bulk", isAuthenticated, async (req, res) => {
-    // Bulk update with a prisma transaction
-    try {
-        const { objectives } = req.body;
+	// Bulk update with a prisma transaction
+	try {
+		const { objectives } = req.body;
 
-        if (!objectives) {
-            res.status(400).json({ error: "Objective array is required" });
-            return;
-        }
+		if (!objectives) {
+			res.status(400).json({ error: "Objective array is required" });
+			return;
+		}
 
-        const result = await prisma.$transaction(
-            objectives.map((objective: Objectives) => {
-                return prisma.objectives.update({
-                    where: { objectiveId: objective.objectiveId },
-                    data: objective,
-                });
-            })
-        );
+		const result = await prisma.$transaction(
+			objectives.map((objective: Objectives) => {
+				return prisma.objectives.update({
+					where: { objectiveId: objective.objectiveId },
+					data: objective,
+				});
+			})
+		);
 
-        res.status(201).json(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+		res.status(201).json(result);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 // Midterm review update and keep history
@@ -163,35 +162,35 @@ router.post("/bulk", isAuthenticated, async (req, res) => {
 // });
 
 router.delete("/:id", isAuthenticated, async (req, res) => {
-    try {
-        const { id } = req.params;
+	try {
+		const { id } = req.params;
 
-        const obj = await prisma.objectives.findUnique({
-            where: { objectiveId: parseInt(id) },
-        });
+		const obj = await prisma.objectives.findUnique({
+			where: { objectiveId: parseInt(id) },
+		});
 
-        if (!obj) {
-            res.status(404).json({ error: "Objective not found" });
-            return;
-        }
+		if (!obj) {
+			res.status(404).json({ error: "Objective not found" });
+			return;
+		}
 
-        if (obj.status == "ok") {
-            const result = await prisma.objectives.update({
-                where: { objectiveId: parseInt(id) },
-                data: { status: "cancelled" },
-            });
+		if (obj.status == "ok") {
+			const result = await prisma.objectives.update({
+				where: { objectiveId: parseInt(id) },
+				data: { ...obj, status: "cancelled" },
+			});
 
-            res.status(201).json(result);
-        } else {
-            const result = await prisma.objectives.delete({
-                where: { objectiveId: parseInt(id) },
-            });
-            res.status(201).json(result);
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+			res.status(201).json(result);
+		} else {
+			const result = await prisma.objectives.delete({
+				where: { objectiveId: parseInt(id) },
+			});
+			res.status(201).json(result);
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 });
 
 export default router;

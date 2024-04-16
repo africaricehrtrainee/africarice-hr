@@ -68,16 +68,15 @@ export function Step({
                             }
                         }}
                         className={cn(
-                            "p-2 px-4 border-transparent rounded-lg flex flex-col items-center justify-center text-xs font-semibold transition-all active:scale-95 bg-transparent border-zinc-200 text-zinc-500 hover:bg-zinc-50 ",
+                            "p-2 px-4 border-transparent rounded-lg flex flex-col items-center justify-center text-sm font-semibold transition-all active:scale-95 bg-transparent border-zinc-200 text-zinc-500 hover:bg-zinc-50 ",
                             `${activeStep < index && "opacity-50"}`,
-                            `${
-                                ostep == index &&
-                                "bg-white text-zinc-800 border-green-300 shadow-sm"
+                            `${ostep == index &&
+                            "bg-white text-zinc-800 border-green-300 shadow-sm"
                             }`
                         )}
                     >
                         {step.name}
-                        <p className="-mt-0 text-[8px]">
+                        <p className="-mt-0 text-[9px]">
                             from{" "}
                             {step.dateFrom.substring(8, 10) +
                                 "/" +
@@ -93,10 +92,9 @@ export function Step({
                         ref={divRef}
                         className={
                             "absolute left-0 flex flex-col justify-start items-start min-w-full top-full mt-2 rounded-sm border border-zinc-200 bg-white shadow-sm transition-all z-10 " +
-                            `${
-                                isOpen
-                                    ? "opacity-100 visible translate-y-0"
-                                    : "opacity-0 invisible -translate-y-4"
+                            `${isOpen
+                                ? "opacity-100 visible translate-y-0"
+                                : "opacity-0 invisible -translate-y-4"
                             }`
                         }
                     >

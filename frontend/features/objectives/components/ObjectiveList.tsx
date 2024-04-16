@@ -12,6 +12,7 @@ import axios from "axios";
 import { useToast } from "../../../components/ui/use-toast";
 import Objectives from "../../../app/objectives/[userId]/page";
 import { useQueryState } from "nuqs";
+import { MAX_OBJ_AMOUNT, MIN_INPUT_LENGTH, MIN_OBJ_AMOUNT } from "@/config";
 
 interface ObjectiveListProps {
     employee: Employee;
@@ -46,19 +47,28 @@ const ObjectiveList: React.FC<ObjectiveListProps> = ({
                         _employeeId={employee.employeeId}
                     />
                     {user.employeeId == employee.employeeId &&
-                    objectives.length > 0 ? (
-                        objectives.length < 3 ? (
-                            <div className="w-full items-center justify-center p-2">
+                        objectives.length > 0 ? (
+                        objectives.length < MIN_OBJ_AMOUNT ? (
+                            <div className="w-full mt-2 items-center justify-center p-2">
                                 <Chip variant="background">
                                     <Icon
                                         icon="mdi:alert"
                                         className="mr-1"
                                         fontSize={14}
                                     />
-                                    You must have at least 3 objectives.
+                                    You must have at least {MIN_OBJ_AMOUNT} objectives.
                                 </Chip>
                             </div>
-                        ) : null
+                        ) : <div className="w-full mt-2 items-center justify-center p-2">
+                            <Chip variant="background">
+                                <Icon
+                                    icon="mdi:alert"
+                                    className="mr-1"
+                                    fontSize={14}
+                                />
+                                You can have up to {MAX_OBJ_AMOUNT} objectives.
+                            </Chip>
+                        </div>
                     ) : null}
 
                     {user.employeeId == employee.supervisorId &&
@@ -122,7 +132,7 @@ function ObjectiveHeaderBar(props: {
                     axios
                         .post<any, any, { objective: Partial<Objective> }>(
                             process.env.NEXT_PUBLIC_API_URL +
-                                "/api/objectives/",
+                            "/api/objectives/",
                             {
                                 objective: {
                                     objectiveYear: year ?? undefined,
@@ -167,6 +177,7 @@ function ObjectiveHeaderBar(props: {
                 step == 0 && (
                     <Button
                         loading={creating}
+                        disabled={filteredObjectives.length >= MAX_OBJ_AMOUNT}
                         onClick={() => {
                             createObjective();
                         }}
@@ -285,15 +296,15 @@ function ObjectiveListItem(props: {
             <div className="flex flex-col items-start justify-start">
                 {(props.objective.status == "draft" ||
                     !props.objective.status) && (
-                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                        Draft
-                        <Icon
-                            icon="octicon:issue-draft-16"
-                            className="ml-1"
-                            fontSize={10}
-                        />
-                    </div>
-                )}
+                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                            Draft
+                            <Icon
+                                icon="octicon:issue-draft-16"
+                                className="ml-1"
+                                fontSize={10}
+                            />
+                        </div>
+                    )}
                 {props.objective.status == "sent" && (
                     <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
                         Submitted
@@ -306,7 +317,7 @@ function ObjectiveListItem(props: {
                 )}
                 {props.objective.status == "invalid" && ( // </div>
                     <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-red-100 p-1 px-2 text-[10px] font-semibold text-red-500">
-                        Invalid
+                        Rejected
                         <Icon icon="mdi:alert" className="ml-1" fontSize={10} />
                     </div>
                 )}
@@ -452,7 +463,7 @@ function ObjectiveBottomActionBar({
                                     loading={loading}
                                     className=""
                                     disabled={
-                                        filteredObjectives.length < 3 ||
+                                        filteredObjectives.length < MIN_OBJ_AMOUNT ||
                                         objectives.some(
                                             (objective) =>
                                                 !objective.title ||
@@ -493,12 +504,13 @@ function ObjectiveBottomActionBar({
                                 loading={loading}
                                 className=""
                                 disabled={
-                                    filteredObjectives.length < 3 ||
+                                    filteredObjectives.length < MIN_OBJ_AMOUNT ||
                                     objectives.some(
                                         (objective) =>
                                             objective.selfReviewStatus ==
-                                                "sent" ||
+                                            "sent" ||
                                             !objective.midtermSelfComment
+                                            || objective.midtermSelfComment.length < MIN_INPUT_LENGTH
                                     )
                                 }
                                 onClick={() => {
@@ -527,11 +539,12 @@ function ObjectiveBottomActionBar({
                                 loading={loading}
                                 className=""
                                 disabled={
-                                    filteredObjectives.length < 3 ||
+                                    filteredObjectives.length < MIN_OBJ_AMOUNT ||
                                     objectives.some(
                                         (objective) =>
                                             objective.reviewStatus == "sent" ||
                                             !objective.midtermComment
+                                            || objective.midtermComment.length < MIN_INPUT_LENGTH
                                     )
                                 }
                                 onClick={() => {

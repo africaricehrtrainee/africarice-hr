@@ -21,8 +21,7 @@ function EvaluationForm() {
     const fetchEvaluations = async () => {
         try {
             const response = await axios.get<Evaluation>(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${
-                    employee?.employeeId ?? ""
+                `${process.env.NEXT_PUBLIC_API_URL}/api/employees/${employee?.employeeId ?? ""
                 }/evaluations`
             ); // Adjust the API endpoint
             if (response.data) {
@@ -68,28 +67,24 @@ function EvaluationForm() {
                     });
                     console.log(err);
                 });
-        } catch (error) {}
+        } catch (error) { }
     };
 
     if (!employee || !user) return null;
 
     return (
-        <>
-            {step == 3 && (
-                <NewSelfEvaluation
-                    employee={employee}
-                    user={user}
-                    onSubmit={postEvaluations}
-                />
-            )}
-            {step == 4 && (
-                <NewEvaluation
-                    employee={employee}
-                    user={user}
-                    onSubmit={postEvaluations}
-                />
-            )}
-        </>
+        <div className="overflow-scroll w-full h-full">
+            <NewSelfEvaluation
+                employee={employee}
+                user={user}
+                onSubmit={postEvaluations}
+            />
+            <NewEvaluation
+                employee={employee}
+                user={user}
+                onSubmit={postEvaluations}
+            />
+        </div>
     );
 }
 

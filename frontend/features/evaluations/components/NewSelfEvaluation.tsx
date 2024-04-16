@@ -24,83 +24,83 @@ export function NewSelfEvaluation({
 
     const metrics: {
         name:
-            | "selfEfficiency"
-            | "selfCompetency"
-            | "selfCommitment"
-            | "selfInitiative"
-            | "selfRespect"
-            | "selfLeadership";
+        | "selfEfficiency"
+        | "selfCompetency"
+        | "selfCommitment"
+        | "selfInitiative"
+        | "selfRespect"
+        | "selfLeadership";
         rating:
-            | "selfEfficiencyRating"
-            | "selfCompetencyRating"
-            | "selfCommitmentRating"
-            | "selfInitiativeRating"
-            | "selfRespectRating"
-            | "selfLeadershipRating";
+        | "selfEfficiencyRating"
+        | "selfCompetencyRating"
+        | "selfCommitmentRating"
+        | "selfInitiativeRating"
+        | "selfRespectRating"
+        | "selfLeadershipRating";
         label: string;
     }[] = [
-        {
-            name: "selfEfficiency",
-            rating: "selfEfficiencyRating",
-            label: "EFFICIENCY / EFFICACITE",
-        },
-        {
-            name: "selfCompetency",
-            rating: "selfCompetencyRating",
-            label: "TECHNICAL COMPETENCY / COMPETENCES TECHNIQUES",
-        },
-        {
-            name: "selfCommitment",
-            rating: "selfCommitmentRating",
-            label: "COMMITMENT / ENGAGEMENT",
-        },
-        {
-            name: "selfInitiative",
-            rating: "selfInitiativeRating",
-            label: "TAKING INITITATIVE / PRISE D’INITIATIVE",
-        },
-        {
-            name: "selfRespect",
-            rating: "selfRespectRating",
-            label: "FOLLOWING INSTRUCTIONS / RESPECT DES PROCEDURES",
-        },
-        {
-            name: "selfLeadership",
-            rating: "selfLeadershipRating",
-            label: "LEADERSHIP",
-        },
-    ];
+            {
+                name: "selfEfficiency",
+                rating: "selfEfficiencyRating",
+                label: "EFFICIENCY / EFFICACITE",
+            },
+            {
+                name: "selfCompetency",
+                rating: "selfCompetencyRating",
+                label: "TECHNICAL COMPETENCY / COMPETENCES TECHNIQUES",
+            },
+            {
+                name: "selfCommitment",
+                rating: "selfCommitmentRating",
+                label: "COMMITMENT / ENGAGEMENT",
+            },
+            {
+                name: "selfInitiative",
+                rating: "selfInitiativeRating",
+                label: "TAKING INITITATIVE / PRISE D’INITIATIVE",
+            },
+            {
+                name: "selfRespect",
+                rating: "selfRespectRating",
+                label: "FOLLOWING INSTRUCTIONS / RESPECT DES PROCEDURES",
+            },
+            {
+                name: "selfLeadership",
+                rating: "selfLeadershipRating",
+                label: "LEADERSHIP",
+            },
+        ];
 
     return (
-        <div className="relative flex h-full w-full flex-col items-start justify-start">
+        <div className="relative flex h-full w-full flex-col items-start justify-start border-b border-b-zinc-200">
             {data.evaluationLocal &&
-            ((user.employeeId == employee.supervisorId &&
-                data.evaluationLocal.selfEvaluationStatus == "sent") ||
-                user.employeeId == employee.employeeId) ? (
+                ((user.employeeId == employee.supervisorId &&
+                    data.evaluationLocal.selfEvaluationStatus == "sent") ||
+                    user.employeeId == employee.employeeId) ? (
                 <>
                     <div className="flex w-full items-center justify-between">
                         {data.evaluationLocal.selfEvaluationStatus ==
                             "draft" && (
-                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[8px] font-semibold text-zinc-700">
-                                Draft
-                                <Icon
-                                    icon="octicon:issue-draft-16"
-                                    className="ml-1"
-                                    fontSize={10}
-                                />
-                            </div>
-                        )}
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[8px] font-semibold text-zinc-700">
+                                    Draft
+                                    <Icon
+                                        icon="octicon:issue-draft-16"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
                         {data.evaluationLocal.selfEvaluationStatus ==
                             "sent" && (
-                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[8px] font-semibold text-blue-500">
-                                Submitted
-                                <Icon
-                                    icon="mdi:check-all"
-                                    className="ml-1"
-                                    fontSize={10}
-                                />
-                            </div>
-                        )}
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[8px] font-semibold text-blue-500">
+                                    Submitted
+                                    <Icon
+                                        icon="mdi:check-all"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
                     </div>
                     <div className="mt-2 h-full w-full">
                         <div className="flex items-center justify-between">
@@ -143,15 +143,15 @@ export function NewSelfEvaluation({
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
-                                                    data.evaluationLocal
-                                                        .employeeId ||
+                                                data.evaluationLocal
+                                                    .employeeId ||
                                                 data.evaluationLocal
                                                     .selfEvaluationStatus ==
-                                                    "sent"
+                                                "sent"
                                             }
                                             value={
                                                 data.evaluationLocal[
-                                                    metric.name
+                                                metric.name
                                                 ] ?? ""
                                             }
                                             onChange={(
@@ -194,15 +194,15 @@ export function NewSelfEvaluation({
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
-                                                    data.evaluationLocal
-                                                        .employeeId ||
+                                                data.evaluationLocal
+                                                    .employeeId ||
                                                 data.evaluationLocal
                                                     .selfEvaluationStatus ==
-                                                    "sent"
+                                                "sent"
                                             }
                                             value={
                                                 data.evaluationLocal[
-                                                    metric.name
+                                                metric.name
                                                 ] ?? ""
                                             }
                                             onChange={(

@@ -24,59 +24,59 @@ export function NewEvaluation({
     console.log("evaluationLocal", data.evaluationLocal);
     const metrics: {
         name:
-            | "efficiency"
-            | "competency"
-            | "commitment"
-            | "initiative"
-            | "respect"
-            | "leadership";
+        | "efficiency"
+        | "competency"
+        | "commitment"
+        | "initiative"
+        | "respect"
+        | "leadership";
         rating:
-            | "efficiencyRating"
-            | "competencyRating"
-            | "commitmentRating"
-            | "initiativeRating"
-            | "respectRating"
-            | "leadershipRating";
+        | "efficiencyRating"
+        | "competencyRating"
+        | "commitmentRating"
+        | "initiativeRating"
+        | "respectRating"
+        | "leadershipRating";
         label: string;
     }[] = [
-        {
-            name: "efficiency",
-            rating: "efficiencyRating",
-            label: "EFFICIENCY / EFFICACITE",
-        },
-        {
-            name: "competency",
-            rating: "competencyRating",
-            label: "TECHNICAL COMPETENCY / COMPETENCES TECHNIQUES",
-        },
-        {
-            name: "commitment",
-            rating: "commitmentRating",
-            label: "COMMITMENT / ENGAGEMENT",
-        },
-        {
-            name: "initiative",
-            rating: "initiativeRating",
-            label: "TAKING INITITATIVE / PRISE D’INITIATIVE",
-        },
-        {
-            name: "respect",
-            rating: "respectRating",
-            label: "FOLLOWING INSTRUCTIONS / RESPECT DES PROCEDURES",
-        },
-        {
-            name: "leadership",
-            rating: "leadershipRating",
-            label: "LEADERSHIP",
-        },
-    ];
+            {
+                name: "efficiency",
+                rating: "efficiencyRating",
+                label: "EFFICIENCY / EFFICACITE",
+            },
+            {
+                name: "competency",
+                rating: "competencyRating",
+                label: "TECHNICAL COMPETENCY / COMPETENCES TECHNIQUES",
+            },
+            {
+                name: "commitment",
+                rating: "commitmentRating",
+                label: "COMMITMENT / ENGAGEMENT",
+            },
+            {
+                name: "initiative",
+                rating: "initiativeRating",
+                label: "TAKING INITITATIVE / PRISE D’INITIATIVE",
+            },
+            {
+                name: "respect",
+                rating: "respectRating",
+                label: "FOLLOWING INSTRUCTIONS / RESPECT DES PROCEDURES",
+            },
+            {
+                name: "leadership",
+                rating: "leadershipRating",
+                label: "LEADERSHIP",
+            },
+        ];
 
     return (
         <div className="relative flex h-full w-full flex-col items-start justify-start rounded-md transition-all">
             {data.evaluationLocal &&
-            ((user.employeeId == data.evaluationLocal.employeeId &&
-                data.evaluationLocal.evaluationStatus == "sent") ||
-                user.employeeId == data.evaluationLocal.supervisorId) ? (
+                ((user.employeeId == data.evaluationLocal.employeeId &&
+                    data.evaluationLocal.evaluationStatus == "sent") ||
+                    user.employeeId == data.evaluationLocal.supervisorId) ? (
                 <>
                     <div className="flex w-full items-center justify-between">
                         {data.evaluationLocal.evaluationStatus == "draft" && (
@@ -128,7 +128,7 @@ export function NewEvaluation({
                                                 .leadershipRating
                                                 ? 6
                                                 : 5)) *
-                                            100
+                                        100
                                     ) / 100}
                                     <span className="text-xs font-bold text-zinc-400">
                                         /5
@@ -143,7 +143,7 @@ export function NewEvaluation({
                                         key={metric.name}
                                         className="flex flex-col justify-start gap-1"
                                     >
-                                        <label className="text-[10px] font-medium text-zinc-300">
+                                        <label className="text-[10px] font-medium text-zinc-700">
                                             {metric.label}{" "}
                                             <span className="text-[8px] text-brand">
                                                 * (required)
@@ -154,11 +154,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -171,12 +171,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 1
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 1
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -186,11 +185,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -203,12 +202,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 2
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 2
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -218,11 +216,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -235,12 +233,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 3
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 3
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -250,11 +247,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -267,12 +264,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 4
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 4
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -282,11 +278,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -299,12 +295,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 5
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 5
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -314,18 +309,18 @@ export function NewEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
-                                            maxLength={180}
+                                            minLength={200}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
-                                                    data.evaluationLocal
-                                                        .supervisorId ||
+                                                data.evaluationLocal
+                                                    .supervisorId ||
                                                 data.evaluationLocal
                                                     .evaluationStatus == "sent"
                                             }
                                             value={
                                                 data.evaluationLocal[
-                                                    metric.name
+                                                metric.name
                                                 ] ?? ""
                                             }
                                             onChange={(
@@ -350,7 +345,7 @@ export function NewEvaluation({
                                         key={metric.name}
                                         className="flex flex-col justify-start gap-1"
                                     >
-                                        <label className="text-[10px] font-medium text-zinc-300">
+                                        <label className="text-[10px] font-medium text-zinc-700">
                                             {metric.label}{" "}
                                             {metric.label !== "LEADERSHIP" && (
                                                 <span className="text-[8px] text-brand">
@@ -364,11 +359,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -381,12 +376,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 1
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 1
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -396,11 +390,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -413,12 +407,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 2
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 2
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -428,11 +421,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -445,12 +438,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 3
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 3
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -460,11 +452,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -477,12 +469,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 4
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 4
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -492,11 +483,11 @@ export function NewEvaluation({
                                                 type="button"
                                                 disabled={
                                                     user.employeeId !==
-                                                        data.evaluationLocal
-                                                            .supervisorId ||
+                                                    data.evaluationLocal
+                                                        .supervisorId ||
                                                     data.evaluationLocal
                                                         .evaluationStatus ==
-                                                        "sent"
+                                                    "sent"
                                                 }
                                                 onClick={() => {
                                                     const obj = {
@@ -509,12 +500,11 @@ export function NewEvaluation({
                                                 }}
                                                 className={
                                                     "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        data.evaluationLocal[
-                                                            metric.rating
-                                                        ] == 5
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-green-50 border-green-300"
+                                                    ` ${data.evaluationLocal[
+                                                        metric.rating
+                                                    ] == 5
+                                                        ? "bg-green-400 text-green-50 border-transparent"
+                                                        : " text-green-500 bg-green-50 border-green-300"
                                                     }`
                                                 }
                                             >
@@ -524,18 +514,18 @@ export function NewEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
-                                            maxLength={180}
+                                            minLength={200}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
-                                                    data.evaluationLocal
-                                                        .supervisorId ||
+                                                data.evaluationLocal
+                                                    .supervisorId ||
                                                 data.evaluationLocal
                                                     .evaluationStatus == "sent"
                                             }
                                             value={
                                                 data.evaluationLocal[
-                                                    metric.name
+                                                metric.name
                                                 ] ?? ""
                                             }
                                             onChange={(
@@ -563,115 +553,115 @@ export function NewEvaluation({
                                     fontSize={14}
                                 />
                                 You must fill all required fields before
-                                submission.
+                                submission with a minimum of 200 characters.
                             </Chip>
                         </div>
                         {user.employeeId ==
                             data.evaluationLocal.supervisorId && (
-                            <div className="absolute bottom-4 right-4 flex w-full items-center justify-end gap-2">
-                                <Button
-                                    disabled={
-                                        JSON.stringify(data.evaluation) ===
-                                        JSON.stringify(data.evaluationLocal)
-                                    }
-                                    onClick={() => {
-                                        onSubmit(data.evaluationLocal);
-                                    }}
-                                    variant="outline"
-                                >
-                                    Save for later
-                                    <Icon
-                                        icon="iconamoon:pen-fill"
-                                        className="ml-1"
-                                        fontSize={14}
-                                    />
-                                </Button>
-                                <Button
-                                    disabled={
-                                        data.evaluationLocal.evaluationStatus ==
+                                <div className="absolute bottom-4 right-4 flex w-full items-center justify-end gap-2">
+                                    <Button
+                                        disabled={
+                                            JSON.stringify(data.evaluation) ===
+                                            JSON.stringify(data.evaluationLocal)
+                                        }
+                                        onClick={() => {
+                                            onSubmit(data.evaluationLocal);
+                                        }}
+                                        variant="outline"
+                                    >
+                                        Save for later
+                                        <Icon
+                                            icon="iconamoon:pen-fill"
+                                            className="ml-1"
+                                            fontSize={14}
+                                        />
+                                    </Button>
+                                    <Button
+                                        disabled={
+                                            data.evaluationLocal.evaluationStatus ==
                                             "sent" ||
-                                        !data.evaluationLocal.efficiency ||
-                                        !data.evaluationLocal
-                                            .efficiencyRating ||
-                                        !data.evaluationLocal.competency ||
-                                        !data.evaluationLocal
-                                            .competencyRating ||
-                                        !data.evaluationLocal.commitment ||
-                                        !data.evaluationLocal
-                                            .commitmentRating ||
-                                        !data.evaluationLocal.initiative ||
-                                        !data.evaluationLocal
-                                            .initiativeRating ||
-                                        !data.evaluationLocal.respect ||
-                                        !data.evaluationLocal.respectRating
-                                    }
-                                    onClick={() => {
-                                        setIsSubmitModalOpen(true);
-                                    }}
-                                    variant="primary"
-                                >
-                                    Submit evaluation
-                                    <Icon
-                                        icon="material-symbols:upload"
-                                        className="ml-1"
-                                        fontSize={14}
-                                    />
-                                </Button>
-                                <Modal
-                                    show={isSubmitModalOpen}
-                                    onClose={() => setIsSubmitModalOpen(false)}
-                                >
-                                    <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
-                                        <div className="flex w-full flex-col items-start justify-between">
-                                            <p className="text-xl font-bold text-zinc-700">
-                                                Submit evaluation ?
-                                            </p>
-                                            <p className="text-xs text-muted-foreground">
-                                                This action cannot be undone.
-                                            </p>
-                                            <div className="mt-4 flex w-full items-center justify-end gap-2">
-                                                <Button
-                                                    onClick={() => {
-                                                        setIsSubmitModalOpen(
-                                                            false
-                                                        );
-                                                    }}
-                                                    variant="outline"
-                                                >
-                                                    Cancel
-                                                    <Icon
-                                                        icon="charm:cross"
-                                                        className="ml-1"
-                                                        fontSize={14}
-                                                    />
-                                                </Button>
-                                                <Button
-                                                    onClick={() => {
-                                                        const arr = {
-                                                            ...data.evaluationLocal,
-                                                        };
-                                                        arr.evaluationStatus =
-                                                            "sent";
-                                                        onSubmit(arr);
-                                                        setIsSubmitModalOpen(
-                                                            false
-                                                        );
-                                                    }}
-                                                    variant="primary"
-                                                >
-                                                    Confirm
-                                                    <Icon
-                                                        icon="ri:mail-send-fill"
-                                                        className="ml-1"
-                                                        fontSize={14}
-                                                    />
-                                                </Button>
+                                            !data.evaluationLocal.efficiency ||
+                                            !data.evaluationLocal
+                                                .efficiencyRating ||
+                                            !data.evaluationLocal.competency ||
+                                            !data.evaluationLocal
+                                                .competencyRating ||
+                                            !data.evaluationLocal.commitment ||
+                                            !data.evaluationLocal
+                                                .commitmentRating ||
+                                            !data.evaluationLocal.initiative ||
+                                            !data.evaluationLocal
+                                                .initiativeRating ||
+                                            !data.evaluationLocal.respect ||
+                                            !data.evaluationLocal.respectRating
+                                        }
+                                        onClick={() => {
+                                            setIsSubmitModalOpen(true);
+                                        }}
+                                        variant="primary"
+                                    >
+                                        Submit evaluation
+                                        <Icon
+                                            icon="material-symbols:upload"
+                                            className="ml-1"
+                                            fontSize={14}
+                                        />
+                                    </Button>
+                                    <Modal
+                                        show={isSubmitModalOpen}
+                                        onClose={() => setIsSubmitModalOpen(false)}
+                                    >
+                                        <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
+                                            <div className="flex w-full flex-col items-start justify-between">
+                                                <p className="text-xl font-bold text-zinc-700">
+                                                    Submit evaluation ?
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    This action cannot be undone.
+                                                </p>
+                                                <div className="mt-4 flex w-full items-center justify-end gap-2">
+                                                    <Button
+                                                        onClick={() => {
+                                                            setIsSubmitModalOpen(
+                                                                false
+                                                            );
+                                                        }}
+                                                        variant="outline"
+                                                    >
+                                                        Cancel
+                                                        <Icon
+                                                            icon="charm:cross"
+                                                            className="ml-1"
+                                                            fontSize={14}
+                                                        />
+                                                    </Button>
+                                                    <Button
+                                                        onClick={() => {
+                                                            const arr = {
+                                                                ...data.evaluationLocal,
+                                                            };
+                                                            arr.evaluationStatus =
+                                                                "sent";
+                                                            onSubmit(arr);
+                                                            setIsSubmitModalOpen(
+                                                                false
+                                                            );
+                                                        }}
+                                                        variant="primary"
+                                                    >
+                                                        Confirm
+                                                        <Icon
+                                                            icon="ri:mail-send-fill"
+                                                            className="ml-1"
+                                                            fontSize={14}
+                                                        />
+                                                    </Button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Modal>
-                            </div>
-                        )}
+                                    </Modal>
+                                </div>
+                            )}
                     </div>
                     <div className=""></div>
                 </>

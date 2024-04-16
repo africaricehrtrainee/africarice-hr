@@ -32,7 +32,7 @@ function Evaluation() {
             {/* Sidebar w/ ObjectiveList & Evaluation */}
             <EvaluationSidebar />
             {/* Main Component */}
-            <div className="relative flex h-[600px] w-full flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
+            <div className="relative flex h-[650px] w-full flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
                 {selectedObjectiveIndex !== -1 ? (
                     <NewObjective
                         className="h-full w-full border-none p-0 shadow-none"

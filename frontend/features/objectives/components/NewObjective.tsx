@@ -13,6 +13,8 @@ import Modal from "../../../components/ui/Modal";
 import { toast, useToast } from "../../../components/ui/use-toast";
 import { useQueryState } from "nuqs";
 import { cn } from "@/util/utils";
+import Chip from "@/components/ui/Chip";
+import { MAX_INPUT_LENGTH, MIN_INPUT_LENGTH } from "@/config";
 
 export function NewObjective({
     employee,
@@ -99,8 +101,8 @@ export function NewObjective({
             axios
                 .delete(
                     process.env.NEXT_PUBLIC_API_URL +
-                        "/api/objectives/" +
-                        selectedObjective?.objectiveId
+                    "/api/objectives/" +
+                    selectedObjective?.objectiveId
                 )
                 .then((response) => {
                     if (response.status == 201) {
@@ -109,7 +111,7 @@ export function NewObjective({
                             year
                         );
                         toast({
-                            description: "Successfully updated objectives",
+                            description: "Successfully cancelled the objective",
                         });
                         ``;
                     }
@@ -122,13 +124,13 @@ export function NewObjective({
                     });
                     console.log(err);
                 })
-                .finally(() => {});
+                .finally(() => { });
         } else if (selectedObjective?.objectiveId) {
             axios
                 .delete(
                     process.env.NEXT_PUBLIC_API_URL +
-                        "/api/objectives/" +
-                        selectedObjective?.objectiveId
+                    "/api/objectives/" +
+                    selectedObjective?.objectiveId
                 )
                 .then((response) => {
                     const arr = [...objectives];
@@ -147,7 +149,7 @@ export function NewObjective({
                         description: "There was a problem with your request.",
                     });
                 })
-                .finally(() => {});
+                .finally(() => { });
         } else {
             const arr = [...objectives];
             data.setObjectivesLocal(arr.filter((obj, idx) => index !== idx));
@@ -158,9 +160,9 @@ export function NewObjective({
         axios
             .put(
                 process.env.NEXT_PUBLIC_API_URL +
-                    "/api/objectives/" +
-                    objective.objectiveId +
-                    (objective.status == "ok" ? "/update" : ""),
+                "/api/objectives/" +
+                objective.objectiveId +
+                (objective.status == "ok" ? "/update" : ""),
                 {
                     objective,
                 }
@@ -186,31 +188,31 @@ export function NewObjective({
                 console.log(err);
             });
     }
-    async function saveObjectives(objectives : Partial<Objective>[]) {
+    async function saveObjectives(objectives: Partial<Objective>[]) {
         axios.post(
             process.env.NEXT_PUBLIC_API_URL + "/api/objectives/bulk",
             {
                 objectives,
             }
-       ).then(
-              (response) => {
+        ).then(
+            (response) => {
                 if (response.status == 201) {
-                     data.fetchObjectives(employee.employeeId.toString(), year);
-                     toast({
-                          description: "Successfully updated objectives",
-                     });
+                    data.fetchObjectives(employee.employeeId.toString(), year);
+                    toast({
+                        description: "Successfully updated objectives",
+                    });
                 }
-              }
- 
+            }
 
-            ).catch((err) => {
-              toast({
+
+        ).catch((err) => {
+            toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
                 description: "There was a problem with your request.",
-              });
-              console.log(err);
-         });
+            });
+            console.log(err);
+        });
     }
 
 
@@ -218,8 +220,8 @@ export function NewObjective({
         axios
             .put(
                 process.env.NEXT_PUBLIC_API_URL +
-                    "/api/objectives/" +
-                    objective.objectiveId,
+                "/api/objectives/" +
+                objective.objectiveId,
                 {
                     objective,
                 }
@@ -270,7 +272,7 @@ export function NewObjective({
                             <>
                                 {selectedObjective.status !== "ok" &&
                                     selectedObjective.status !==
-                                        "cancelled" && (
+                                    "cancelled" && (
                                         <>
                                             <div
                                                 className={
@@ -282,9 +284,9 @@ export function NewObjective({
                                                         JSON.stringify(
                                                             data.objectives
                                                         ) ==
-                                                            JSON.stringify(
-                                                                data.objectivesLocal
-                                                            ) ||
+                                                        JSON.stringify(
+                                                            data.objectivesLocal
+                                                        ) ||
                                                         !selectedObjective.title
                                                     }
                                                     onClick={() => {
@@ -562,7 +564,7 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Enter the objective title"
-                                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
@@ -588,7 +590,7 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Pick the deadline for your objective"
-                                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold placeholder-zinc-500 outline-none transition-all hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium placeholder-zinc-500 outline-none transition-all hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
@@ -611,7 +613,7 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Enter the objective's key performance indicators (KPI)"
-                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                             </div>
@@ -637,7 +639,7 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Enter the description of the objective"
-                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
@@ -663,7 +665,7 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Enter the objective’s success conditions"
-                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                             </div>
@@ -682,12 +684,12 @@ export function NewObjective({
                                     <Button
                                         disabled={
                                             JSON.stringify(data.objectives) ==
-                                                JSON.stringify(
-                                                    data.objectivesLocal
-                                                ) ||
+                                            JSON.stringify(
+                                                data.objectivesLocal
+                                            ) ||
                                             !selectedObjective.selfComment ||
                                             selectedObjective.selfEvaluationStatus ==
-                                                "sent"
+                                            "sent"
                                         }
                                         onClick={() => {
                                             saveObjectives(data.objectivesLocal);
@@ -706,6 +708,7 @@ export function NewObjective({
                         )}
 
                     {/* Staff self-evaluation */}
+
                     {user &&
                         step == 2 &&
                         objectives.every((obj) => obj.status == "ok") && (
@@ -716,352 +719,11 @@ export function NewObjective({
                             />
                         )}
 
-                    {selectedObjective.status == "ok" &&
-                        step == 4 &&
-                        user?.employeeId == employee.supervisorId && (
-                            <>
-                                <div
-                                    className={
-                                        "flex flex-col items-end justify-center absolute bottom-2 right-2 gap-2"
-                                    }
-                                >
-                                    <Button
-                                        disabled={
-                                            JSON.stringify(data.objectives) ==
-                                                JSON.stringify(
-                                                    data.objectivesLocal
-                                                ) ||
-                                            (!selectedObjective.grade &&
-                                                !selectedObjective.comment) ||
-                                            selectedObjective.evaluationStatus ==
-                                                "sent"
-                                        }
-                                        onClick={() => {
-                                            saveObjectives(data.objectivesLocal);
-                                        }}
-                                        variant="outline"
-                                    >
-                                        Save changes
-                                        <Icon
-                                            icon="ic:baseline-save-alt"
-                                            className="ml-1"
-                                            fontSize={14}
-                                        />
-                                    </Button>
-                                </div>
-                            </>
-                        )}
-
                     {/* Staff self-evaluation */}
-                    {(user?.employeeId == employee.employeeId ||
-                        selectedObjective.selfEvaluationStatus == "sent") &&
-                        step == 3 &&
-                        objectives.every((obj) => obj.status == "ok") && (
-                            <div className="mt-4 flex w-full items-start justify-between">
-                                {/* Status badge */}
-                                <div className="flex flex-col items-start justify-start gap-1">
-                                    {selectedObjective.selfEvaluationStatus !==
-                                        "sent" && (
-                                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                                            Unsubmitted
-                                            <Icon
-                                                icon="octicon:issue-draft-16"
-                                                className="ml-1"
-                                                fontSize={10}
-                                            />
-                                        </div>
-                                    )}
-                                    {selectedObjective.selfEvaluationStatus ==
-                                        "sent" && (
-                                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                                            Submitted
-                                            <Icon
-                                                icon="mdi:check-all"
-                                                className="ml-1"
-                                                fontSize={10}
-                                            />
-                                        </div>
-                                    )}
-                                    <p className="mb-2 text-2xl font-bold text-zinc-700">
-                                        Objective self-evaluation
-                                    </p>
-                                    <div className="flex w-[350px] flex-col items-start justify-start gap-1">
-                                        <label className="text-[10px] font-medium text-zinc-700">
-                                            OBJECTIVE REVIEW
-                                        </label>
-                                        <textarea
-                                            autoCorrect="off"
-                                            spellCheck="false"
-                                            disabled={
-                                                user?.employeeId !=
-                                                    employee.employeeId ||
-                                                selectedObjective.selfEvaluationStatus ==
-                                                    "sent"
-                                            }
-                                            value={
-                                                selectedObjective?.selfComment ??
-                                                ""
-                                            }
-                                            onChange={(
-                                                e: React.ChangeEvent<HTMLTextAreaElement>
-                                            ) => {
-                                                if (data.objectivesLocal) {
-                                                    const arr = [
-                                                        ...data.objectivesLocal,
-                                                    ];
-                                                    arr[
-                                                        data.selectedObjectiveIndex
-                                                    ].selfComment =
-                                                        e.target.value;
-                                                    data.setObjectivesLocal(
-                                                        arr
-                                                    );
-                                                }
-                                            }}
-                                            placeholder={`Write your self-evaluation for this objective`}
-                                            className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                    {user && step == 3 && selectedObjective.status == "ok" && (
+                        <ObjectiveEvaluation employee={employee} user={user} saveObjectives={saveObjectives} />
+                    )}
 
-                    {/* Staff evaluation */}
-                    {(user?.employeeId == employee.supervisorId ||
-                        selectedObjective.evaluationStatus == "sent") &&
-                        step == 4 &&
-                        selectedObjective.status == "ok" && (
-                            <div className="mt-4 flex w-full items-start justify-between">
-                                <div className="flex flex-col items-start justify-start gap-1">
-                                    {selectedObjective.evaluationStatus !==
-                                        "sent" && (
-                                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                                            Unsubmitted
-                                            <Icon
-                                                icon="octicon:issue-draft-16"
-                                                className="ml-1"
-                                                fontSize={10}
-                                            />
-                                        </div>
-                                    )}
-                                    {selectedObjective.evaluationStatus ==
-                                        "sent" && (
-                                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                                            Submitted
-                                            <Icon
-                                                icon="mdi:check-all"
-                                                className="ml-1"
-                                                fontSize={10}
-                                            />
-                                        </div>
-                                    )}
-                                    <p className="mb-2 text-2xl font-bold text-zinc-700">
-                                        Supervisor evaluation
-                                    </p>
-                                    <div className="flex w-[350px] flex-col items-start justify-start gap-2">
-                                        <div className="flex w-full items-center justify-center gap-1">
-                                            <button
-                                                type="button"
-                                                disabled={
-                                                    user?.employeeId !=
-                                                        employee.supervisorId ||
-                                                    selectedObjective.evaluationStatus ==
-                                                        "sent"
-                                                }
-                                                onClick={() => {
-                                                    if (data.objectivesLocal) {
-                                                        const arr = [
-                                                            ...data.objectivesLocal,
-                                                        ];
-                                                        arr[
-                                                            data.selectedObjectiveIndex
-                                                        ].grade = 1;
-                                                        data.setObjectivesLocal(
-                                                            arr
-                                                        );
-                                                    }
-                                                }}
-                                                className={
-                                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        selectedObjective?.grade ==
-                                                        1
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-transparent border-green-300"
-                                                    }`
-                                                }
-                                            >
-                                                1
-                                            </button>
-                                            <button
-                                                type="button"
-                                                disabled={
-                                                    user?.employeeId !=
-                                                        employee.supervisorId ||
-                                                    selectedObjective.evaluationStatus ==
-                                                        "sent"
-                                                }
-                                                onClick={() => {
-                                                    if (data.objectivesLocal) {
-                                                        const arr = [
-                                                            ...data.objectivesLocal,
-                                                        ];
-                                                        arr[
-                                                            data.selectedObjectiveIndex
-                                                        ].grade = 2;
-                                                        data.setObjectivesLocal(
-                                                            arr
-                                                        );
-                                                    }
-                                                }}
-                                                className={
-                                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        selectedObjective?.grade ==
-                                                        2
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-transparent border-green-300"
-                                                    }`
-                                                }
-                                            >
-                                                2
-                                            </button>
-                                            <button
-                                                type="button"
-                                                disabled={
-                                                    user?.employeeId !=
-                                                        employee.supervisorId ||
-                                                    selectedObjective.evaluationStatus ==
-                                                        "sent"
-                                                }
-                                                onClick={() => {
-                                                    if (data.objectivesLocal) {
-                                                        const arr = [
-                                                            ...data.objectivesLocal,
-                                                        ];
-                                                        arr[
-                                                            data.selectedObjectiveIndex
-                                                        ].grade = 3;
-                                                        data.setObjectivesLocal(
-                                                            arr
-                                                        );
-                                                    }
-                                                }}
-                                                className={
-                                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        selectedObjective?.grade ==
-                                                        3
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-transparent border-green-300"
-                                                    }`
-                                                }
-                                            >
-                                                3
-                                            </button>
-                                            <button
-                                                type="button"
-                                                disabled={
-                                                    user?.employeeId !=
-                                                        employee.supervisorId ||
-                                                    selectedObjective.evaluationStatus ==
-                                                        "sent"
-                                                }
-                                                onClick={() => {
-                                                    if (data.objectivesLocal) {
-                                                        const arr = [
-                                                            ...data.objectivesLocal,
-                                                        ];
-                                                        arr[
-                                                            data.selectedObjectiveIndex
-                                                        ].grade = 4;
-                                                        data.setObjectivesLocal(
-                                                            arr
-                                                        );
-                                                    }
-                                                }}
-                                                className={
-                                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        selectedObjective?.grade ==
-                                                        4
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-transparent border-green-300"
-                                                    }`
-                                                }
-                                            >
-                                                4
-                                            </button>
-                                            <button
-                                                type="button"
-                                                disabled={
-                                                    user?.employeeId !=
-                                                        employee.supervisorId ||
-                                                    selectedObjective.evaluationStatus ==
-                                                        "sent"
-                                                }
-                                                onClick={() => {
-                                                    if (data.objectivesLocal) {
-                                                        const arr = [
-                                                            ...data.objectivesLocal,
-                                                        ];
-                                                        arr[
-                                                            data.selectedObjectiveIndex
-                                                        ].grade = 5;
-                                                        data.setObjectivesLocal(
-                                                            arr
-                                                        );
-                                                    }
-                                                }}
-                                                className={
-                                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
-                                                    ` ${
-                                                        selectedObjective?.grade ==
-                                                        5
-                                                            ? "bg-green-400 text-green-50 border-transparent"
-                                                            : " text-green-500 bg-transparent border-green-300"
-                                                    }`
-                                                }
-                                            >
-                                                5
-                                            </button>
-                                        </div>
-
-                                        <textarea
-                                            autoCorrect="off"
-                                            spellCheck="false"
-                                            disabled={
-                                                user?.employeeId !=
-                                                    employee.supervisorId ||
-                                                selectedObjective.evaluationStatus ==
-                                                    "sent"
-                                            }
-                                            value={
-                                                selectedObjective?.comment ?? ""
-                                            }
-                                            onChange={(
-                                                e: React.ChangeEvent<HTMLTextAreaElement>
-                                            ) => {
-                                                if (data.objectivesLocal) {
-                                                    const arr = [
-                                                        ...data.objectivesLocal,
-                                                    ];
-                                                    arr[
-                                                        data.selectedObjectiveIndex
-                                                    ].comment =
-                                                        e.currentTarget.value;
-                                                    data.setObjectivesLocal(
-                                                        arr
-                                                    );
-                                                }
-                                            }}
-                                            placeholder={`Write your evaluation for this objective`}
-                                            className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
                 </>
             )}
         </div>
@@ -1079,9 +741,12 @@ function MidtermReview({
 }) {
     const data = useObjectivesDataStore();
     const selectedObjective = data.objectivesLocal[data.selectedObjectiveIndex];
+
     const cachedObjective = data.objectives
         ? data.objectives[data.selectedObjectiveIndex]
         : null;
+
+
 
     async function saveReviews() {
         try {
@@ -1100,9 +765,9 @@ function MidtermReview({
                         axios
                             .get(
                                 process.env.NEXT_PUBLIC_API_URL +
-                                    "/api/employees/" +
-                                    employee.employeeId +
-                                    "/objectives/"
+                                "/api/employees/" +
+                                employee.employeeId +
+                                "/objectives/"
                             )
                             .then((response) =>
                                 data.setObjectives(response.data)
@@ -1123,6 +788,21 @@ function MidtermReview({
         }
     }
 
+    useEffect(() => {
+
+        if (user.employeeId == employee.employeeId && selectedObjective.reviewStatus == "draft") {
+            const arr = [...data.objectivesLocal];
+            arr[data.selectedObjectiveIndex].midtermComment = "";
+            data.setObjectivesLocal(arr);
+        }
+
+        if (user.employeeId == employee.supervisorId && selectedObjective.selfReviewStatus == "draft") {
+            const arr = [...data.objectivesLocal];
+            arr[data.selectedObjectiveIndex].midtermSelfComment = "";
+            data.setObjectivesLocal(arr);
+        }
+
+    }, [selectedObjective])
     return (
         <div className="relative mt-4 flex w-full items-start justify-between gap-4">
             {selectedObjective.status == "ok" &&
@@ -1131,41 +811,49 @@ function MidtermReview({
                     <>
                         {/* Status badge */}
                         <div className="flex flex-1 flex-col items-start justify-start gap-1">
-                            {selectedObjective.selfReviewStatus == "draft" && (
-                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                                    Unreviewed
-                                    <Icon
-                                        icon="octicon:issue-draft-16"
-                                        className="ml-1"
-                                        fontSize={10}
-                                    />
-                                </div>
-                            )}
-                            {cachedObjective.selfReviewStatus == "sent" && (
-                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                                    Reviewed
-                                    <Icon
-                                        icon="mdi:check-all"
-                                        className="ml-1"
-                                        fontSize={10}
-                                    />
-                                </div>
-                            )}
+                            <div className="flex gap-1">
+                                {selectedObjective.selfReviewStatus == "draft" && (
+                                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                        Unreviewed
+                                        <Icon
+                                            icon="octicon:issue-draft-16"
+                                            className="ml-1"
+                                            fontSize={10}
+                                        />
+                                    </div>
+                                )}
+                                {cachedObjective.selfReviewStatus == "sent" && (
+                                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                        Reviewed
+                                        <Icon
+                                            icon="mdi:check-all"
+                                            className="ml-1"
+                                            fontSize={10}
+                                        />
+                                    </div>
+                                )}
+                                {selectedObjective.midtermSelfComment && selectedObjective.midtermSelfComment.length < 200 && <Chip variant="alert" className="p-1 px-2 rounded-md">
+                                    {200 - selectedObjective.midtermSelfComment.length} characters left
+                                </Chip>}
+
+                            </div>
                             <p className="mb-2 text-2xl font-bold text-zinc-700">
-                                {employee.firstName.split(" ")[0]}&apos;s Review
+                                {employee.firstName.split(" ")[0]}&apos;s Midterm Review
                             </p>
                             <div className="flex w-full flex-col items-start justify-start gap-1">
                                 <label className="text-[10px] font-medium text-zinc-700">
-                                    Objective Review
+                                    Objective Review (min. 200 characters)
                                 </label>
                                 <textarea
                                     autoCorrect="off"
+                                    minLength={MIN_INPUT_LENGTH}
+                                    maxLength={MAX_INPUT_LENGTH}
                                     spellCheck="false"
                                     disabled={
                                         user?.employeeId !=
-                                            employee.employeeId ||
+                                        employee.employeeId ||
                                         selectedObjective.selfReviewStatus ==
-                                            "sent"
+                                        "sent"
                                     }
                                     value={
                                         selectedObjective.midtermSelfComment ??
@@ -1186,7 +874,7 @@ function MidtermReview({
                                         }
                                     }}
                                     placeholder={`Write about your progress on this objective`}
-                                    className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                    className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                 />
                             </div>
                             {user?.employeeId == employee.employeeId && (
@@ -1198,11 +886,11 @@ function MidtermReview({
                                     <Button
                                         disabled={
                                             selectedObjective.selfReviewStatus ==
-                                                "sent" ||
+                                            "sent" ||
                                             JSON.stringify(data.objectives) ==
-                                                JSON.stringify(
-                                                    data.objectivesLocal
-                                                )
+                                            JSON.stringify(
+                                                data.objectivesLocal
+                                            )
                                         }
                                         onClick={() => {
                                             saveReviews();
@@ -1219,9 +907,10 @@ function MidtermReview({
                                 </div>
                             )}
                         </div>
+
                         <div className="flex flex-1 flex-col items-start justify-start gap-1">
-                            {selectedObjective.reviewStatus == "draft" && (
-                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                            <div className="flex gap-1">
+                                {selectedObjective.reviewStatus == "draft" && (<div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
                                     Unreviewed
                                     <Icon
                                         icon="octicon:issue-draft-16"
@@ -1229,30 +918,37 @@ function MidtermReview({
                                         fontSize={10}
                                     />
                                 </div>
-                            )}
-                            {selectedObjective.reviewStatus !== "draft" && (
-                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
-                                    Reviewed
-                                    <Icon
-                                        icon="mdi:check-all"
-                                        className="ml-1"
-                                        fontSize={10}
-                                    />
-                                </div>
-                            )}
+                                )}
+                                {selectedObjective.reviewStatus !== "draft" && (
+                                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                        Reviewed
+                                        <Icon
+                                            icon="mdi:check-all"
+                                            className="ml-1"
+                                            fontSize={10}
+                                        />
+                                    </div>
+                                )}
+                                {selectedObjective.midtermComment && selectedObjective.midtermComment.length < MIN_INPUT_LENGTH && <Chip variant="alert" className="p-1 px-2 rounded-md">
+                                    {MIN_INPUT_LENGTH - selectedObjective.midtermComment.length} characters left
+                                </Chip>}
+
+                            </div>
                             <p className="mb-2 text-2xl font-bold text-zinc-700">
                                 Supervisor Review
                             </p>
                             <div className="flex w-full flex-col items-start justify-start gap-1">
                                 <label className="text-[10px] font-medium text-zinc-700">
-                                    Supervisor Review
+                                    Supervisor Review (min. {MIN_INPUT_LENGTH} characters)
                                 </label>
                                 <textarea
+                                    minLength={MIN_INPUT_LENGTH}
+                                    maxLength={MAX_INPUT_LENGTH}
                                     autoCorrect="off"
                                     spellCheck="false"
                                     disabled={
                                         user?.employeeId !=
-                                            employee.supervisorId ||
+                                        employee.supervisorId ||
                                         selectedObjective.reviewStatus == "sent"
                                     }
                                     value={
@@ -1273,7 +969,7 @@ function MidtermReview({
                                         }
                                     }}
                                     placeholder={`Write about this staff's progress on this objective`}
-                                    className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                    className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                 />
                             </div>
                             {user?.employeeId == employee.supervisorId && (
@@ -1286,11 +982,11 @@ function MidtermReview({
                                         disabled={
                                             !selectedObjective.midtermComment ||
                                             JSON.stringify(data.objectives) ==
-                                                JSON.stringify(
-                                                    data.objectivesLocal
-                                                ) ||
+                                            JSON.stringify(
+                                                data.objectivesLocal
+                                            ) ||
                                             selectedObjective.reviewStatus ==
-                                                "sent"
+                                            "sent"
                                         }
                                         onClick={() => {
                                             saveReviews();
@@ -1311,4 +1007,389 @@ function MidtermReview({
                 )}
         </div>
     );
+}
+
+function ObjectiveEvaluation({ employee, user, saveObjectives }: { employee: Employee, user: Employee, saveObjectives: (objectives: Partial<Objective>[]) => void }) {
+
+    const data = useObjectivesDataStore();
+    const selectedObjective = data.objectivesLocal[data.selectedObjectiveIndex];
+
+
+    useEffect(() => {
+
+        if (user.employeeId == employee.employeeId && selectedObjective.evaluationStatus == "draft") {
+            const arr = [...data.objectivesLocal];
+            arr[data.selectedObjectiveIndex].grade = null;
+            arr[data.selectedObjectiveIndex].comment = "";
+            data.setObjectivesLocal(arr);
+        }
+
+        if (user.employeeId == employee.supervisorId && selectedObjective.selfEvaluationStatus == "draft") {
+            const arr = [...data.objectivesLocal];
+            arr[data.selectedObjectiveIndex].selfComment = "";
+            data.setObjectivesLocal(arr);
+        }
+
+    }, [selectedObjective])
+
+    return (
+        <div className="w-full flex justify-between items-center">
+            <div className="mt-2 flex w-full items-start justify-between">
+                {/* Status badge */}
+                <div className="flex flex-col items-start justify-start gap-1">
+                    <div className="flex gap-1">
+                        {selectedObjective.selfEvaluationStatus !==
+                            "sent" && (
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                    Unsubmitted
+                                    <Icon
+                                        icon="octicon:issue-draft-16"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
+                        {selectedObjective.selfEvaluationStatus ==
+                            "sent" && (
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                    Submitted
+                                    <Icon
+                                        icon="mdi:check-all"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
+
+                        {selectedObjective.selfComment && selectedObjective.selfComment.length < MIN_INPUT_LENGTH && <Chip variant="alert" className="p-1 px-2 rounded-md">
+                            {MIN_INPUT_LENGTH - selectedObjective.selfComment.length} characters left
+                        </Chip>}
+                    </div>
+                    <p className="mb-2 text-2xl font-bold text-zinc-700">
+                        Objective self-evaluation <span className="text-xs">(min. {MIN_INPUT_LENGTH} characters)</span>
+                    </p>
+                    <div className="flex w-[450px] flex-col items-start justify-start gap-1">
+                        <textarea
+                            minLength={MIN_INPUT_LENGTH}
+                            maxLength={MAX_INPUT_LENGTH}
+                            autoCorrect="off"
+                            spellCheck="false"
+                            disabled={
+                                user?.employeeId !=
+                                employee.employeeId ||
+                                selectedObjective.selfEvaluationStatus ==
+                                "sent"
+                            }
+                            value={
+                                selectedObjective?.selfComment ??
+                                ""
+                            }
+                            onChange={(
+                                e: React.ChangeEvent<HTMLTextAreaElement>
+                            ) => {
+                                if (data.objectivesLocal) {
+                                    const arr = [
+                                        ...data.objectivesLocal,
+                                    ];
+                                    arr[
+                                        data.selectedObjectiveIndex
+                                    ].selfComment =
+                                        e.target.value;
+                                    data.setObjectivesLocal(
+                                        arr
+                                    );
+                                }
+                            }}
+                            placeholder={`Write your self-evaluation for this objective`}
+                            className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                        />
+                    </div>
+                    <Button
+                        className="mt-1"
+                        disabled={
+                            employee.employeeId != user.employeeId ||
+                            JSON.stringify(data.objectives) ==
+                            JSON.stringify(
+                                data.objectivesLocal
+                            ) ||
+                            !selectedObjective.selfComment ||
+                            selectedObjective.selfEvaluationStatus ==
+                            "sent"
+                        }
+                        onClick={() => {
+                            saveObjectives(data.objectivesLocal);
+                        }}
+                        variant="outline"
+                    >
+                        Save changes
+                        <Icon
+                            icon="ic:baseline-save-alt"
+                            className="ml-1"
+                            fontSize={14}
+                        />
+                    </Button>
+                </div>
+            </div>
+
+            <div className="mt-4 flex w-full items-start justify-between">
+                <div className="flex flex-col items-start justify-start gap-1">
+                    <div className="flex gap-1">
+                        {selectedObjective.evaluationStatus !==
+                            "sent" && (
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                    Unsubmitted
+                                    <Icon
+                                        icon="octicon:issue-draft-16"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
+                        {selectedObjective.evaluationStatus ==
+                            "sent" && (
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[10px] font-semibold text-blue-500">
+                                    Submitted
+                                    <Icon
+                                        icon="mdi:check-all"
+                                        className="ml-1"
+                                        fontSize={10}
+                                    />
+                                </div>
+                            )}
+
+                        {selectedObjective.comment && selectedObjective.comment.length < MIN_INPUT_LENGTH && <Chip variant="alert" className="p-1 px-2 rounded-md">
+                            {MIN_INPUT_LENGTH - selectedObjective.comment.length} characters left
+                        </Chip>}
+                    </div>
+                    <p className="mb-2 text-2xl font-bold text-zinc-700">
+                        Supervisor evaluation <span className="text-xs">(min. {MIN_INPUT_LENGTH} characters)</span>
+                    </p>
+                    <div className="flex w-[450px] flex-col items-start justify-start gap-2">
+                        <div className="flex w-full items-center justify-center gap-1">
+                            <button
+                                type="button"
+                                disabled={
+                                    user?.employeeId !=
+                                    employee.supervisorId ||
+                                    selectedObjective.evaluationStatus ==
+                                    "sent"
+                                }
+                                onClick={() => {
+                                    if (data.objectivesLocal) {
+                                        const arr = [
+                                            ...data.objectivesLocal,
+                                        ];
+                                        arr[
+                                            data.selectedObjectiveIndex
+                                        ].grade = 1;
+                                        data.setObjectivesLocal(
+                                            arr
+                                        );
+                                    }
+                                }}
+                                className={
+                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
+                                    ` ${selectedObjective?.grade ==
+                                        1
+                                        ? "bg-green-400 text-green-50 border-transparent"
+                                        : " text-green-500 bg-transparent border-green-300"
+                                    }`
+                                }
+                            >
+                                1
+                            </button>
+                            <button
+                                type="button"
+                                disabled={
+                                    user?.employeeId !=
+                                    employee.supervisorId ||
+                                    selectedObjective.evaluationStatus ==
+                                    "sent"
+                                }
+                                onClick={() => {
+                                    if (data.objectivesLocal) {
+                                        const arr = [
+                                            ...data.objectivesLocal,
+                                        ];
+                                        arr[
+                                            data.selectedObjectiveIndex
+                                        ].grade = 2;
+                                        data.setObjectivesLocal(
+                                            arr
+                                        );
+                                    }
+                                }}
+                                className={
+                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
+                                    ` ${selectedObjective?.grade ==
+                                        2
+                                        ? "bg-green-400 text-green-50 border-transparent"
+                                        : " text-green-500 bg-transparent border-green-300"
+                                    }`
+                                }
+                            >
+                                2
+                            </button>
+                            <button
+                                type="button"
+                                disabled={
+                                    user?.employeeId !=
+                                    employee.supervisorId ||
+                                    selectedObjective.evaluationStatus ==
+                                    "sent"
+                                }
+                                onClick={() => {
+                                    if (data.objectivesLocal) {
+                                        const arr = [
+                                            ...data.objectivesLocal,
+                                        ];
+                                        arr[
+                                            data.selectedObjectiveIndex
+                                        ].grade = 3;
+                                        data.setObjectivesLocal(
+                                            arr
+                                        );
+                                    }
+                                }}
+                                className={
+                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
+                                    ` ${selectedObjective?.grade ==
+                                        3
+                                        ? "bg-green-400 text-green-50 border-transparent"
+                                        : " text-green-500 bg-transparent border-green-300"
+                                    }`
+                                }
+                            >
+                                3
+                            </button>
+                            <button
+                                type="button"
+                                disabled={
+                                    user?.employeeId !=
+                                    employee.supervisorId ||
+                                    selectedObjective.evaluationStatus ==
+                                    "sent"
+                                }
+                                onClick={() => {
+                                    if (data.objectivesLocal) {
+                                        const arr = [
+                                            ...data.objectivesLocal,
+                                        ];
+                                        arr[
+                                            data.selectedObjectiveIndex
+                                        ].grade = 4;
+                                        data.setObjectivesLocal(
+                                            arr
+                                        );
+                                    }
+                                }}
+                                className={
+                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
+                                    ` ${selectedObjective?.grade ==
+                                        4
+                                        ? "bg-green-400 text-green-50 border-transparent"
+                                        : " text-green-500 bg-transparent border-green-300"
+                                    }`
+                                }
+                            >
+                                4
+                            </button>
+                            <button
+                                type="button"
+                                disabled={
+                                    user?.employeeId !=
+                                    employee.supervisorId ||
+                                    selectedObjective.evaluationStatus ==
+                                    "sent"
+                                }
+                                onClick={() => {
+                                    if (data.objectivesLocal) {
+                                        const arr = [
+                                            ...data.objectivesLocal,
+                                        ];
+                                        arr[
+                                            data.selectedObjectiveIndex
+                                        ].grade = 5;
+                                        data.setObjectivesLocal(
+                                            arr
+                                        );
+                                    }
+                                }}
+                                className={
+                                    "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
+                                    ` ${selectedObjective?.grade ==
+                                        5
+                                        ? "bg-green-400 text-green-50 border-transparent"
+                                        : " text-green-500 bg-transparent border-green-300"
+                                    }`
+                                }
+                            >
+                                5
+                            </button>
+                        </div>
+
+                        <textarea
+                            autoCorrect="off"
+                            minLength={MIN_INPUT_LENGTH}
+                            maxLength={MAX_INPUT_LENGTH}
+                            spellCheck="false"
+                            disabled={
+                                user?.employeeId !=
+                                employee.supervisorId ||
+                                selectedObjective.evaluationStatus ==
+                                "sent"
+                            }
+                            value={
+                                selectedObjective?.comment ?? ""
+                            }
+                            onChange={(
+                                e: React.ChangeEvent<HTMLTextAreaElement>
+                            ) => {
+                                if (data.objectivesLocal) {
+                                    const arr = [
+                                        ...data.objectivesLocal,
+                                    ];
+                                    arr[
+                                        data.selectedObjectiveIndex
+                                    ].comment =
+                                        e.currentTarget.value;
+                                    data.setObjectivesLocal(
+                                        arr
+                                    );
+                                }
+                            }}
+                            placeholder={`Write your evaluation for this objective`}
+                            className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                        />
+                    </div>
+                    <Button
+                        className="mt-1"
+                        disabled={
+                            employee.supervisorId != user.employeeId ||
+                            JSON.stringify(data.objectives) ==
+                            JSON.stringify(
+                                data.objectivesLocal
+                            ) ||
+                            (!selectedObjective.grade &&
+                                !selectedObjective.comment) ||
+                            selectedObjective.evaluationStatus ==
+                            "sent"
+                        }
+                        onClick={() => {
+                            saveObjectives(data.objectivesLocal);
+                        }}
+                        variant="outline"
+                    >
+                        Save changes
+                        <Icon
+                            icon="ic:baseline-save-alt"
+                            className="ml-1"
+                            fontSize={14}
+                        />
+                    </Button>
+                </div>
+            </div>
+
+        </div>
+    )
 }

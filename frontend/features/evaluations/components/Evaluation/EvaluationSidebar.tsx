@@ -8,7 +8,6 @@ import { cn } from "@/util/utils";
 import Button from "@/components/ui/Button";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
-import { User } from "lucide-react";
 
 function EvaluationSidebar() {
     const { objectives, evaluation } = useObjectivesDataStore();
@@ -52,7 +51,7 @@ function GradeHeader({
                 (evaluation.leadershipRating ?? 0) +
                 (evaluation.competencyRating ?? 0)) /
                 (evaluation.leadershipRating ? 6 : 5)) *
-                100
+            100
         ) / 100;
 
     const totalGrade = (objectivesGrade + evaluationGrade) / 2;
@@ -88,13 +87,16 @@ function EvaluationComponent() {
         defaultValue: 0,
         parse: (value) => parseInt(value),
     });
+
+    const { user } = useAuth();
+    const isEmployee = user?.employeeId == employee?.employeeId;
+
     const status =
-        step == 3
+        isEmployee
             ? evaluation?.selfEvaluationStatus
             : evaluation?.evaluationStatus;
-    const title =
-        step == 3 ? "Competency Self-Evaluation" : "Competency Evaluation";
-    const label = step == 3 ? "Submitted" : "Evaluated";
+    const title = "Competency Evaluation"
+    const label = isEmployee ? "Submitted" : "Evaluated";
     return (
         <div className="flex w-full flex-col items-start justify-start">
             <div className="flex w-full justify-between p-4">
@@ -169,7 +171,7 @@ function EvaluationComponent() {
                                         (evaluation.leadershipRating ?? 0) +
                                         (evaluation.competencyRating ?? 0)) /
                                         (evaluation.leadershipRating ? 6 : 5)) *
-                                        100
+                                    100
                                 ) / 100}
                                 <span className="text-xs font-bold text-zinc-400">
                                     /5
@@ -183,14 +185,13 @@ function EvaluationComponent() {
 }
 
 function ObjectiveComponent() {
-    const {user} = useAuth()
+    const { user } = useAuth()
     const {
         objectives,
         setSelectedObjectiveIndex,
         selectedObjectiveIndex,
         employee,
         fetchObjectives,
-        setObjectivesLocal,
     } = useObjectivesDataStore();
 
     const [step, setStep] = useQueryState<number>("step", {
@@ -203,43 +204,45 @@ function ObjectiveComponent() {
         parse: (value) => parseInt(value),
     });
 
-    async function saveObjectives(objectives : Partial<Objective>[]) {
-        if(!employee || !year) return;
+    async function saveObjectives(objectives: Partial<Objective>[]) {
+        if (!employee || !year) return;
 
         axios.post(
             process.env.NEXT_PUBLIC_API_URL + "/api/objectives/bulk",
             {
                 objectives,
             }
-       ).then(
-              (response) => {
+        ).then(
+            (response) => {
                 if (response.status == 201) {
-                     fetchObjectives(employee.employeeId.toString(), year.toString());
-                     toast({
-                          description: "Successfully updated objectives",
-                     });
+                    fetchObjectives(employee.employeeId.toString(), year.toString());
+                    toast({
+                        description: "Successfully updated objectives",
+                    });
                 }
-              }
- 
+            }
 
-            ).catch((err) => {
-              toast({
+
+        ).catch((err) => {
+            toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
                 description: "There was a problem with your request.",
-              });
-              console.log(err);
-         });
+            });
+            console.log(err);
+        });
     }
 
+    const isEmployee = user?.employeeId == employee?.employeeId;
+
     const count =
-        step == 3
+        isEmployee
             ? objectives?.filter((obj) => obj.selfEvaluationStatus == "draft")
-                  .length
+                .length
             : objectives?.filter((obj) => obj.evaluationStatus == "draft")
-                  .length;
-    const title = step == 3 ? "Self-Evaluation" : "Evaluation";
-    const label = step == 3 ? "Submitted" : "Evaluated";
+                .length;
+    const title = isEmployee ? "Self-Evaluation" : "Evaluation";
+    const label = isEmployee ? "Submitted" : "Evaluated";
 
     return (
         <div className="flex w-full flex-col items-start justify-start pb-8">
@@ -263,7 +266,7 @@ function ObjectiveComponent() {
             <div className="flex w-full flex-col justify-start">
                 {objectives?.map((objective, index) => {
                     const status =
-                        step == 3
+                        isEmployee
                             ? objective?.selfEvaluationStatus
                             : objective?.evaluationStatus;
                     if (objective.status !== "ok") return null;
@@ -308,7 +311,7 @@ function ObjectiveComponent() {
                                         {objective.title ?? "Untitled"}
                                     </p>
                                 </div>
-                                {objective.grade && step == 4 && (
+                                {objective.grade && step == 3 && objective.evaluationStatus == "sent" && (
                                     <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
                                         <p className="text-[10px] font-bold text-zinc-400">
                                             Objective grade
@@ -329,7 +332,7 @@ function ObjectiveComponent() {
             <div className="mt-4 flex w-full items-center justify-center">
                 {user?.employeeId == employee?.employeeId && <Button
                     className=""
-                    disabled={!objectives || objectives.every((obj) => obj.selfEvaluationStatus == "sent") || objectives.some((obj) => !obj.selfComment)}
+                    disabled={!objectives || objectives.every((obj) => obj.selfEvaluationStatus == "sent") || objectives.some((obj) => !obj.selfComment || obj.selfComment.length < 200)}
                     onClick={() => {
                         if (!objectives) return;
 
@@ -348,7 +351,7 @@ function ObjectiveComponent() {
                         className="ml-1"
                         fontSize={14}
                     />
-                </Button> }
+                </Button>}
                 {user?.employeeId == employee?.supervisorId && <Button
                     className=""
                     disabled={!objectives || objectives.every((obj) => obj.evaluationStatus == "sent") || objectives.some((obj) => !obj.comment || !obj.grade)}
@@ -370,7 +373,7 @@ function ObjectiveComponent() {
                         className="ml-1"
                         fontSize={14}
                     />
-                </Button> }
+                </Button>}
 
             </div>
         </div>

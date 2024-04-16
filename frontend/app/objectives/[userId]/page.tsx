@@ -45,9 +45,9 @@ export default function Objectives({ params }: { params: { userId: string } }) {
         axios
             .get<Objective[]>(
                 process.env.NEXT_PUBLIC_API_URL +
-                    "/api/employees/" +
-                    params.userId +
-                    "/objectives",
+                "/api/employees/" +
+                params.userId +
+                "/objectives",
                 {
                     params: {
                         year,
@@ -69,9 +69,9 @@ export default function Objectives({ params }: { params: { userId: string } }) {
         axios
             .get<Employee>(
                 process.env.NEXT_PUBLIC_API_URL +
-                    "/api/employees/" +
-                    params.userId +
-                    "/supervisors"
+                "/api/employees/" +
+                params.userId +
+                "/supervisors"
             )
             .then((response) => {
                 if (response.data) {
@@ -87,9 +87,9 @@ export default function Objectives({ params }: { params: { userId: string } }) {
         axios
             .get<Comment[]>(
                 process.env.NEXT_PUBLIC_API_URL +
-                    "/api/employees/" +
-                    params.userId +
-                    "/comments"
+                "/api/employees/" +
+                params.userId +
+                "/comments"
             )
             .then((response) => {
                 console.log("comments", response.data);
@@ -202,22 +202,32 @@ export default function Objectives({ params }: { params: { userId: string } }) {
 
     useEffect(() => {
         if (data.employee) {
+            if (data.employee.supervisorId === user?.employeeId) {
+                if (step === 0) {
+                    setStep(1);
+                }
+            }
+            if (data.employee.employeeId === user?.employeeId) {
+                if (step === 1) {
+                    setStep(0);
+                }
+            }
             fetchEvaluations();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data.employee, user]);
 
-    useEffect(() => {}, []);
+
     return (
         // <ProtectedRoute>
         <main className="flex min-h-screen flex-col items-start justify-start gap-2 p-4 px-8">
             {data.objectivesLocal !== null &&
-            data.employee !== null &&
-            comments !== null ? (
+                data.employee !== null &&
+                comments !== null ? (
                 data.evaluationLocal != null &&
                 user &&
                 data.employee &&
-                data.evaluationSteps && (
+                data.evaluationSteps.length > 0 && (
                     <>
                         {/* Top Row */}
                         <div className="flex w-full gap-2 transition-all">
