@@ -21,6 +21,7 @@ import employeeDatabaseInit from "./xlsx-service";
 import prisma from "../../prisma/middleware";
 import cronJobInit from "../routes/util/cron";
 import prismaInit from "../../prisma/startup";
+import { Strategy as SAMLStrategy } from "@node-saml/passport-saml";
 
 export class ExpressServer {
 	private app: Application;
@@ -83,7 +84,7 @@ export class ExpressServer {
 		this.app.use(passport.session());
 
 		// Use a custom LocalStrategy for Passport.js authentication
-		passport.use(new LocalStrategy(this.dbService));
+		passport.use(new LocalStrategy());
 
 		// Serialize and deserialize user data for session management
 		passport.serializeUser((employee: any, done) =>
@@ -139,4 +140,7 @@ export class ExpressServer {
 			console.log(error);
 		}
 	}
+}
+function findByEmail(email: any, arg1: (err: any, user: any) => any) {
+	throw new Error("Function not implemented.");
 }

@@ -9,6 +9,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { SetStateAction, useEffect, useState } from "react";
 import Modal from "../../../components/ui/Modal";
 import Chip from "../../../components/ui/Chip";
+import { MAX_INPUT_LENGTH, MIN_INPUT_LENGTH } from "@/config";
 
 export function NewEvaluation({
     user,
@@ -26,6 +27,7 @@ export function NewEvaluation({
         name:
         | "efficiency"
         | "competency"
+        | "overall"
         | "commitment"
         | "initiative"
         | "respect"
@@ -34,6 +36,7 @@ export function NewEvaluation({
         | "efficiencyRating"
         | "competencyRating"
         | "commitmentRating"
+        | "overallRating"
         | "initiativeRating"
         | "respectRating"
         | "leadershipRating";
@@ -69,6 +72,11 @@ export function NewEvaluation({
                 rating: "leadershipRating",
                 label: "LEADERSHIP",
             },
+            {
+                name: "overall",
+                rating: "overallRating",
+                label: "OVERALL COMMENT / COMMENTAIRE GENERAL",
+            },
         ];
 
     return (
@@ -80,7 +88,7 @@ export function NewEvaluation({
                 <>
                     <div className="flex w-full items-center justify-between">
                         {data.evaluationLocal.evaluationStatus == "draft" && (
-                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[8px] font-semibold text-zinc-700">
+                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[8px] font-semibold text-zinc-600">
                                 Draft
                                 <Icon
                                     icon="octicon:issue-draft-16"
@@ -102,7 +110,7 @@ export function NewEvaluation({
                     </div>
                     <div className="mt-2 h-full w-full">
                         <div className="flex items-center justify-between">
-                            <p className="text-2xl font-bold text-zinc-700">
+                            <p className="text-2xl font-bold text-zinc-600">
                                 {employee.firstName.split(" ")[0]}&apos;s
                                 competency evaluation
                             </p>
@@ -110,7 +118,7 @@ export function NewEvaluation({
                                 <p className="text-[10px] font-bold text-zinc-400">
                                     Estimated total grade
                                 </p>
-                                <p className="text-2xl font-bold text-zinc-700">
+                                <p className="text-2xl font-bold text-zinc-600">
                                     {Math.round(
                                         (((data.evaluationLocal.respectRating ??
                                             0) +
@@ -143,11 +151,15 @@ export function NewEvaluation({
                                         key={metric.name}
                                         className="flex flex-col justify-start gap-1"
                                     >
-                                        <label className="text-[10px] font-medium text-zinc-700">
+                                        <label className="text-[10px] font-medium text-zinc-600">
                                             {metric.label}{" "}
-                                            <span className="text-[8px] text-brand">
-                                                * (required)
-                                            </span>
+                                            {/* @ts-ignore */}
+                                            {data.evaluationLocal[metric.name] && data.evaluationLocal[metric.name].length < 200 ? <span className="text-red-700 text-[10px]">
+                                                {/* @ts-ignore */}
+                                                {MIN_INPUT_LENGTH - data.evaluationLocal[metric.name].length} characters left
+                                            </span> : <span className="text-red-700 text-[10px]">
+                                                required*
+                                            </span>}
                                         </label>
                                         <div className="flex w-full items-center justify-center gap-1">
                                             <button
@@ -309,7 +321,8 @@ export function NewEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
-                                            minLength={200}
+                                            minLength={MIN_INPUT_LENGTH}
+                                            maxLength={MAX_INPUT_LENGTH}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
@@ -334,7 +347,7 @@ export function NewEvaluation({
                                                 data.setEvaluationLocal(obj);
                                             }}
                                             placeholder={`Write your ${metric.name} review`}
-                                            className="h-[60px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                            className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                         />
                                     </div>
                                 ))}
@@ -345,12 +358,15 @@ export function NewEvaluation({
                                         key={metric.name}
                                         className="flex flex-col justify-start gap-1"
                                     >
-                                        <label className="text-[10px] font-medium text-zinc-700">
+                                        <label className="text-[10px] font-medium text-zinc-600">
                                             {metric.label}{" "}
                                             {metric.label !== "LEADERSHIP" && (
-                                                <span className="text-[8px] text-brand">
-                                                    {" "}
-                                                    * (required)
+                                                // @ts-ignore
+                                                data.evaluationLocal[metric.name] && data.evaluationLocal[metric.name].length < 200 ? <span className="text-red-700 text-[10px]">
+                                                    {/* @ts-ignore */}
+                                                    {MIN_INPUT_LENGTH - data.evaluationLocal[metric.name].length} characters left
+                                                </span> : <span className="text-red-700 text-[10px]">
+                                                    required*
                                                 </span>
                                             )}
                                         </label>
@@ -514,7 +530,8 @@ export function NewEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
-                                            minLength={200}
+                                            minLength={MIN_INPUT_LENGTH}
+                                            maxLength={MAX_INPUT_LENGTH}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
@@ -539,13 +556,59 @@ export function NewEvaluation({
                                                 data.setEvaluationLocal(obj);
                                             }}
                                             placeholder={`Write your ${metric.name} review`}
-                                            className="h-[60px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                            className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                         />
                                     </div>
                                 ))}
                             </div>
                         </form>
-                        <div className="absolute bottom-4 left-4">
+                        <div
+                            key={metrics[6].name}
+                            className="flex flex-col justify-start gap-1 mt-4 pt-4 border-t border-t-zinc-200"
+                        >
+                            <label className="text-[10px] font-medium text-zinc-600">
+                                {metrics[6].label}{" "}
+                                {/* @ts-ignore */}
+                                {data.evaluationLocal[metrics[6].name] && data.evaluationLocal[metrics[6].name].length < 200 ? <span className="text-red-700 text-[10px]">
+                                    {/* @ts-ignore */}
+                                    {MIN_INPUT_LENGTH - data.evaluationLocal[metrics[6].name].length} characters left
+                                </span> : <span className="text-red-700 text-[10px]">
+                                    required*
+                                </span>}
+                            </label>
+
+                            <textarea
+                                autoCorrect="off"
+                                minLength={MIN_INPUT_LENGTH}
+                                maxLength={MAX_INPUT_LENGTH}
+                                spellCheck="false"
+                                disabled={
+                                    user.employeeId !==
+                                    data.evaluationLocal
+                                        .supervisorId ||
+                                    data.evaluationLocal
+                                        .evaluationStatus == "sent"
+                                }
+                                value={
+                                    data.evaluationLocal[
+                                    metrics[6].name
+                                    ] ?? ""
+                                }
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLTextAreaElement>
+                                ) => {
+                                    const obj = {
+                                        ...data.evaluationLocal,
+                                    };
+                                    obj[metrics[6].name] =
+                                        e.target.value;
+                                    data.setEvaluationLocal(obj);
+                                }}
+                                placeholder={`Write your ${metrics[6].name} review`}
+                                className="h-[80px] w-1/2 rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                            />
+                        </div>
+                        {/* <div className="absolute bottom-4 left-4">
                             <Chip variant="background">
                                 <Icon
                                     icon="mdi:alert"
@@ -553,9 +616,9 @@ export function NewEvaluation({
                                     fontSize={14}
                                 />
                                 You must fill all required fields before
-                                submission with a minimum of 200 characters.
+                                submission with a minimum of {MIN_INPUT_LENGTH} characters.
                             </Chip>
-                        </div>
+                        </div> */}
                         {user.employeeId ==
                             data.evaluationLocal.supervisorId && (
                                 <div className="absolute bottom-4 right-4 flex w-full items-center justify-end gap-2">
@@ -580,20 +643,19 @@ export function NewEvaluation({
                                         disabled={
                                             data.evaluationLocal.evaluationStatus ==
                                             "sent" ||
-                                            !data.evaluationLocal.efficiency ||
-                                            !data.evaluationLocal
-                                                .efficiencyRating ||
-                                            !data.evaluationLocal.competency ||
-                                            !data.evaluationLocal
-                                                .competencyRating ||
-                                            !data.evaluationLocal.commitment ||
-                                            !data.evaluationLocal
-                                                .commitmentRating ||
-                                            !data.evaluationLocal.initiative ||
-                                            !data.evaluationLocal
-                                                .initiativeRating ||
-                                            !data.evaluationLocal.respect ||
-                                            !data.evaluationLocal.respectRating
+                                            metrics.some(metric => {
+                                                if (metric.name == "overall") {
+                                                    // @ts-ignore
+                                                    return !data.evaluationLocal[metric.name] || data.evaluationLocal[metric.name].length < MIN_INPUT_LENGTH;
+                                                }
+                                                if (metric.name == "leadership") {
+                                                    return false;
+                                                }
+                                                // @ts-ignore
+                                                return !data.evaluationLocal[metric.rating] || !data.evaluationLocal[metric.name] || data.evaluationLocal[metric.name].length < MIN_INPUT_LENGTH;
+
+                                            })
+
                                         }
                                         onClick={() => {
                                             setIsSubmitModalOpen(true);
@@ -613,7 +675,7 @@ export function NewEvaluation({
                                     >
                                         <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
                                             <div className="flex w-full flex-col items-start justify-between">
-                                                <p className="text-xl font-bold text-zinc-700">
+                                                <p className="text-xl font-bold text-zinc-600">
                                                     Submit evaluation ?
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">

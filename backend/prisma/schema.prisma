@@ -7,18 +7,46 @@ datasource db {
     url      = "mysql://root:mysql@localhost:3306/testdb"
 }
 
+model Positions {
+    positionId Int    @id @default(autoincrement())
+    title      String
+
+    // Job Information
+    description String?
+    division    String
+    subUnit     String
+    cgGroup     String
+    dateFrom    DateTime
+    dateTo      DateTime
+    notice      DateTime
+
+    supervisorId Int?
+
+    // Relations
+    supervisor   Positions?  @relation("Supervisor", fields: [supervisorId], references: [positionId], onDelete: SetNull)
+    subordinates Positions[] @relation("Supervisor")
+}
+
 model Employees {
     employeeId Int    @id @default(autoincrement())
     role       String @default("staff")
     email      String @unique
 
-    supervisorId Int?
-    firstName    String
-    lastName     String
-    password     String
-    matricule    String? @unique
-    jobTitle     String
+    // Personal Information
+    supervisorId  Int?
+    personalEmail String
+    phone2        String
+    phone         String
+    address       String
+    firstName     String
+    lastName      String
+    password      String
+    category      String
+    grade         String
+    bgLevel       String
+    matricule     String? @unique
 
+    // Relations
     supervisor   Employees?  @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: SetNull)
     subordinates Employees[] @relation("Supervisor")
 
@@ -47,18 +75,21 @@ model Evaluations {
     updatedAt DateTime @updatedAt
     createdAt DateTime @default(now())
 
-    efficiency           String? @db.VarChar(255)
-    efficiencyRating     Int?
-    competency           String? @db.VarChar(255)
-    competencyRating     Int?
-    commitment           String? @db.VarChar(255)
-    commitmentRating     Int?
-    initiative           String? @db.VarChar(255)
-    initiativeRating     Int?
-    respect              String? @db.VarChar(255)
-    respectRating        Int?
-    leadership           String? @db.VarChar(255)
-    leadershipRating     Int?
+    efficiency       String? @db.VarChar(255)
+    efficiencyRating Int?
+    competency       String? @db.VarChar(255)
+    competencyRating Int?
+    commitment       String? @db.VarChar(255)
+    commitmentRating Int?
+    initiative       String? @db.VarChar(255)
+    initiativeRating Int?
+    respect          String? @db.VarChar(255)
+    respectRating    Int?
+    leadership       String? @db.VarChar(255)
+    leadershipRating Int?
+    overall          String? @db.VarChar(255)
+    overallRating    Int?
+
     selfEvaluationStatus String
     selfEfficiency       String? @db.VarChar(255)
     selfCompetency       String? @db.VarChar(255)
@@ -66,6 +97,7 @@ model Evaluations {
     selfInitiative       String? @db.VarChar(255)
     selfRespect          String? @db.VarChar(255)
     selfLeadership       String? @db.VarChar(255)
+    selfOverall          String? @db.VarChar(255)
 
     employee   Employees @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
     supervisor Employees @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)

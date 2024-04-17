@@ -356,17 +356,27 @@ function Menu() {
             route: "/",
         },
         {
-            name: "My Objectives",
-            route: `/objectives/${user?.employeeId}`,
+            name: "Performance",
+            children: [
+                {
+                    name: "My Objectives",
+                    route: `/objectives/${user?.employeeId}`,
+                },
+                {
+                    name: "My 360 Evaluation",
+                    route: `/evaluation360/${user?.employeeId}`,
+                },
+                {
+                    name: "Reporting",
+                    route: "/management/reporting",
+                    permission: ["admin"],
+                },
+
+            ]
         },
-        {
-            name: "My 360 Evaluation",
-            route: `/evaluation360/${user?.employeeId}`,
-        },
-        {
-            name: "Organogram",
-            route: `/management/organogram`,
-        },
+        // { name: "Organogram",
+        //     route: `/management/organogram`,
+        // },
         {
             name: "Accounts",
             route: "/management/admin",
@@ -375,11 +385,6 @@ function Menu() {
         {
             name: "Settings",
             route: "/management/settings",
-            permission: ["admin"],
-        },
-        {
-            name: "Reporting",
-            route: "/management/reporting",
             permission: ["admin"],
         },
     ];

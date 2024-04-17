@@ -95,7 +95,7 @@ function EvaluationComponent() {
         isEmployee
             ? evaluation?.selfEvaluationStatus
             : evaluation?.evaluationStatus;
-    const title = "Competency Evaluation"
+    const title = "General Evaluation"
     const label = isEmployee ? "Submitted" : "Evaluated";
     return (
         <div className="flex w-full flex-col items-start justify-start">

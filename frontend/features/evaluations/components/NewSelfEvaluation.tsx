@@ -9,6 +9,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { SetStateAction, useEffect, useState } from "react";
 import Modal from "../../../components/ui/Modal";
 import Chip from "../../../components/ui/Chip";
+import { MAX_INPUT_LENGTH, MIN_INPUT_LENGTH } from "@/config";
 
 export function NewSelfEvaluation({
     user,
@@ -29,14 +30,16 @@ export function NewSelfEvaluation({
         | "selfCommitment"
         | "selfInitiative"
         | "selfRespect"
-        | "selfLeadership";
+        | "selfLeadership"
+        | "selfOverall";
         rating:
         | "selfEfficiencyRating"
         | "selfCompetencyRating"
         | "selfCommitmentRating"
         | "selfInitiativeRating"
         | "selfRespectRating"
-        | "selfLeadershipRating";
+        | "selfLeadershipRating"
+        | "selfOverallRating";
         label: string;
     }[] = [
             {
@@ -53,6 +56,11 @@ export function NewSelfEvaluation({
                 name: "selfCommitment",
                 rating: "selfCommitmentRating",
                 label: "COMMITMENT / ENGAGEMENT",
+            },
+            {
+                name: "selfOverall",
+                rating: "selfOverallRating",
+                label: "OVERALL COMMENT / COMMENTAIRE GENERAL"
             },
             {
                 name: "selfInitiative",
@@ -72,7 +80,7 @@ export function NewSelfEvaluation({
         ];
 
     return (
-        <div className="relative flex h-full w-full flex-col items-start justify-start border-b border-b-zinc-200">
+        <div className="relative flex h-full w-full flex-col items-start justify-start ">
             {data.evaluationLocal &&
                 ((user.employeeId == employee.supervisorId &&
                     data.evaluationLocal.selfEvaluationStatus == "sent") ||
@@ -122,7 +130,7 @@ export function NewSelfEvaluation({
                         </div>
                         <form className="mt-4 grid w-full grid-cols-2 gap-4 pt-2">
                             <div className="flex flex-col gap-3">
-                                {metrics.slice(0, 3).map((metric) => (
+                                {metrics.slice(0, 4).map((metric) => (
                                     <div
                                         key={metric.name}
                                         className="flex flex-col justify-start gap-1"
@@ -130,16 +138,20 @@ export function NewSelfEvaluation({
                                         <label className="text-[10px] font-medium text-zinc-700">
                                             {metric.label}{" "}
                                             {metric.label !== "LEADERSHIP" && (
-                                                <span className="text-[8px] text-brand">
-                                                    {" "}
-                                                    * (required)
+                                                // @ts-ignore
+                                                data.evaluationLocal[metric.name] && data.evaluationLocal[metric.name].length < 200 ? <span className="text-red-700 text-[10px]">
+                                                    {/* @ts-ignore */}
+                                                    {MIN_INPUT_LENGTH - data.evaluationLocal[metric.name].length} characters left
+                                                </span> : <span className="text-red-700 text-[10px]">
+                                                    required*
                                                 </span>
                                             )}
                                         </label>
 
                                         <textarea
                                             autoCorrect="off"
-                                            maxLength={180}
+                                            minLength={MIN_INPUT_LENGTH}
+                                            maxLength={MAX_INPUT_LENGTH}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
@@ -167,13 +179,13 @@ export function NewSelfEvaluation({
                                             placeholder={`Write your ${metric.name
                                                 .split("self")[1]
                                                 .toLowerCase()} review`}
-                                            className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                            className="h-[90px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                         />
                                     </div>
                                 ))}
                             </div>
                             <div className="flex flex-col gap-3">
-                                {metrics.slice(3, 6).map((metric) => (
+                                {metrics.slice(4, 7).map((metric) => (
                                     <div
                                         key={metric.name}
                                         className="flex flex-col justify-start gap-1"
@@ -181,16 +193,20 @@ export function NewSelfEvaluation({
                                         <label className="text-[10px] font-medium text-zinc-700">
                                             {metric.label}{" "}
                                             {metric.label !== "LEADERSHIP" && (
-                                                <span className="text-[8px] text-brand">
-                                                    {" "}
-                                                    * (required)
+                                                // @ts-ignore
+                                                data.evaluationLocal[metric.name] && data.evaluationLocal[metric.name].length < 200 ? <span className="text-red-700 text-[10px]">
+                                                    {/* @ts-ignore */}
+                                                    {MIN_INPUT_LENGTH - data.evaluationLocal[metric.name].length} characters left
+                                                </span> : <span className="text-red-700 text-[10px]">
+                                                    required*
                                                 </span>
                                             )}
                                         </label>
 
                                         <textarea
                                             autoCorrect="off"
-                                            maxLength={180}
+                                            minLength={MIN_INPUT_LENGTH}
+                                            maxLength={MAX_INPUT_LENGTH}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
@@ -218,7 +234,7 @@ export function NewSelfEvaluation({
                                             placeholder={`Write your ${metric.name
                                                 .split("self")[1]
                                                 .toLowerCase()} review`}
-                                            className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                            className="h-[90px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                         />
                                     </div>
                                 ))}
@@ -248,11 +264,13 @@ export function NewSelfEvaluation({
                                     disabled={
                                         data.evaluationLocal
                                             .selfEvaluationStatus == "sent" ||
-                                        !data.evaluationLocal.selfEfficiency ||
-                                        !data.evaluationLocal.selfCompetency ||
-                                        !data.evaluationLocal.selfCommitment ||
-                                        !data.evaluationLocal.selfInitiative ||
-                                        !data.evaluationLocal.selfRespect
+                                        metrics.some(metric => {
+                                            if (metric.name == "selfLeadership") {
+                                                return false;
+                                            }
+                                            // @ts-ignore
+                                            return !data.evaluationLocal[metric.name] || data.evaluationLocal[metric.name].length < MIN_INPUT_LENGTH;
+                                        })
                                     }
                                     onClick={() => {
                                         setIsSubmitModalOpen(true);
