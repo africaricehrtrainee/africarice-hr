@@ -21,7 +21,8 @@ import employeeDatabaseInit from "./xlsx-service";
 import prisma from "../../prisma/middleware";
 import cronJobInit from "../routes/util/cron";
 import prismaInit from "../../prisma/startup";
-import { Strategy as SAMLStrategy } from "@node-saml/passport-saml";
+import { SAML, Strategy } from "@node-saml/passport-saml";
+import { SAML_CALLBACK, SAML_CERT } from "../../config";
 
 export class ExpressServer {
 	private app: Application;
@@ -52,14 +53,17 @@ export class ExpressServer {
 
 		var whitelist = [
 			"http://localhost:3000",
+			"https://mocksaml.com",
 			"http://10.225.100.30:3000",
 			"http://127.0.0.1",
 		];
+
 		// Configure CORS (Cross-Origin Resource Sharing)
 		this.app.use(
 			cors({
 				credentials: true,
 				origin: function (origin, callback) {
+					console.log("Origin is", origin);
 					if (origin && whitelist.indexOf(origin) !== -1) {
 						callback(null, true);
 					} else {
@@ -85,6 +89,43 @@ export class ExpressServer {
 
 		// Use a custom LocalStrategy for Passport.js authentication
 		passport.use(new LocalStrategy());
+
+		passport.use(
+			"saml",
+			new Strategy(
+				{
+					callbackUrl: SAML_CALLBACK,
+					entryPoint: "https://mocksaml.com/api/saml/sso",
+					identifierFormat: null,
+					issuer: "arc-web",
+					idpCert: SAML_CERT,
+				},
+
+				function (req, profile, done) {
+					if (!profile) return;
+					prisma.employees
+						.findUnique({
+							where: { email: profile.email },
+						})
+						.then((user) => {
+							if (user) {
+								return done(null, user);
+							}
+						})
+						.catch((err) => {
+							return done(err);
+						});
+				},
+
+				function (req, profile, done) {
+					req.logOut((err) => {
+						if (err) {
+							return done(err);
+						}
+					});
+				}
+			)
+		);
 
 		// Serialize and deserialize user data for session management
 		passport.serializeUser((employee: any, done) =>

@@ -23,10 +23,10 @@ router.post(
 	}
 );
 
-router.post(
+router.get(
 	"/login/saml",
 	passport.authenticate("saml", {
-		failureRedirect: "/auth",
+		failureRedirect: "/",
 		failureFlash: true,
 	})
 );

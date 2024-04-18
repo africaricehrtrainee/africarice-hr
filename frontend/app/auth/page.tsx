@@ -7,7 +7,7 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { log } from "console";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function Home() {
     const [loading, setLoading] = useState<boolean>(false);
@@ -110,14 +110,27 @@ export default function Home() {
                     {error && (
                         <p className="mt-1 text-sm text-red-400">{error}</p>
                     )}
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex flex-col items-center justify-start gap-2">
                         <Button
                             type="submit"
                             className="mt-4"
                             loading={loading}
-                            variant="primary"
+                            variant="outline"
                         >
                             Login
+                            <Icon icon="akar-icons:arrow-right" className="w-4 h-4 ml-1" />
+                        </Button>
+                        <Button variant="outline" onClick={
+                            () => {
+                                axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/saml`, {
+                                }).then((response) => {
+                                    console.log(response)
+                                }).catch((err) => {
+                                    console.log(err)
+                                })
+                            }}>
+                            Login as CGIAR
+                            <Icon icon="ri:building-line" className="w-4 h-4 ml-1" />
                         </Button>
                     </div>
                 </form>
