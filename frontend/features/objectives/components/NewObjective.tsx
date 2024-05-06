@@ -14,7 +14,7 @@ import { toast, useToast } from "../../../components/ui/use-toast";
 import { useQueryState } from "nuqs";
 import { cn } from "@/util/utils";
 import Chip from "@/components/ui/Chip";
-import { MAX_INPUT_LENGTH, MIN_INPUT_LENGTH } from "@/config";
+import { useGetSettings } from "@/features/settings/queries";
 
 export function NewObjective({
     employee,
@@ -27,6 +27,7 @@ export function NewObjective({
 }) {
     const { user } = useAuth();
     const data = useObjectivesDataStore();
+    const { data: settings } = useGetSettings();
     const selectedObjective = useObjectivesDataStore(selectActiveObjective);
     const activeStep = useObjectivesDataStore(selectActiveStep);
     const [loading, setLoading] = useState<boolean>(false);
@@ -252,7 +253,7 @@ export function NewObjective({
         setIsUpdateModalOpen(false);
     }, [selectedObjective]);
 
-    if (!selectedObjective) return null;
+    if (!selectedObjective || !settings) return null;
     return (
         <div
             className={cn(
@@ -262,9 +263,6 @@ export function NewObjective({
         >
             {selectedObjective && (
                 <>
-                    <p className="absolute bottom-4 left-4 font-mono text-[6px] text-muted-foreground opacity-75">
-                        OBJECTIVE-ID: {selectedObjective.objectiveId}
-                    </p>
                     {/* Objective Header */}
                     <div className="flex w-full items-center justify-between">
                         {renderStatusBadge()}
@@ -672,40 +670,6 @@ export function NewObjective({
                         </form>
                     </div>
 
-                    {selectedObjective.status == "ok" &&
-                        step == 3 &&
-                        user?.employeeId == employee.employeeId && (
-                            <>
-                                <div
-                                    className={
-                                        "flex flex-col items-end justify-center absolute bottom-2 right-2 gap-2"
-                                    }
-                                >
-                                    <Button
-                                        disabled={
-                                            JSON.stringify(data.objectives) ==
-                                            JSON.stringify(
-                                                data.objectivesLocal
-                                            ) ||
-                                            !selectedObjective.selfComment ||
-                                            selectedObjective.selfEvaluationStatus ==
-                                            "sent"
-                                        }
-                                        onClick={() => {
-                                            saveObjectives(data.objectivesLocal);
-                                        }}
-                                        variant="outline"
-                                    >
-                                        Save changes
-                                        <Icon
-                                            icon="ic:baseline-save-alt"
-                                            className="ml-1"
-                                            fontSize={14}
-                                        />
-                                    </Button>
-                                </div>
-                            </>
-                        )}
 
                     {/* Staff self-evaluation */}
 
@@ -716,12 +680,13 @@ export function NewObjective({
                                 employee={employee}
                                 user={user}
                                 step={step}
+                                settings={settings}
                             />
                         )}
 
                     {/* Staff self-evaluation */}
                     {user && step == 3 && selectedObjective.status == "ok" && (
-                        <ObjectiveEvaluation employee={employee} user={user} saveObjectives={saveObjectives} />
+                        <ObjectiveEvaluation employee={employee} user={user} saveObjectives={saveObjectives} settings={settings} />
                     )}
 
                 </>
@@ -734,12 +699,14 @@ function MidtermReview({
     user,
     employee,
     step,
+    settings
 }: {
     user: Employee;
     employee: Employee;
     step: number;
+    settings: Settings;
 }) {
-    const data = useObjectivesDataStore();
+    const data = useObjectivesDataStore()
     const selectedObjective = data.objectivesLocal[data.selectedObjectiveIndex];
 
     const cachedObjective = data.objectives
@@ -747,6 +714,10 @@ function MidtermReview({
         : null;
 
 
+    const [year, setYear] = useQueryState<string>("year", {
+        defaultValue: new Date().getFullYear().toString(),
+        parse: (value) => value,
+    });
 
     async function saveReviews() {
         try {
@@ -762,17 +733,8 @@ function MidtermReview({
                         toast({
                             description: "Succesfully saved reviews.",
                         });
-                        axios
-                            .get(
-                                process.env.NEXT_PUBLIC_API_URL +
-                                "/api/employees/" +
-                                employee.employeeId +
-                                "/objectives/"
-                            )
-                            .then((response) =>
-                                data.setObjectives(response.data)
-                            );
                     }
+                    data.fetchObjectives(employee.employeeId.toString(), year);
                 })
                 .catch((err) => {
                     toast({
@@ -846,8 +808,8 @@ function MidtermReview({
                                 </label>
                                 <textarea
                                     autoCorrect="off"
-                                    minLength={MIN_INPUT_LENGTH}
-                                    maxLength={MAX_INPUT_LENGTH}
+                                    minLength={parseInt(settings.SETTING_MIN_CHAR)}
+                                    maxLength={parseInt(settings.SETTING_MAX_CHAR)}
                                     spellCheck="false"
                                     disabled={
                                         user?.employeeId !=
@@ -929,8 +891,8 @@ function MidtermReview({
                                         />
                                     </div>
                                 )}
-                                {selectedObjective.midtermComment && selectedObjective.midtermComment.length < MIN_INPUT_LENGTH && <Chip variant="alert" className="p-1 px-2 rounded-md">
-                                    {MIN_INPUT_LENGTH - selectedObjective.midtermComment.length} characters left
+                                {selectedObjective.midtermComment && selectedObjective.midtermComment.length < parseInt(settings.SETTING_MIN_CHAR) && <Chip variant="alert" className="p-1 px-2 rounded-md">
+                                    {parseInt(settings.SETTING_MIN_CHAR) - selectedObjective.midtermComment.length} characters left
                                 </Chip>}
 
                             </div>
@@ -939,11 +901,11 @@ function MidtermReview({
                             </p>
                             <div className="flex w-full flex-col items-start justify-start gap-1">
                                 <label className="text-[10px] font-medium text-zinc-700">
-                                    Supervisor Review (min. {MIN_INPUT_LENGTH} characters)
+                                    Supervisor Review (min. {parseInt(settings.SETTING_MIN_CHAR)} characters)
                                 </label>
                                 <textarea
-                                    minLength={MIN_INPUT_LENGTH}
-                                    maxLength={MAX_INPUT_LENGTH}
+                                    minLength={parseInt(settings.SETTING_MIN_CHAR)}
+                                    maxLength={parseInt(settings.SETTING_MAX_CHAR)}
                                     autoCorrect="off"
                                     spellCheck="false"
                                     disabled={
@@ -1009,7 +971,7 @@ function MidtermReview({
     );
 }
 
-function ObjectiveEvaluation({ employee, user, saveObjectives }: { employee: Employee, user: Employee, saveObjectives: (objectives: Partial<Objective>[]) => void }) {
+function ObjectiveEvaluation({ employee, user, saveObjectives, settings }: { employee: Employee, user: Employee, saveObjectives: (objectives: Partial<Objective>[]) => void, settings: Settings }) {
 
     const data = useObjectivesDataStore();
     const selectedObjective = data.objectivesLocal[data.selectedObjectiveIndex];
@@ -1061,17 +1023,17 @@ function ObjectiveEvaluation({ employee, user, saveObjectives }: { employee: Emp
                                 </div>
                             )}
 
-                        {selectedObjective.selfComment && selectedObjective.selfComment.length < MIN_INPUT_LENGTH && <Chip variant="alert" className="p-1 px-2 rounded-md">
-                            {MIN_INPUT_LENGTH - selectedObjective.selfComment.length} characters left
+                        {selectedObjective.selfComment && selectedObjective.selfComment.length < parseInt(settings.SETTING_MIN_CHAR) && <Chip variant="alert" className="p-1 px-2 rounded-md">
+                            {parseInt(settings.SETTING_MIN_CHAR) - selectedObjective.selfComment.length} characters left
                         </Chip>}
                     </div>
                     <p className="mb-2 text-2xl font-bold text-zinc-700">
-                        Objective self-evaluation <span className="text-xs">(min. {MIN_INPUT_LENGTH} characters)</span>
+                        Objective self-evaluation <span className="text-xs">(min. {parseInt(settings.SETTING_MIN_CHAR)} characters)</span>
                     </p>
                     <div className="flex w-[450px] flex-col items-start justify-start gap-1">
                         <textarea
-                            minLength={MIN_INPUT_LENGTH}
-                            maxLength={MAX_INPUT_LENGTH}
+                            minLength={parseInt(settings.SETTING_MIN_CHAR)}
+                            maxLength={parseInt(settings.SETTING_MAX_CHAR)}
                             autoCorrect="off"
                             spellCheck="false"
                             disabled={
@@ -1157,12 +1119,12 @@ function ObjectiveEvaluation({ employee, user, saveObjectives }: { employee: Emp
                                 </div>
                             )}
 
-                        {selectedObjective.comment && selectedObjective.comment.length < MIN_INPUT_LENGTH && <Chip variant="alert" className="p-1 px-2 rounded-md">
-                            {MIN_INPUT_LENGTH - selectedObjective.comment.length} characters left
+                        {selectedObjective.comment && selectedObjective.comment.length < parseInt(settings.SETTING_MIN_CHAR) && <Chip variant="alert" className="p-1 px-2 rounded-md">
+                            {parseInt(settings.SETTING_MIN_CHAR) - selectedObjective.comment.length} characters left
                         </Chip>}
                     </div>
                     <p className="mb-2 text-2xl font-bold text-zinc-700">
-                        Supervisor evaluation <span className="text-xs">(min. {MIN_INPUT_LENGTH} characters)</span>
+                        Supervisor evaluation <span className="text-xs">(min. {parseInt(settings.SETTING_MIN_CHAR)} characters)</span>
                     </p>
                     <div className="flex w-[450px] flex-col items-start justify-start gap-2">
                         <div className="flex w-full items-center justify-center gap-1">
@@ -1330,8 +1292,8 @@ function ObjectiveEvaluation({ employee, user, saveObjectives }: { employee: Emp
 
                         <textarea
                             autoCorrect="off"
-                            minLength={MIN_INPUT_LENGTH}
-                            maxLength={MAX_INPUT_LENGTH}
+                            minLength={parseInt(settings.SETTING_MIN_CHAR)}
+                            maxLength={parseInt(settings.SETTING_MAX_CHAR)}
                             spellCheck="false"
                             disabled={
                                 user?.employeeId !=

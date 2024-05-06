@@ -384,7 +384,7 @@ function Menu() {
         },
         {
             name: "Settings",
-            route: "/management/settings",
+            route: "/management/settings/evaluation",
             permission: ["admin"],
         },
     ];

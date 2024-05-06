@@ -13,6 +13,7 @@ import objectivesRoutes from "../routes/objectivesRoutes";
 import authRoutes from "../routes/authRoutes";
 import stepsRoutes from "../routes/stepsRoutes";
 import reportsRoutes from "../routes/reportsRoutes";
+import settingsRoutes from "../routes/settingsRoutes";
 
 import morgan from "morgan";
 import cors from "cors";
@@ -53,7 +54,6 @@ export class ExpressServer {
 
 		var whitelist = [
 			"http://localhost:3000",
-			"https://mocksaml.com",
 			"http://10.225.100.30:3000",
 			"http://127.0.0.1",
 		];
@@ -73,7 +73,16 @@ export class ExpressServer {
 			})
 		);
 
-		// Configure session management with Express session
+		// this.app.use(function (req, res, next) {
+		// 	res.header("Access-Control-Allow-Origin", "*");
+		// 	res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
+		// 	res.header(
+		// 		"Access-Control-Allow-Headers",
+		// 		"Origin, X-Requested-With, Content-Type, Accept"
+		// 	);
+		// 	next();
+		// });
+		//  Configure session management with Express session
 		this.app.use(
 			session({
 				secret: "your-secret-key", // Secret key for session management
@@ -95,7 +104,7 @@ export class ExpressServer {
 			new Strategy(
 				{
 					callbackUrl: SAML_CALLBACK,
-					entryPoint: "https://mocksaml.com/api/saml/sso",
+					entryPoint: "http://mocksaml.com/api/saml/sso",
 					identifierFormat: null,
 					issuer: "arc-web",
 					idpCert: SAML_CERT,
@@ -162,6 +171,7 @@ export class ExpressServer {
 		this.app.use("/api/objectives", objectivesRoutes);
 		this.app.use("/api/steps", stepsRoutes);
 		this.app.use("/api/reports", reportsRoutes);
+		this.app.use("/api/settings", settingsRoutes);
 		this.app.use("/api/auth", authRoutes);
 	}
 

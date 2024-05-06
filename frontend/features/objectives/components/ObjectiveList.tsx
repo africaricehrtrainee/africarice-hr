@@ -12,7 +12,7 @@ import axios from "axios";
 import { useToast } from "../../../components/ui/use-toast";
 import Objectives from "../../../app/objectives/[userId]/page";
 import { useQueryState } from "nuqs";
-import { MAX_OBJ_AMOUNT, MIN_INPUT_LENGTH, MIN_OBJ_AMOUNT } from "@/config";
+import { useGetSettings } from "@/features/settings/queries";
 
 interface ObjectiveListProps {
     employee: Employee;
@@ -28,7 +28,9 @@ const ObjectiveList: React.FC<ObjectiveListProps> = ({
     const { user } = useAuth();
     const data = useObjectivesDataStore();
     const activeStep = useObjectivesDataStore(selectActiveStep);
+    const { data: settings } = useGetSettings();
 
+    if (!settings) return;
     return (
         <>
             {user && (
@@ -48,7 +50,7 @@ const ObjectiveList: React.FC<ObjectiveListProps> = ({
                     />
                     {user.employeeId == employee.employeeId &&
                         objectives.length > 0 ? (
-                        objectives.length < MIN_OBJ_AMOUNT ? (
+                        objectives.length < parseInt(settings.SETTING_MIN_OBJ) ? (
                             <div className="w-full mt-2 items-center justify-center p-2">
                                 <Chip variant="background">
                                     <Icon
@@ -56,7 +58,7 @@ const ObjectiveList: React.FC<ObjectiveListProps> = ({
                                         className="mr-1"
                                         fontSize={14}
                                     />
-                                    You must have at least {MIN_OBJ_AMOUNT} objectives.
+                                    You must have at least {parseInt(settings.SETTING_MIN_OBJ)} objectives.
                                 </Chip>
                             </div>
                         ) : <div className="w-full mt-2 items-center justify-center p-2">
@@ -66,7 +68,7 @@ const ObjectiveList: React.FC<ObjectiveListProps> = ({
                                     className="mr-1"
                                     fontSize={14}
                                 />
-                                You can have up to {MAX_OBJ_AMOUNT} objectives.
+                                You can have up to {parseInt(settings.SETTING_MAX_OBJ)} objectives.
                             </Chip>
                         </div>
                     ) : null}
@@ -112,6 +114,7 @@ function ObjectiveHeaderBar(props: {
     );
 
     const [year, setYear] = useQueryState("year");
+    const { data: settings } = useGetSettings();
 
     const [step, setStep] = useQueryState<number>("step", {
         defaultValue: 0,
@@ -168,6 +171,7 @@ function ObjectiveHeaderBar(props: {
         }
     }
 
+    if (!settings) return;
     return (
         <div className="flex w-full items-center justify-center p-4">
             {props.user.employeeId == props.employeeId &&
@@ -177,7 +181,7 @@ function ObjectiveHeaderBar(props: {
                 step == 0 && (
                     <Button
                         loading={creating}
-                        disabled={filteredObjectives.length >= MAX_OBJ_AMOUNT}
+                        disabled={filteredObjectives.length >= parseInt(settings.SETTING_MAX_OBJ)}
                         onClick={() => {
                             createObjective();
                         }}
@@ -368,6 +372,7 @@ function ObjectiveBottomActionBar({
     const [loading, setLoading] = useState<boolean>(false);
     const { toast } = useToast();
     const [year, setYear] = useQueryState("year");
+    const { data: settings } = useGetSettings();
     const filteredObjectives = objectives.filter(
         (obj) => obj.status !== "cancelled"
     );
@@ -406,6 +411,7 @@ function ObjectiveBottomActionBar({
         defaultValue: 0,
         parse: (value) => parseInt(value),
     });
+    if (!settings) return;
     return (
         <>
             <div className="my-4 flex w-full items-center justify-center px-4">
@@ -463,7 +469,7 @@ function ObjectiveBottomActionBar({
                                     loading={loading}
                                     className=""
                                     disabled={
-                                        filteredObjectives.length < MIN_OBJ_AMOUNT ||
+                                        filteredObjectives.length < parseInt(settings.SETTING_MIN_OBJ) ||
                                         objectives.some(
                                             (objective) =>
                                                 !objective.title ||
@@ -504,13 +510,13 @@ function ObjectiveBottomActionBar({
                                 loading={loading}
                                 className=""
                                 disabled={
-                                    filteredObjectives.length < MIN_OBJ_AMOUNT ||
+                                    filteredObjectives.length < parseInt(settings.SETTING_MIN_OBJ) ||
                                     objectives.some(
                                         (objective) =>
                                             objective.selfReviewStatus ==
                                             "sent" ||
                                             !objective.midtermSelfComment
-                                            || objective.midtermSelfComment.length < MIN_INPUT_LENGTH
+                                            || objective.midtermSelfComment.length < parseInt(settings.SETTING_MIN_CHAR)
                                     )
                                 }
                                 onClick={() => {
@@ -539,12 +545,12 @@ function ObjectiveBottomActionBar({
                                 loading={loading}
                                 className=""
                                 disabled={
-                                    filteredObjectives.length < MIN_OBJ_AMOUNT ||
+                                    filteredObjectives.length < parseInt(settings.SETTING_MIN_OBJ) ||
                                     objectives.some(
                                         (objective) =>
                                             objective.reviewStatus == "sent" ||
                                             !objective.midtermComment
-                                            || objective.midtermComment.length < MIN_INPUT_LENGTH
+                                            || objective.midtermComment.length < parseInt(settings.SETTING_MIN_CHAR)
                                     )
                                 }
                                 onClick={() => {

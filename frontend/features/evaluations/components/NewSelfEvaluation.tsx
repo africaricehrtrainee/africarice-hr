@@ -9,7 +9,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { SetStateAction, useEffect, useState } from "react";
 import Modal from "../../../components/ui/Modal";
 import Chip from "../../../components/ui/Chip";
-import { MAX_INPUT_LENGTH, MIN_INPUT_LENGTH } from "@/config";
+import { useGetSettings } from "@/features/settings/queries";
 
 export function NewSelfEvaluation({
     user,
@@ -21,6 +21,7 @@ export function NewSelfEvaluation({
     onSubmit: (evaluation: Partial<Evaluation>) => any;
 }) {
     const data = useObjectivesDataStore();
+    const { data: settings } = useGetSettings();
     const [isSubmitModalOpen, setIsSubmitModalOpen] = useState<boolean>(false);
 
     const metrics: {
@@ -58,11 +59,6 @@ export function NewSelfEvaluation({
                 label: "COMMITMENT / ENGAGEMENT",
             },
             {
-                name: "selfOverall",
-                rating: "selfOverallRating",
-                label: "OVERALL COMMENT / COMMENTAIRE GENERAL"
-            },
-            {
                 name: "selfInitiative",
                 rating: "selfInitiativeRating",
                 label: "TAKING INITITATIVE / PRISE D’INITIATIVE",
@@ -77,8 +73,14 @@ export function NewSelfEvaluation({
                 rating: "selfLeadershipRating",
                 label: "LEADERSHIP",
             },
+            {
+                name: "selfOverall",
+                rating: "selfOverallRating",
+                label: "OVERALL COMMENT / COMMENTAIRE GENERAL"
+            },
         ];
 
+    if (!settings) return;
     return (
         <div className="relative flex h-full w-full flex-col items-start justify-start ">
             {data.evaluationLocal &&
@@ -89,7 +91,7 @@ export function NewSelfEvaluation({
                     <div className="flex w-full items-center justify-between">
                         {data.evaluationLocal.selfEvaluationStatus ==
                             "draft" && (
-                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[8px] font-semibold text-zinc-700">
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[8px] font-medium text-zinc-700">
                                     Draft
                                     <Icon
                                         icon="octicon:issue-draft-16"
@@ -100,7 +102,7 @@ export function NewSelfEvaluation({
                             )}
                         {data.evaluationLocal.selfEvaluationStatus ==
                             "sent" && (
-                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[8px] font-semibold text-blue-500">
+                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[8px] font-medium text-blue-500">
                                     Submitted
                                     <Icon
                                         icon="mdi:check-all"
@@ -116,7 +118,7 @@ export function NewSelfEvaluation({
                                 {employee.firstName.split(" ")[0]}&apos;s
                                 competency self-evaluation
                             </p>
-                            <div className="">
+                            {/* <div className="">
                                 <Chip variant="background">
                                     <Icon
                                         icon="mdi:alert"
@@ -126,22 +128,22 @@ export function NewSelfEvaluation({
                                     You must fill required all fields before
                                     submission.
                                 </Chip>
-                            </div>
+                            </div> */}
                         </div>
-                        <form className="mt-4 grid w-full grid-cols-2 gap-4 pt-2">
-                            <div className="flex flex-col gap-3">
-                                {metrics.slice(0, 4).map((metric) => (
+                        <form className="mt-6 flex w-full">
+                            <div className="flex flex-col w-full pb-4 border-b border-zinc-200 gap-8">
+                                {metrics.slice(0, 6).map((metric) => (
                                     <div
                                         key={metric.name}
-                                        className="flex flex-col justify-start gap-1"
+                                        className="h-[120px] flex flex-col w-full justify-start gap-1"
                                     >
                                         <label className="text-[10px] font-medium text-zinc-700">
                                             {metric.label}{" "}
                                             {metric.label !== "LEADERSHIP" && (
                                                 // @ts-ignore
-                                                data.evaluationLocal[metric.name] && data.evaluationLocal[metric.name].length < 200 ? <span className="text-red-700 text-[10px]">
+                                                data.evaluationLocal[metric.name] && data.evaluationLocal[metric.name].length < parseInt(settings.SETTING_MIN_CHAR) ? <span className="text-red-700 text-[10px]">
                                                     {/* @ts-ignore */}
-                                                    {MIN_INPUT_LENGTH - data.evaluationLocal[metric.name].length} characters left
+                                                    {parseInt(settings.SETTING_MIN_CHAR) - data.evaluationLocal[metric.name].length} characters left
                                                 </span> : <span className="text-red-700 text-[10px]">
                                                     required*
                                                 </span>
@@ -150,8 +152,8 @@ export function NewSelfEvaluation({
 
                                         <textarea
                                             autoCorrect="off"
-                                            minLength={MIN_INPUT_LENGTH}
-                                            maxLength={MAX_INPUT_LENGTH}
+                                            minLength={parseInt(settings.SETTING_MIN_CHAR)}
+                                            maxLength={parseInt(settings.SETTING_MAX_CHAR)}
                                             spellCheck="false"
                                             disabled={
                                                 user.employeeId !==
@@ -179,70 +181,70 @@ export function NewSelfEvaluation({
                                             placeholder={`Write your ${metric.name
                                                 .split("self")[1]
                                                 .toLowerCase()} review`}
-                                            className="h-[90px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="flex flex-col gap-3">
-                                {metrics.slice(4, 7).map((metric) => (
-                                    <div
-                                        key={metric.name}
-                                        className="flex flex-col justify-start gap-1"
-                                    >
-                                        <label className="text-[10px] font-medium text-zinc-700">
-                                            {metric.label}{" "}
-                                            {metric.label !== "LEADERSHIP" && (
-                                                // @ts-ignore
-                                                data.evaluationLocal[metric.name] && data.evaluationLocal[metric.name].length < 200 ? <span className="text-red-700 text-[10px]">
-                                                    {/* @ts-ignore */}
-                                                    {MIN_INPUT_LENGTH - data.evaluationLocal[metric.name].length} characters left
-                                                </span> : <span className="text-red-700 text-[10px]">
-                                                    required*
-                                                </span>
-                                            )}
-                                        </label>
-
-                                        <textarea
-                                            autoCorrect="off"
-                                            minLength={MIN_INPUT_LENGTH}
-                                            maxLength={MAX_INPUT_LENGTH}
-                                            spellCheck="false"
-                                            disabled={
-                                                user.employeeId !==
-                                                data.evaluationLocal
-                                                    .employeeId ||
-                                                data.evaluationLocal
-                                                    .selfEvaluationStatus ==
-                                                "sent"
-                                            }
-                                            value={
-                                                data.evaluationLocal[
-                                                metric.name
-                                                ] ?? ""
-                                            }
-                                            onChange={(
-                                                e: React.ChangeEvent<HTMLTextAreaElement>
-                                            ) => {
-                                                const obj = {
-                                                    ...data.evaluationLocal,
-                                                };
-                                                obj[metric.name] =
-                                                    e.target.value;
-                                                data.setEvaluationLocal(obj);
-                                            }}
-                                            placeholder={`Write your ${metric.name
-                                                .split("self")[1]
-                                                .toLowerCase()} review`}
-                                            className="h-[90px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                            className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                         />
                                     </div>
                                 ))}
                             </div>
                         </form>
+                        <div className="mt-4 flex items-start justify-between">
+                            <p className="text-2xl font-bold text-zinc-600">
+                                {employee.firstName.split(" ")[0]}&apos;s
+                                overall self-evaluation
+                            </p>
+                        </div>
+
+                        <div
+                            key={metrics[6].name}
+                            className="h-[120px] mt-4 flex flex-col justify-start gap-1 w-full"
+                        >
+                            <label className="text-[10px] font-medium text-zinc-600">
+                                {metrics[6].label}{" "}
+                                {metrics[6].label !== "LEADERSHIP" && (
+                                    // @ts-ignore
+                                    data.evaluationLocal[metrics[6].name] && data.evaluationLocal[metrics[6].name].length < parseInt(settings.SETTING_MIN_CHAR) ? <span className="text-red-700 text-[10px]">
+                                        {/* @ts-ignore */}
+                                        {parseInt(settings.SETTING_MIN_CHAR) - data.evaluationLocal[metrics[6].name].length} characters left
+                                    </span> : <span className="text-red-700 text-[10px]">
+                                        required*
+                                    </span>
+                                )}
+                            </label>
+
+                            <textarea
+                                autoCorrect="off"
+                                minLength={parseInt(settings.SETTING_MIN_CHAR)}
+                                maxLength={parseInt(settings.SETTING_MAX_CHAR)}
+                                spellCheck="false"
+                                disabled={
+                                    user.employeeId !==
+                                    data.evaluationLocal
+                                        .employeeId ||
+                                    data.evaluationLocal
+                                        .evaluationStatus == "sent"
+                                }
+                                value={
+                                    data.evaluationLocal[
+                                    metrics[6].name
+                                    ] ?? ""
+                                }
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLTextAreaElement>
+                                ) => {
+                                    const obj = {
+                                        ...data.evaluationLocal,
+                                    };
+                                    obj[metrics[6].name] =
+                                        e.target.value;
+                                    data.setEvaluationLocal(obj);
+                                }}
+                                placeholder={`Write your ${metrics[6].name} review`}
+                                className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                            />
+                        </div>
 
                         {user.employeeId == data.evaluationLocal.employeeId && (
-                            <div className="absolute bottom-4 right-4 flex w-full items-center justify-end gap-2">
+                            <div className="mt-4 flex w-full items-center justify-end gap-2">
                                 <Button
                                     disabled={
                                         JSON.stringify(data.evaluation) ===
@@ -269,7 +271,7 @@ export function NewSelfEvaluation({
                                                 return false;
                                             }
                                             // @ts-ignore
-                                            return !data.evaluationLocal[metric.name] || data.evaluationLocal[metric.name].length < MIN_INPUT_LENGTH;
+                                            return !data.evaluationLocal[metric.name] || data.evaluationLocal[metric.name].length < parseInt(settings.SETTING_MIN_CHAR);
                                         })
                                     }
                                     onClick={() => {

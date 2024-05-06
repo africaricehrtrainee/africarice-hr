@@ -139,6 +139,7 @@ export function xlsxToJsonArray(fileUrl: any): any[] {
 	if (output.length > 1) {
 		console.log("\u03BB Updating employee list");
 		// Prisma Upsert transaction to create or update the employees from output array
+		// @ts-ignore
 		const arr = sortByHierarchyLevel(output);
 
 		prisma

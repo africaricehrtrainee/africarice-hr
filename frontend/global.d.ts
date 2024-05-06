@@ -79,16 +79,16 @@ interface Evaluator360 {
 	evaluatorId: number;
 	evaluatorJobTitle: string;
 
-	interpersonalComment: string | null;
-	collaborationComment: string | null;
-	leadershipComment: string | null;
-	commitmentComment: string | null;
-	teamworkComment: string | null;
-	interpersonalRating: number | null;
-	collaborationRating: number | null;
-	leadershipRating: number | null;
-	commitmentRating: number | null;
-	teamworkRating: number | null;
+	questionOne: string | null;
+	ratingOne: number | null;
+	questionTwo: string | null;
+	ratingTwo: number | null;
+	questionThree: string | null;
+	ratingThree: number | null;
+	questionFour: string | null;
+	ratingFour: number | null;
+	questionFive: string | null;
+	ratingFive: number | null;
 }
 
 interface Objective {
@@ -148,6 +148,24 @@ interface Position {
 	employeeJobTitle: string;
 	children?: Position[];
 }
+
+interface Setting {
+	name: string;
+	value: string;
+}
+
+interface Settings {
+	SETTING_MIN_OBJ: string;
+	SETTING_MAX_OBJ: string;
+	SETTING_MIN_CHAR: string;
+	SETTING_MAX_CHAR: string;
+	EVALUATION_QUESTION_1: string;
+	EVALUATION_QUESTION_2: string;
+	EVALUATION_QUESTION_3: string;
+	EVALUATION_QUESTION_4: string;
+	EVALUATION_QUESTION_5: string;
+}
+
 // Status types and notifications
 type StaffObjectiveStatus =
 	| "OBJECTIVE_IDLE"

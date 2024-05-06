@@ -3,7 +3,8 @@ export const SMTP_ADDRESS =
 export const SMTP_EMAIL = process.env.SMTP_EMAIL ?? "AfricaRicehhr@cgiar.org";
 export const SMTP_PASSWORD = process.env.SMTP_PASSWORD ?? "P@ss2020Rh#";
 export const SMTP_PORT = parseInt(process.env.SMTP_PORT ?? "25") ?? 25;
-export const SAML_CALLBACK = "http://localhost:4000/api/auth/login/callback";
+export const SAML_CALLBACK =
+	"http://10.225.100.30:4000/api/auth/login/callback";
 export const SAML_CERT = `-----BEGIN CERTIFICATE-----
 MIIC4jCCAcoCCQC33wnybT5QZDANBgkqhkiG9w0BAQsFADAyMQswCQYDVQQGEwJV
 SzEPMA0GA1UECgwGQm94eUhRMRIwEAYDVQQDDAlNb2NrIFNBTUwwIBcNMjIwMjI4

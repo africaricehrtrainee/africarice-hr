@@ -12,6 +12,7 @@ import Evaluation from "../../../features/evaluations/components/Evaluation/Eval
 import { useQueryState } from "nuqs";
 import ProfileCard from "@/features/employees/components/ProfileCard";
 import { Schedule } from "../../../features/steps/components/Schedule";
+import OverallEvaluation from "@/features/evaluations/components/Evaluation/OverallEvaluation";
 
 export default function Objectives({ params }: { params: { userId: string } }) {
     const { toast } = useToast();
@@ -220,7 +221,7 @@ export default function Objectives({ params }: { params: { userId: string } }) {
 
     return (
         // <ProtectedRoute>
-        <main className="flex min-h-screen flex-col items-start justify-start gap-2 p-4 px-8">
+        <main className="flex flex-1 h-full flex-col items-start justify-start gap-2 p-4 px-8">
             {data.objectivesLocal !== null &&
                 data.employee !== null &&
                 comments !== null ? (
@@ -268,7 +269,8 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                             </div>
                         )}
 
-                        {(step == 3 || step == 4) && <Evaluation />}
+                        {(step == 3) && <Evaluation />}
+                        {step == 4 && <OverallEvaluation />}
                     </>
                 )
             ) : (

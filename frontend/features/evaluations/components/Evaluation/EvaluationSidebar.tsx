@@ -75,6 +75,7 @@ function GradeHeader({
     );
 }
 
+
 function EvaluationComponent() {
     const {
         employee,
@@ -95,7 +96,7 @@ function EvaluationComponent() {
         isEmployee
             ? evaluation?.selfEvaluationStatus
             : evaluation?.evaluationStatus;
-    const title = "General Evaluation"
+    const title = "Competency Evaluation"
     const label = isEmployee ? "Submitted" : "Evaluated";
     return (
         <div className="flex w-full flex-col items-start justify-start">
@@ -157,7 +158,7 @@ function EvaluationComponent() {
                 </div>
                 {evaluation &&
                     evaluation.evaluationStatus == "sent" &&
-                    step == 4 && (
+                    step == 3 && (
                         <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
                             <p className="text-[10px] font-bold text-zinc-400">
                                 General grade

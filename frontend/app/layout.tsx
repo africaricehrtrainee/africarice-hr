@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { ReactQueryClientProvider } from "@/components/ReactQueryProvider";
+import { QueryClient } from "@tanstack/react-query";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +16,8 @@ export const metadata: Metadata = {
     description: "The Human Resources Management Portal",
 };
 
+
+const queryClient = new QueryClient();
 
 export default function RootLayout({
     children,
@@ -27,7 +30,7 @@ export default function RootLayout({
                 <body
                     className={
                         GeistSans.className +
-                        " bg-green-50 flex flex-col min-h-screen"
+                        " bg-green-50 flex flex-col min-h-[100svh]"
                     }
                 >
                     <App>

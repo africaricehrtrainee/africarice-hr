@@ -96,12 +96,11 @@ export const CommentList: React.FC<CommentListProps> = ({
                                     // onClick={() => setSelectedObjective(i)}
                                     className={cn(
                                         "flex w-full active:scale-95 flex-col relative justify-start transition-all p-2 py-1 " +
-                                            `${
-                                                comment.authorId ==
-                                                user.employeeId
-                                                    ? "items-end"
-                                                    : "items-starte"
-                                            }`
+                                        `${comment.authorId ==
+                                            user.employeeId
+                                            ? "items-end"
+                                            : "items-starte"
+                                        }`
                                     )}
                                     key={i}
                                 >
@@ -113,26 +112,26 @@ export const CommentList: React.FC<CommentListProps> = ({
                                         <div className="flex w-full items-center justify-between">
                                             {comment.authorId ==
                                                 employee.employeeId && (
-                                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-green-100 p-1 px-2 text-[8px] font-semibold text-green-700">
-                                                    Staff
-                                                    <Icon
-                                                        icon="ic:baseline-star"
-                                                        className="ml-1"
-                                                        fontSize={10}
-                                                    />
-                                                </div>
-                                            )}
+                                                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-green-100 p-1 px-2 text-[8px] font-semibold text-green-700">
+                                                        Staff
+                                                        <Icon
+                                                            icon="ic:baseline-star"
+                                                            className="ml-1"
+                                                            fontSize={10}
+                                                        />
+                                                    </div>
+                                                )}
                                             {comment.authorId ==
                                                 employee.supervisorId && (
-                                                <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-purple-100 p-1 px-2 text-[8px] font-semibold text-purple-700">
-                                                    Supervisor
-                                                    <Icon
-                                                        icon="ic:baseline-star"
-                                                        className="ml-1"
-                                                        fontSize={10}
-                                                    />
-                                                </div>
-                                            )}
+                                                    <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-purple-100 p-1 px-2 text-[8px] font-semibold text-purple-700">
+                                                        Supervisor
+                                                        <Icon
+                                                            icon="ic:baseline-star"
+                                                            className="ml-1"
+                                                            fontSize={10}
+                                                        />
+                                                    </div>
+                                                )}
                                             <div className="text-end">
                                                 <p className="-mt-0 text-[8px] font-bold text-zinc-500">
                                                     {comment.updatedAt.substring(
@@ -146,7 +145,7 @@ export const CommentList: React.FC<CommentListProps> = ({
                                         <p className="mt-2 text-[8px] font-medium text-zinc-300">
                                             COMMENT CONTENT
                                         </p>
-                                        <p className="w-[200px] overflow-hidden text-ellipsis text-start text-xs font-bold text-zinc-700">
+                                        <p className="w-[200px] overflow-hidden text-ellipsis text-start text-xs font-bold text-zinc-700 font-medium">
                                             {comment.content}
                                         </p>
                                     </div>
@@ -168,7 +167,7 @@ export const CommentList: React.FC<CommentListProps> = ({
                                     e: React.ChangeEvent<HTMLTextAreaElement>
                                 ) => setContent(e.target.value)}
                                 placeholder="Write a comment you have on this objective"
-                                className="h-[60px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                className="h-[60px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                             />
                         </div>
                         <div className="mt-2 flex w-full items-center justify-end gap-2">

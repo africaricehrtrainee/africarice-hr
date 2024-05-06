@@ -120,11 +120,12 @@ export default function Home() {
                             Login
                             <Icon icon="akar-icons:arrow-right" className="w-4 h-4 ml-1" />
                         </Button>
-                        <Button variant="outline" onClick={
+                        <Button type="button" variant="outline" onClick={
                             () => {
-                                axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/saml`, {
+                                axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/callback`, {
+                                    withCredentials: false
                                 }).then((response) => {
-                                    console.log(response)
+                                    console.log('response', response)
                                 }).catch((err) => {
                                     console.log(err)
                                 })

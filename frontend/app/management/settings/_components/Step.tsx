@@ -21,8 +21,8 @@ export default function Step({
                 axios
                     .put(
                         process.env.NEXT_PUBLIC_API_URL +
-                            "/api/steps/" +
-                            step.stepId,
+                        "/api/steps/" +
+                        step.stepId,
                         {
                             step: {
                                 dateFrom,
@@ -50,7 +50,7 @@ export default function Step({
                 className="flex w-full items-end justify-start gap-2"
                 onSubmit={handleUpdate}
             >
-                <div className="mt-2 flex w-[150px] flex-col justify-start gap-1">
+                <div className="flex w-[150px] flex-col justify-start gap-1">
                     <label className="text-[8px] font-medium text-zinc-300">
                         EVALUATION STARTING DATE
                     </label>

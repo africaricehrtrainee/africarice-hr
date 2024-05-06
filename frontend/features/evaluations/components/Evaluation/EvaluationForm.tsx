@@ -73,7 +73,7 @@ function EvaluationForm() {
     if (!employee || !user) return null;
 
     return (
-        <div className="overflow-scroll w-full h-full">
+        <div className="overflow-scroll grid grid-cols-2 gap-4 w-full h-full">
             <NewSelfEvaluation
                 employee={employee}
                 user={user}

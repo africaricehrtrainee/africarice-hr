@@ -302,7 +302,7 @@ export async function computeNotifications(
 						objectiveStatus = "SUPERVISOR_OBJECTIVE_UNREVIEWED";
 					} else {
 						objectiveStatus = "SUPERVISOR_OBJECTIVE_REVIEWED";
-						if (compareAsc(new Date(), steps[4].dateFrom) !== -1) {
+						if (compareAsc(new Date(), steps[3].dateFrom) !== -1) {
 							if (
 								objectives.some(
 									(obj) => obj.evaluationStatus !== "sent"

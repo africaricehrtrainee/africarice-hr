@@ -34,16 +34,17 @@ model Employees {
 
     // Personal Information
     supervisorId  Int?
-    personalEmail String
-    phone2        String
-    phone         String
-    address       String
+    jobTitle      String
+    personalEmail String?
+    phone2        String?
+    phone         String?
+    address       String?
     firstName     String
     lastName      String
     password      String
-    category      String
-    grade         String
-    bgLevel       String
+    category      String?
+    grade         String?
+    bgLevel       String?
     matricule     String? @unique
 
     // Relations
@@ -120,16 +121,16 @@ model Evaluator360 {
     evaluatorId       Int
     evaluatorJobTitle String
 
-    interpersonalComment String? @db.VarChar(255)
-    interpersonalRating  Int?
-    collaborationComment String? @db.VarChar(255)
-    collaborationRating  Int?
-    leadershipComment    String? @db.VarChar(255)
-    leadershipRating     Int?
-    commitmentComment    String? @db.VarChar(255)
-    commitmentRating     Int?
-    teamworkComment      String? @db.VarChar(255)
-    teamworkRating       Int?
+    questionOne   String? @db.VarChar(255)
+    ratingOne     Int?
+    questionTwo   String? @db.VarChar(255)
+    ratingTwo     Int?
+    questionThree String? @db.VarChar(255)
+    ratingThree   Int?
+    questionFour  String? @db.VarChar(255)
+    ratingFour    Int?
+    questionFive  String? @db.VarChar(255)
+    ratingFive    Int?
 
     evaluation Evaluation360 @relation(fields: [evaluationId], references: [evaluation360Id], onDelete: Cascade)
     evaluator  Employees     @relation(fields: [evaluatorId], references: [employeeId], onDelete: Cascade)
@@ -188,8 +189,9 @@ model ObjectiveComments {
 
 model Settings {
     settingId Int    @id @default(autoincrement())
-    name      String
-    value     String
+    label     String
+    name      String @unique
+    value     String @db.VarChar(255)
 }
 
 model Alerts {

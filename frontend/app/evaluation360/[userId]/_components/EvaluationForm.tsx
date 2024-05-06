@@ -7,6 +7,8 @@ import { set } from "date-fns";
 import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import Button from "@/components/ui/Button";
+import { cn } from "@/util/utils";
+import { useGetSettings } from "@/features/settings/queries";
 
 function EvaluationForm() {
     const { user } = useAuth();
@@ -23,7 +25,7 @@ function EvaluationForm() {
         evaluation
     )
         return (
-            <div className="relative flex max-w-[1100px] flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
+            <div className="relative flex max-w-[700px] flex-1 flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm">
                 <EvaluationHeader evaluation={evaluation} />
                 <EvaluationInput evaluation={evaluation} />
             </div>
@@ -78,46 +80,28 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
     const [loading, setLoading] = useState<boolean>(false);
     const { toast } = useToast();
 
+    const { data: settings } = useGetSettings()
+
     const fields = [
         {
-            key: "interpersonalComment",
-            rating: "interpersonalRating",
-            question:
-                "How does the individual interact with team members and other colleagues? To what extent does he promote collaboration, communication and conflict resolution?",
-            questionFr:
-                "Comment l'individu interagit-il avec les membres de l'équipe et les autres collègues? Dans quelle mesure favorise-t-il la collaboration, la communication et la résolution des conflits?",
+            key: "questionOne",
+            rating: "ratingOne",
         },
         {
-            key: "collaborationComment",
-            rating: "collaborationRating",
-            question:
-                "How does the individual communicate with colleagues, peers and subordinates? To what extent does he or she foster a collaborative and open work environment?",
-            questionFr:
-                "Comment l'individu communique-t-il avec ses collègues, ses pairs et ses subordonnés? Dans quelle mesure favorise-t-il un environnement de travail collaboratif et ouvert?",
+            key: "questionTwo",
+            rating: "ratingTwo",
         },
         {
-            key: "leadershipComment",
-            rating: "leadershipRating",
-            question:
-                "To what extent does the individual demonstrate leadership and initiative within the organization? Can you cite situations where he or she has taken proactive steps to solve problems or improve processes?",
-            questionFr:
-                "Dans quelle mesure l'individu fait-il preuve de leadership et d'initiative au sein de l'organisation? Pouvez-vous citer des situations où il ou elle a pris des mesures proactives pour résoudre des problèmes ou améliorer des processus?",
+            key: "questionThree",
+            rating: "ratingThree",
         },
         {
-            key: "commitmentComment",
-            rating: "commitmentRating",
-            question:
-                "How does the individual encourage professional and personal development within the team? To what extent does he show an interest in the well-being and growth of his colleagues?",
-            questionFr:
-                "Comment l'individu encourage-t-il le développement professionnel et personnel au sein de l'équipe? Dans quelle mesure montre-t-il un intérêt pour le bien-être et la croissance de ses collègues?",
+            key: "questionFour",
+            rating: "ratingFour",
         },
         {
-            key: "teamworkComment",
-            rating: "teamworkRating",
-            question:
-                "How does the individual communicate team goals and individual roles clearly ?",
-            questionFr:
-                "Comment l'individu communique-t-il clairement les objectifs de l'équipe et les rôles individuels?",
+            key: "questionFive",
+            rating: "ratingFive",
         },
     ];
 
@@ -167,6 +151,7 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
         setForm(evaluation);
     }, [evaluation]);
 
+    if (!settings) return;
     return (
         <div className="w-full">
             <div className="mt-1 flex w-full flex-col items-start justify-start gap-2">
@@ -179,14 +164,11 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                                 disabled={index == i}
                                 type="button"
                                 key={i}
-                                className="relative flex items-center justify-center rounded-md p-1 px-2 text-xs font-semibold"
-                            >
-                                {/* @ts-ignore */}
-                                {!form[field.key] ? (
-                                    <div className="absolute -bottom-1 -right-1 h-2 w-2 animate-pulse rounded-full bg-red-400"></div>
-                                ) : (
-                                    <div className="absolute -bottom-1 -right-1 h-2 w-2 rounded-full bg-green-400"></div>
+                                className={cn("relative flex items-center justify-center p-1 px-2 text-xs font-medium",
+                                    // @ts-ignore
+                                    !form[field.key] || !form[field.rating] ? "border-b-2 border-b-red-500" : "border-b-2 border-b-green-500"
                                 )}
+                            >
                                 Section {i + 1}
                             </Button>
                         );
@@ -196,16 +178,18 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                     EVALUATION SECTION QUESTION
                 </label>
                 <div className="flex w-full items-center justify-start gap-8">
-                    <p className="text-sm font-bold text-zinc-700">
-                        {fields[index].question}
-                    </p>
-                    <p className="text-end text-sm font-bold text-zinc-700">
-                        {fields[index].questionFr}
+                    <p className="text-sm font-medium text-zinc-700">
+                        {/* @ts-ignore */}
+                        {settings["EVALUATION_QUESTION_" + (index + 1)]}
                     </p>
                 </div>
-                <label className="text-[10px] font-medium text-zinc-300">
+                <label className="text-[10px] flex gap-2 items-center font-medium text-zinc-300">
                     EVALUATION COMMENT
-                    <span className="text-[8px] text-brand">* (required)</span>
+                    {/* @ts-ignore */}
+                    {form[fields[index]["key"]] && form[fields[index]["key"]].length < settings.SETTING_MIN_CHAR && <Chip variant="alert" className="p-1 px-2 rounded-md">
+                        {/* @ts-ignore */}
+                        {settings?.SETTING_MIN_CHAR - form[fields[index]["key"]].length} characters left
+                    </Chip>}
                 </label>
                 <div className="flex w-full items-center justify-center gap-1">
                     <button
@@ -223,10 +207,10 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                         className={
                             "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
                             ` ${
-                                // @ts-ignore
-                                form[fields[index].rating] == 1
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-green-50 border-green-300"
+                            // @ts-ignore
+                            form[fields[index].rating] == 1
+                                ? "bg-green-400 text-green-50 border-transparent"
+                                : " text-green-500 bg-green-50 border-green-300"
                             }`
                         }
                     >
@@ -247,10 +231,10 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                         className={
                             "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
                             ` ${
-                                // @ts-ignore
-                                form[fields[index].rating] == 2
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-green-50 border-green-300"
+                            // @ts-ignore
+                            form[fields[index].rating] == 2
+                                ? "bg-green-400 text-green-50 border-transparent"
+                                : " text-green-500 bg-green-50 border-green-300"
                             }`
                         }
                     >
@@ -271,10 +255,10 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                         className={
                             "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
                             ` ${
-                                // @ts-ignore
-                                form[fields[index].rating] == 3
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-green-50 border-green-300"
+                            // @ts-ignore
+                            form[fields[index].rating] == 3
+                                ? "bg-green-400 text-green-50 border-transparent"
+                                : " text-green-500 bg-green-50 border-green-300"
                             }`
                         }
                     >
@@ -295,10 +279,10 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                         className={
                             "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
                             ` ${
-                                // @ts-ignore
-                                form[fields[index].rating] == 4
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-green-50 border-green-300"
+                            // @ts-ignore
+                            form[fields[index].rating] == 4
+                                ? "bg-green-400 text-green-50 border-transparent"
+                                : " text-green-500 bg-green-50 border-green-300"
                             }`
                         }
                     >
@@ -319,10 +303,10 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                         className={
                             "flex flex-1 items-center justify-center rounded-md border p-1 text-xs font-bold  transition-all hover:bg-green-300 hover:text-green-50 gap-1" +
                             ` ${
-                                // @ts-ignore
-                                form[fields[index].rating] == 5
-                                    ? "bg-green-400 text-green-50 border-transparent"
-                                    : " text-green-500 bg-green-50 border-green-300"
+                            // @ts-ignore
+                            form[fields[index].rating] == 5
+                                ? "bg-green-400 text-green-50 border-transparent"
+                                : " text-green-500 bg-green-50 border-green-300"
                             }`
                         }
                     >
@@ -345,7 +329,7 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                         setForm(f);
                     }}
                     placeholder={`Answer this question for this staff member`}
-                    className="h-[150px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-sm font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                    className="h-[150px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-sm font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                 />
                 <div className="mt-4 flex w-full items-center justify-between">
                     <div className="flex items-center justify-center gap-1">
@@ -401,11 +385,12 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                                 }}
                                 loading={loading}
                                 disabled={
-                                    !form.interpersonalComment ||
-                                    !form.collaborationComment ||
-                                    !form.leadershipComment ||
-                                    !form.commitmentComment ||
-                                    !form.teamworkComment ||
+                                    fields.some(
+                                        (field) =>
+                                            // @ts-ignore
+                                            !form[field.key] || (form[field.key].length < settings?.SETTING_MIN_CHAR) || !form[field.rating]
+
+                                    ) ||
                                     form.evaluatorStatus == "evaluated"
                                 }
                                 type="button"
