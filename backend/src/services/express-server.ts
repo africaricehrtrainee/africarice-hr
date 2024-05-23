@@ -58,8 +58,9 @@ export class ExpressServer {
 		// 	})
 		// );
 		var whitelist = [
+			"http://localhost",
 			"http://localhost:3000",
-			"http://10.225.100.30:3000",
+			"http://10.225.100.30",
 			"http://127.0.0.1",
 		];
 
