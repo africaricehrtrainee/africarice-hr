@@ -1,4 +1,5 @@
 // Import necessary modules and dependencies
+import bodyParser from "body-parser";
 import express, { Request, Response, NextFunction } from "express";
 import passport from "passport";
 
@@ -24,12 +25,20 @@ router.post(
 );
 
 router.post(
-	"/login/callback",
+	"/callback",
+	bodyParser.urlencoded({ extended: false }),
 	passport.authenticate("saml", {
 		failureRedirect: "/",
 		failureFlash: true,
-	})
+	}),
+	function (req, res) {
+		res.redirect("/");
+	}
 );
+
+router.get("/saml", passport.authenticate("saml"), function (req, res) {
+	res.redirect("/");
+});
 
 // Route to check user session
 router.get("/session", (req: Request, res: Response) => {

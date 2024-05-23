@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 
 function QuestionItem({ question, setSettings }: { question: Setting, setSettings: React.Dispatch<React.SetStateAction<Setting[]>> }) {
     return <div className='mb-2 flex flex-col gap-1 w-full'>
-        <p className='text-[8px] font-medium text-zinc-300'>{question.name}</p>
+        <p className='text-[12px] font-medium text-zinc-800'>{question.name}</p>
         <textarea
             value={question.value}
             onChange={(e) => {

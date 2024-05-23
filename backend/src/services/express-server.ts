@@ -22,7 +22,7 @@ import employeeDatabaseInit from "./xlsx-service";
 import prisma from "../../prisma/middleware";
 import cronJobInit from "../routes/util/cron";
 import prismaInit from "../../prisma/startup";
-import { SAML, Strategy } from "@node-saml/passport-saml";
+import { Strategy } from "@node-saml/passport-saml";
 import { SAML_CALLBACK, SAML_CERT } from "../../config";
 
 export class ExpressServer {
@@ -52,6 +52,11 @@ export class ExpressServer {
 		// Enable URL-encoded request body parsing
 		this.app.use(express.urlencoded({ extended: true }));
 
+		// this.app.use(
+		// 	cors({
+		// 		origin: "*",
+		// 	})
+		// );
 		var whitelist = [
 			"http://localhost:3000",
 			"http://10.225.100.30:3000",
@@ -105,8 +110,7 @@ export class ExpressServer {
 				{
 					callbackUrl: SAML_CALLBACK,
 					entryPoint: "http://mocksaml.com/api/saml/sso",
-					identifierFormat: null,
-					issuer: "arc-web",
+					issuer: "https://saml.example.com/entityid",
 					idpCert: SAML_CERT,
 				},
 
@@ -127,10 +131,8 @@ export class ExpressServer {
 				},
 
 				function (req, profile, done) {
-					req.logOut((err) => {
-						if (err) {
-							return done(err);
-						}
+					req.logOut(function (error) {
+						if (error) return done(error);
 					});
 				}
 			)

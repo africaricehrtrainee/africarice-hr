@@ -116,19 +116,19 @@ export default function Home() {
                             className="mt-4"
                             loading={loading}
                             variant="outline"
+                            onClick={logIn}
                         >
                             Login
                             <Icon icon="akar-icons:arrow-right" className="w-4 h-4 ml-1" />
                         </Button>
                         <Button type="button" variant="outline" onClick={
-                            () => {
-                                axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/callback`, {
-                                    withCredentials: false
+                            async () => {
+                                fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/saml`, {
+                                    method: "GET",
+                                    redirect: "follow",
                                 }).then((response) => {
-                                    console.log('response', response)
-                                }).catch((err) => {
-                                    console.log(err)
-                                })
+                                    console.log(response)
+                                }).catch(err => console.log('error from ajax', err))
                             }}>
                             Login as CGIAR
                             <Icon icon="ri:building-line" className="w-4 h-4 ml-1" />
