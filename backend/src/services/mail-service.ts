@@ -24,7 +24,8 @@ export default async function sendMail({
 				content,
 			},
 		};
-		return transporter.sendMail(options);
+		return console.log(options);
+		// return transporter.sendMail(options);
 	} catch (error) {
 		console.log(error);
 	}
