@@ -21,8 +21,6 @@ services:
         image: mysql:latest
         environment:
             MYSQL_DATABASE: "mycareer"
-            MYSQL_USER: "root"
-            MYSQL_PASSWORD: "mysql"
             MYSQL_ROOT_PASSWORD: "mysql"
         volumes:
             - db-data:/var/lib/mysql

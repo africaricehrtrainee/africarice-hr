@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package*.json ./
 RUN npm install
+RUN npx prisma migrate deploy
 
 # Bundle app source inside the Docker image
 COPY . .
