@@ -61,6 +61,7 @@ export class ExpressServer {
 			"http://localhost",
 			"http://localhost:3000",
 			"http://10.225.100.30",
+			"http://express",
 			"http://127.0.0.1",
 		];
 
