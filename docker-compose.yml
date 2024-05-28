@@ -2,10 +2,7 @@ services:
     nextjs:
         container_name: nextjs-app
         build: ./frontend
-        ports:
-            - "3000:3000"
-        networks:
-            - app-network
+        network_mode: "host"
         env_file:
             - ./frontend/.env
 
@@ -13,38 +10,6 @@ services:
         container_name: express-app
         build: ./backend
         restart: "always"
-        ports:
-            - "4000:4000"
-        networks:
-            - app-network
-        depends_on:
-            - mysql
+        network_mode: "host"
         env_file:
             - ./backend/.env
-
-    mysql:
-        container_name: mysql-db
-        image: mysql:latest
-        environment:
-            MYSQL_DATABASE: "mycareer"
-            MYSQL_ROOT_PASSWORD: "mysql"
-        volumes:
-            - db-data:/var/lib/mysql
-        ports:
-            - "3306:3306"
-        networks:
-            - app-network
-        healthcheck:
-            test: ["CMD-SHELL", "mysqladmin ping"]
-            interval: 10s
-            timeout: 2s
-            retries: 10
-
-# Defines named volume to persist your MySQL database
-volumes:
-    db-data:
-
-# Defines the network to facilitate communication between the containers
-networks:
-    app-network:
-        driver: bridge
