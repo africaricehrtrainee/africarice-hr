@@ -7,6 +7,8 @@ services:
             - "3000:3000"
         networks:
             - app-network
+        env_file:
+            - ./frontend/.env
 
     express:
         container_name: express-app
@@ -15,6 +17,10 @@ services:
             - "4000:4000"
         networks:
             - app-network
+        depends_on:
+            - mysql
+        env_file:
+            - ./backend/.env
 
     mysql:
         container_name: mysql-db
