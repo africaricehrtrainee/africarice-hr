@@ -8,6 +8,7 @@ import { cn } from "@/util/utils";
 import Button from "@/components/ui/Button";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import { useGetSettings } from "@/features/settings/queries";
 
 function EvaluationSidebar() {
     const { objectives, evaluation } = useObjectivesDataStore();
@@ -55,21 +56,40 @@ function GradeHeader({
         ) / 100;
 
     const totalGrade = (objectivesGrade + evaluationGrade) / 2;
+    if (!evaluation.overallRating) return;
     return (
-        <div className="flex w-full items-center justify-between border-b border-zinc-100 p-4">
-            <div className="flex items-center justify-start">
-                <h1 className="text-lg font-bold text-zinc-700">Final grade</h1>
+        <div className="w-full flex flex-col border-b border-b-zinc-100 p-4">
+            <div className="flex w-full items-center justify-between">
+                <div className="flex items-center justify-start">
+                    <h1 className="text-lg font-bold text-zinc-700">Overall grade</h1>
+                </div>
+                <div className="flex items-center justify-center gap-1">
+                    <Icon
+                        icon="mdi:star"
+                        className="text-yellow-500"
+                        fontSize={20}
+                    />
+                    <p className="text-2xl font-bold text-zinc-700">
+                        {Math.round(evaluation.overallRating * 100) / 100}
+                        <span className="text-xs font-bold text-zinc-400">/5</span>
+                    </p>
+                </div>
             </div>
-            <div className="flex items-center justify-center gap-1">
-                <Icon
-                    icon="mdi:star"
-                    className="text-yellow-500"
-                    fontSize={20}
-                />
-                <p className="text-2xl font-bold text-zinc-700">
-                    {Math.round(totalGrade * 100) / 100}
-                    <span className="text-xs font-bold text-zinc-400">/5</span>
-                </p>
+            <div className="flex w-full items-center justify-between">
+                <div className="flex items-center justify-start">
+                    <h1 className="text-sm font-semibold text-zinc-600">Competency & Objectives grade</h1>
+                </div>
+                <div className="flex items-center justify-center gap-1">
+                    <Icon
+                        icon="mdi:star"
+                        className="text-yellow-500"
+                        fontSize={20}
+                    />
+                    <p className="text-lg font-bold text-zinc-700">
+                        {Math.round(totalGrade * 100) / 100}
+                        <span className="text-xs font-bold text-zinc-400">/5</span>
+                    </p>
+                </div>
             </div>
         </div>
     );
@@ -96,7 +116,7 @@ function EvaluationComponent() {
         isEmployee
             ? evaluation?.selfEvaluationStatus
             : evaluation?.evaluationStatus;
-    const title = "Competency Evaluation"
+    const title = "Competency & Overall Evaluation"
     const label = isEmployee ? "Submitted" : "Evaluated";
     return (
         <div className="flex w-full flex-col items-start justify-start">
@@ -161,7 +181,7 @@ function EvaluationComponent() {
                     step == 3 && (
                         <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
                             <p className="text-[10px] font-bold text-zinc-400">
-                                General grade
+                                Competency grade
                             </p>
                             <p className="text-2xl font-bold text-zinc-700">
                                 {Math.round(
@@ -205,6 +225,8 @@ function ObjectiveComponent() {
         parse: (value) => parseInt(value),
     });
 
+    const { data: settings } = useGetSettings()
+
     async function saveObjectives(objectives: Partial<Objective>[]) {
         if (!employee || !year) return;
 
@@ -235,16 +257,17 @@ function ObjectiveComponent() {
     }
 
     const isEmployee = user?.employeeId == employee?.employeeId;
-
+    const filteredObjectives = objectives?.filter((obj) => obj.status !== "cancelled" && obj.status !== "draft")
     const count =
         isEmployee
-            ? objectives?.filter((obj) => obj.selfEvaluationStatus == "draft")
+            ? filteredObjectives?.filter((obj) => obj.selfEvaluationStatus == "draft")
                 .length
-            : objectives?.filter((obj) => obj.evaluationStatus == "draft")
+            : filteredObjectives?.filter((obj) => obj.evaluationStatus == "draft")
                 .length;
     const title = isEmployee ? "Self-Evaluation" : "Evaluation";
     const label = isEmployee ? "Submitted" : "Evaluated";
 
+    if (!settings || !filteredObjectives) return;
     return (
         <div className="flex w-full flex-col items-start justify-start pb-8">
             <div className="flex w-full justify-between p-4">
@@ -333,7 +356,7 @@ function ObjectiveComponent() {
             <div className="mt-4 flex w-full items-center justify-center">
                 {user?.employeeId == employee?.employeeId && <Button
                     className=""
-                    disabled={!objectives || objectives.every((obj) => obj.selfEvaluationStatus == "sent") || objectives.some((obj) => !obj.selfComment || obj.selfComment.length < 200)}
+                    disabled={!objectives || filteredObjectives.every((obj) => obj.selfEvaluationStatus == "sent") || filteredObjectives.some((obj) => !obj.selfComment || obj.selfComment.length < parseInt(settings.SETTING_MIN_CHAR))}
                     onClick={() => {
                         if (!objectives) return;
 
@@ -355,7 +378,7 @@ function ObjectiveComponent() {
                 </Button>}
                 {user?.employeeId == employee?.supervisorId && <Button
                     className=""
-                    disabled={!objectives || objectives.every((obj) => obj.evaluationStatus == "sent") || objectives.some((obj) => !obj.comment || !obj.grade)}
+                    disabled={!objectives || filteredObjectives.every((obj) => obj.evaluationStatus == "sent") || filteredObjectives.some((obj) => !obj.comment || !obj.grade)}
                     onClick={() => {
                         if (!objectives) return;
 

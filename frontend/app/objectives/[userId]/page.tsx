@@ -12,7 +12,6 @@ import Evaluation from "../../../features/evaluations/components/Evaluation/Eval
 import { useQueryState } from "nuqs";
 import ProfileCard from "@/features/employees/components/ProfileCard";
 import { Schedule } from "../../../features/steps/components/Schedule";
-import OverallEvaluation from "@/features/evaluations/components/Evaluation/OverallEvaluation";
 
 export default function Objectives({ params }: { params: { userId: string } }) {
     const { toast } = useToast();
@@ -270,7 +269,6 @@ export default function Objectives({ params }: { params: { userId: string } }) {
                         )}
 
                         {(step == 3) && <Evaluation />}
-                        {step == 4 && <OverallEvaluation />}
                     </>
                 )
             ) : (

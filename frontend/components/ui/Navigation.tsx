@@ -14,6 +14,8 @@ import axios from "axios";
 import Notification from "./Notification";
 import { useObjectivesDataStore } from "@/app/objectives/[userId]/_store/useStore";
 import { useEvaluationDataStore } from "@/app/evaluation360/[userId]/_store/useStore";
+import { cn } from "@/util/utils";
+import { HelpCircle } from "lucide-react";
 
 function NotificationBox({ user }: { user: Employee }) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -128,22 +130,24 @@ function NotificationBox({ user }: { user: Employee }) {
 
     return (
         <div className="relative">
-            <Button
-                onClick={() => setIsOpen((prev) => !prev)}
-                type="submit"
-                variant={"outline"}
-            >
-                My Tasks
-                <Icon
-                    icon="heroicons:inbox-16-solid"
-                    className="ml-1"
-                    fontSize={14}
-                />
-            </Button>
+            <div className={
+                cn("p-[1px] rounded-md")
+            }>
+                <Button
+                    onClick={() => setIsOpen((prev) => !prev)}
+                    type="submit"
+                    variant={"outline"}
+                    className="bg-white"
+                >
+                    My Tasks
+                    <Icon icon="heroicons:inbox-16-solid"
+                        className="ml-1"
+                        fontSize={14}
+                    />
+                </Button>
 
-            {status && computeUndo(status) && (
-                <div className="absolute -bottom-2 -right-2 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white"></div>
-            )}
+
+            </div>
             <div
                 ref={divRef}
                 className={
@@ -166,7 +170,6 @@ function Profile() {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const divRef = useRef<HTMLDivElement>(null);
-    console.log(user);
 
     const handleClickOutside = (event: MouseEvent) => {
         if (divRef.current && !divRef.current.contains(event.target as Node)) {
@@ -215,6 +218,21 @@ function Profile() {
                             }`
                         }
                     >
+                        <Link href="/auth/password-change" className={
+                            "rounded-lg whitespace-nowrap p-2 px-3 text-xs font-bold transition-all hover:text-zinc-800 text-zinc-700 hover:bg-zinc-50 active:scale-90 flex items-center justify-between gap-4 group w-full "
+                        }>Change password
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    fill="currentColor"
+                                    d="m5.99 16.596l8.192-8.192H7.818v-2h9.778v9.778h-2V9.818L7.403 18.01L5.99 16.596Z"
+                                />
+                            </svg>
+                        </Link>
                         <button
                             onClick={() => {
                                 logout();
@@ -401,6 +419,14 @@ function Menu() {
         </>
     );
 }
+
+function Help() {
+    return <Button variant="outline" >
+        Help
+        <HelpCircle size={16} className="ml-1" />
+    </Button>
+}
+
 export default function Navigation() {
     const loaderRef = useLoaderRef();
     const router = useRouter();
@@ -450,6 +476,13 @@ export default function Navigation() {
         }
     );
 
+    // A redirect whenever a connected user changes routes while having the default password
+    useEffect(() => {
+        if (user && user.password === "1234" && !pathName.includes("password-change")) {
+            router.push("/auth/password-change?onboard=true");
+        }
+    }, [pathName]);
+
     axios.defaults.withCredentials = true;
 
     return (
@@ -458,13 +491,16 @@ export default function Navigation() {
 
             <Profile />
             <Menu />
-            <Link href="/">
-                <Image
-                    src={AfricaRice}
-                    className="h-auto w-24"
-                    alt="Africa Rice"
-                />
-            </Link>
+            <div className="flex gap-4">
+                {user && <Help />}
+                <Link href="/">
+                    <Image
+                        src={AfricaRice}
+                        className="h-auto w-24"
+                        alt="Africa Rice"
+                    />
+                </Link>
+            </div>
         </nav>
     );
 }

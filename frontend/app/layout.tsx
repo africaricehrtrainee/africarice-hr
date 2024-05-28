@@ -30,7 +30,7 @@ export default function RootLayout({
                 <body
                     className={
                         GeistSans.className +
-                        " bg-green-50 flex flex-col min-h-[100svh]"
+                        " bg-zinc-50 flex flex-col min-h-[100svh]"
                     }
                 >
                     <App>

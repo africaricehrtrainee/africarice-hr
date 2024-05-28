@@ -146,7 +146,7 @@ export function NewEvaluation({
                                 </p>
                             </div>
                         </div>
-                        <form className="mt-4 flex w-full pt-2 pb-4 border-b border-b-zinc-200">
+                        <form className="mt-4 flex w-full pt-2 pb-4 ">
                             <div className="flex flex-col gap-8 w-full">
                                 {metrics.slice(0, 6).map((metric) => (
                                     <div
@@ -180,7 +180,8 @@ export function NewEvaluation({
                                                     const obj = {
                                                         ...data.evaluationLocal,
                                                     };
-                                                    obj[metric.rating] = 1;
+
+                                                    obj[metric.rating] = obj[metric.rating] == 1 ? null : 1;
                                                     data.setEvaluationLocal(
                                                         obj
                                                     );
@@ -211,7 +212,7 @@ export function NewEvaluation({
                                                     const obj = {
                                                         ...data.evaluationLocal,
                                                     };
-                                                    obj[metric.rating] = 2;
+                                                    obj[metric.rating] = obj[metric.rating] == 2 ? null : 2;
                                                     data.setEvaluationLocal(
                                                         obj
                                                     );
@@ -242,7 +243,7 @@ export function NewEvaluation({
                                                     const obj = {
                                                         ...data.evaluationLocal,
                                                     };
-                                                    obj[metric.rating] = 3;
+                                                    obj[metric.rating] = obj[metric.rating] == 3 ? null : 3;
                                                     data.setEvaluationLocal(
                                                         obj
                                                     );
@@ -273,7 +274,7 @@ export function NewEvaluation({
                                                     const obj = {
                                                         ...data.evaluationLocal,
                                                     };
-                                                    obj[metric.rating] = 4;
+                                                    obj[metric.rating] = obj[metric.rating] == 4 ? null : 4;
                                                     data.setEvaluationLocal(
                                                         obj
                                                     );
@@ -304,7 +305,7 @@ export function NewEvaluation({
                                                     const obj = {
                                                         ...data.evaluationLocal,
                                                     };
-                                                    obj[metric.rating] = 5;
+                                                    obj[metric.rating] = obj[metric.rating] == 5 ? null : 5;
                                                     data.setEvaluationLocal(
                                                         obj
                                                     );
@@ -358,6 +359,7 @@ export function NewEvaluation({
                             </div>
                         </form>
 
+                        <div className="h-16 rounded-sm bg-zinc-100 w-full" />
                         <div className="mt-4 flex items-start justify-between">
                             <p className="text-2xl font-bold text-zinc-600">
                                 {employee.firstName.split(" ")[0]}&apos;s
@@ -412,7 +414,7 @@ export function NewEvaluation({
                                         const obj = {
                                             ...data.evaluationLocal,
                                         };
-                                        obj[metrics[6].rating] = 1;
+                                        obj[metrics[6].rating] = obj[metrics[6].rating] == 1 ? null : 1;
                                         data.setEvaluationLocal(
                                             obj
                                         );
@@ -443,7 +445,7 @@ export function NewEvaluation({
                                         const obj = {
                                             ...data.evaluationLocal,
                                         };
-                                        obj[metrics[6].rating] = 2;
+                                        obj[metrics[6].rating] = obj[metrics[6].rating] == 2 ? null : 2;
                                         data.setEvaluationLocal(
                                             obj
                                         );
@@ -474,7 +476,7 @@ export function NewEvaluation({
                                         const obj = {
                                             ...data.evaluationLocal,
                                         };
-                                        obj[metrics[6].rating] = 3;
+                                        obj[metrics[6].rating] = obj[metrics[6].rating] == 3 ? null : 3;
                                         data.setEvaluationLocal(
                                             obj
                                         );
@@ -505,7 +507,7 @@ export function NewEvaluation({
                                         const obj = {
                                             ...data.evaluationLocal,
                                         };
-                                        obj[metrics[6].rating] = 4;
+                                        obj[metrics[6].rating] = obj[metrics[6].rating] == 4 ? null : 4;
                                         data.setEvaluationLocal(
                                             obj
                                         );
@@ -536,7 +538,7 @@ export function NewEvaluation({
                                         const obj = {
                                             ...data.evaluationLocal,
                                         };
-                                        obj[metrics[6].rating] = 5;
+                                        obj[metrics[6].rating] = obj[metrics[6].rating] == 5 ? null : 5;
                                         data.setEvaluationLocal(
                                             obj
                                         );

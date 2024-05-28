@@ -67,7 +67,7 @@ function EvaluationSettings() {
                     />
                 </div>
                 <p className="text-2xl font-bold text-zinc-700">
-                    Evaluation settings
+                    Evaluation questions
                 </p>
                 <Questions questions={Object.entries(settings).map(
                     ([name, value]) => {

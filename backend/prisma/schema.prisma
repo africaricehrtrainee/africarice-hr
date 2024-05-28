@@ -48,8 +48,9 @@ model Employees {
     matricule     String? @unique
 
     // Relations
-    supervisor   Employees?  @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: SetNull)
-    subordinates Employees[] @relation("Supervisor")
+    supervisor   Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: SetNull)
+    subordinates Employees[]         @relation("Supervisor")
+    recoveries   AccountRecoveries[]
 
     evaluations360          Evaluation360[]
     evaluation360Supervisor Evaluation360[] @relation("Supervisor")
@@ -166,13 +167,14 @@ model Objectives {
 }
 
 model Steps {
-    stepId   Int     @id @default(autoincrement())
-    name     String
-    message  String
-    active   Boolean @default(false)
-    dateFrom String
-    dateTo   String
-    sent     Boolean @default(false)
+    stepId    Int     @id @default(autoincrement())
+    name      String
+    message   String
+    messageFr String
+    active    Boolean @default(false)
+    dateFrom  String
+    dateTo    String
+    sent      Boolean @default(false)
 }
 
 model ObjectiveComments {
@@ -192,6 +194,14 @@ model Settings {
     label     String
     name      String @unique
     value     String @db.VarChar(255)
+}
+
+model AccountRecoveries {
+    recoveryId String    @id @default(uuid())
+    createdAt  DateTime  @default(now())
+    employeeId Int
+    employee   Employees @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
+    used       Boolean   @default(false)
 }
 
 model Alerts {

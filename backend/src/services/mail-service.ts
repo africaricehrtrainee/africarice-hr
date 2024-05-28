@@ -6,12 +6,14 @@ import prisma from "../../prisma/middleware";
 
 export default async function sendMail({
 	title,
-	content,
 	recipients,
+	template,
+	context,
 }: {
 	title?: string;
-	content: string;
 	recipients: string[];
+	template?: "main" | "recovery";
+	context: { content: string } | { recoveryId: string };
 }) {
 	try {
 		const options = {
@@ -19,13 +21,10 @@ export default async function sendMail({
 			subject: title ?? "Update from Human Resources",
 			// cc: recipients.join(","),
 			bcc: "AfricaRice-HRTrainee1@cgiar.org",
-			template: "main",
-			context: {
-				content,
-			},
+			template: template ?? "main",
+			context,
 		};
-		return console.log(options);
-		// return transporter.sendMail(options);
+		return transporter.sendMail(options);
 	} catch (error) {
 		console.log(error);
 	}
@@ -95,7 +94,7 @@ export async function mailEvaluationStep() {
 		.map((employee) => employee.email);
 
 	sendMail({
-		content: step.message,
+		context: { content: step.message },
 		recipients,
 	})
 		.then(async () => {
@@ -155,8 +154,10 @@ export async function mailNotificationStep() {
 	}
 
 	sendMail({
-		content:
-			"You have not finished all the steps of the evaluation process. Please do so as soon as possible.",
+		context: {
+			content:
+				"You have not finished all the steps of the evaluation process. Please do so as soon as possible.",
+		},
 		recipients,
 	})
 		.then(() => console.log("Successfully  sent notification mail"))

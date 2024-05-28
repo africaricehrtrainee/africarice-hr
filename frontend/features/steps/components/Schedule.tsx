@@ -54,7 +54,7 @@ export function Schedule({
 
     return (
         <div className="flex w-full flex-1 items-start justify-between gap-1 rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
-            <div className="flex max-w-md flex-col items-start justify-start gap-2 rounded-md border border-zinc-100 bg-zinc-50 p-4 text-start">
+            <div className="flex max-w-md xl:max-w-3xl flex-col items-start justify-start gap-2 rounded-md border border-zinc-100 bg-zinc-50 p-4 text-start">
                 <p className="flex items-center justify-center gap-2 border-b border-b-zinc-200 pb-1 text-sm font-bold">
                     {data.evaluationSteps[currentStepIndex].name}
                     <Icon
@@ -63,9 +63,14 @@ export function Schedule({
                         fontSize={12}
                     />
                 </p>
-                <p className="rounded-md text-sm">
-                    {data.evaluationSteps[currentStepIndex].message}
-                </p>
+                <div className="flex flex-col xl:flex-row w-full gap-2">
+                    <p className="pb-2 rounded-md text-sm text-muted-foreground border-b border-dashed border-b-zinc-400 xl:border-b-0 xl:border-r xl:border-r-zinc-400 xl:pb-0 xl:pr-1">
+                        {data.evaluationSteps[currentStepIndex].message}
+                    </p>
+                    <p className="rounded-md text-sm text-muted-foreground">
+                        {data.evaluationSteps[currentStepIndex].messageFr}
+                    </p>
+                </div>
                 {/* <Button
                     variant="outline"
                     className="bg-white"

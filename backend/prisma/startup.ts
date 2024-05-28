@@ -23,6 +23,8 @@ export default function startup() {
 					name: "Objective Submission",
 					message:
 						"The objective submission period has started. Please take the time to submit your objectives on the performance platform.",
+					messageFr:
+						"La période de soumission des objectifs a commencé. Veuillez prendre le temps de soumettre vos objectifs sur la plateforme de performance.",
 					active: false,
 					dateFrom: "2024-01-01",
 					dateTo: "2024-01-07",
@@ -30,9 +32,11 @@ export default function startup() {
 
 				{
 					stepId: 2,
-					name: "Objective Evaluation",
+					name: "Objective Validation",
 					message:
-						"The objective evaluation period has started. Please take the time to evaluate your team members' objectives on the performance platform.",
+						"The objective validation period has started. Please take the time to validate your team members' objectives on the performance platform.",
+					messageFr:
+						"La période de validation des objectifs a commencé. Veuillez prendre le temps de valider les objectifs de vos membres d'équipe sur la plateforme de performance.",
 					active: false,
 					dateFrom: "2024-01-08",
 					dateTo: "2024-01-14",
@@ -42,6 +46,8 @@ export default function startup() {
 					name: "Mid-term Review",
 					message:
 						"The mid-term review period has started. Please take the time to review your team's as well as your objectives on the performance platform.",
+					messageFr:
+						"La période de notation à mi-parcours a commencé. Veuillez prendre le temps de noter les progres de votre équipe ainsi que les vôtres sur la plateforme de performance.",
 					active: false,
 					dateFrom: "2024-01-15",
 					dateTo: "2024-01-23",
@@ -52,13 +58,17 @@ export default function startup() {
 					name: "Year End Evaluation",
 					message:
 						"The year-end evaluation period has started. Please take the time to evaluate your team members on the performance platform.",
+					messageFr:
+						"La période d'évaluation de fin d'année a commencé. Veuillez prendre le temps d'évaluer vos membres d'équipe sur la plateforme de performance.",
 					active: false,
 					dateFrom: "2024-02-08",
 					dateTo: "2024-02-14",
 				},
 			],
 		})
-		.then(() => {})
+		.then(() => {
+			console.log("Loaded steps settings.");
+		})
 		.catch((err) => {});
 
 	prisma.settings
@@ -81,14 +91,14 @@ export default function startup() {
 				{
 					settingId: 3,
 					name: "SETTING_MIN_CHAR",
-					value: "200",
+					value: "100",
 					label: "Minimum length for input fields",
 				},
 
 				{
 					settingId: 4,
 					name: "SETTING_MAX_CHAR",
-					value: "250",
+					value: "1000",
 					label: "Maximum length for input fields",
 				},
 
@@ -126,8 +136,40 @@ export default function startup() {
 					value: "How does the individual communicate team goals and individual roles clearly ?",
 					label: "Evaluation Question 5",
 				},
+				{
+					settingId: 10,
+					name: "EVALUATION_QUESTION_FR_1",
+					value: "Comment l'individu interagit-il avec les membres de l'équipe et les autres collègues ? Dans quelle mesure favorise-t-il la collaboration, la communication et la gestion des conflits ?",
+					label: "Evaluation Question 1 FR",
+				},
+				{
+					settingId: 11,
+					name: "EVALUATION_QUESTION_FR_2",
+					value: "Comment l'individu communique-t-il avec les collègues, les pairs et les subordonnés ? Dans quelle mesure favorise-t-il un environnement de travail collaboratif et ouvert ?",
+					label: "Evaluation Question 2 FR",
+				},
+				{
+					settingId: 12,
+					name: "EVALUATION_QUESTION_FR_3",
+					value: "Dans quelle mesure l'individu fait-il preuve de leadership et d'initiative au sein de l'organisation ? Pouvez-vous citer des situations où il ou elle a pris des mesures proactives pour résoudre des problèmes ou améliorer des processus ?",
+					label: "Evaluation Question 3 FR",
+				},
+				{
+					settingId: 13,
+					name: "EVALUATION_QUESTION_FR_4",
+					value: "Comment l'individu encourage-t-il le développement professionnel et personnel au sein de l'équipe ? Dans quelle mesure montre-t-il un intérêt pour le bien-être et la croissance de ses collègues ?",
+					label: "Evaluation Question 4 FR",
+				},
+				{
+					settingId: 14,
+					name: "EVALUATION_QUESTION_FR_5",
+					value: "Comment l'individu communique-t-il clairement les objectifs de l'équipe et les rôles individuels ?",
+					label: "Evaluation Question 5 FR",
+				},
 			],
 		})
-		.then(() => {})
+		.then(() => {
+			console.log("Loaded global settings.");
+		})
 		.catch((err) => {});
 }

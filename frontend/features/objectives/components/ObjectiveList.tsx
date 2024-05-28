@@ -110,9 +110,10 @@ function ObjectiveHeaderBar(props: {
     const { toast } = useToast();
 
     const filteredObjectives = props.objectives.filter(
-        (obj) => obj.status !== "cancelled"
+        (obj) => obj.status !== "cancelled" && obj.status !== "draft"
     );
 
+    const getReviewStatus = props.user.employeeId == props.employeeId ? (obj: Partial<Objective>) => obj.selfReviewStatus : (obj: Partial<Objective>) => obj.reviewStatus
     const [year, setYear] = useQueryState("year");
     const { data: settings } = useGetSettings();
 
@@ -185,7 +186,7 @@ function ObjectiveHeaderBar(props: {
                         onClick={() => {
                             createObjective();
                         }}
-                        variant="outline"
+                        variant={props.objectives.length < parseInt(settings.SETTING_MIN_OBJ) ? "primary" : "outline"}
                     >
                         Add objective
                         <Icon
@@ -195,17 +196,16 @@ function ObjectiveHeaderBar(props: {
                         />
                     </Button>
                 )}
-            {props.user.employeeId == props.employee.supervisorId &&
-                props.objectives.filter((obj) => obj.status !== "draft")
-                    .length > 0 && (
+            {step == 2 &&
+                filteredObjectives.length > 0 && (
                     <>
-                        {props.objectives.some(
-                            (obj) => obj?.status == "sent"
+                        {filteredObjectives.some(
+                            (obj) => getReviewStatus(obj) == "draft"
                         ) ? (
                             <Chip className="gap-1 rounded-lg" variant="alert">
                                 {
-                                    props.objectives.filter(
-                                        (obj) => obj.status == "sent"
+                                    filteredObjectives.filter(
+                                        (obj) => getReviewStatus(obj) == "draft"
                                     ).length
                                 }{" "}
                                 objective(s) left to review
@@ -476,7 +476,9 @@ function ObjectiveBottomActionBar({
                                                 !objective.deadline ||
                                                 !objective.kpi ||
                                                 !objective.description
-                                        )
+                                        ) ||
+                                        objectives.every(obj => obj.status == "ok" || obj.status == "cancelled")
+
                                     }
                                     onClick={() => {
                                         const temp = [...objectives];
@@ -511,7 +513,7 @@ function ObjectiveBottomActionBar({
                                 className=""
                                 disabled={
                                     filteredObjectives.length < parseInt(settings.SETTING_MIN_OBJ) ||
-                                    objectives.some(
+                                    filteredObjectives.some(
                                         (objective) =>
                                             objective.selfReviewStatus ==
                                             "sent" ||
@@ -546,7 +548,7 @@ function ObjectiveBottomActionBar({
                                 className=""
                                 disabled={
                                     filteredObjectives.length < parseInt(settings.SETTING_MIN_OBJ) ||
-                                    objectives.some(
+                                    filteredObjectives.some(
                                         (objective) =>
                                             objective.reviewStatus == "sent" ||
                                             !objective.midtermComment

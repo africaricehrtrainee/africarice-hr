@@ -149,7 +149,7 @@ export function xlsxToJsonArray(fileUrl: any): any[] {
 						where: {
 							employeeId: employee.employeeId,
 						},
-						update: employee,
+						update: { ...employee },
 						create: employee,
 					});
 				})

@@ -542,7 +542,7 @@ export function NewObjective({
                             <div className="mt-1 flex flex-col gap-2">
                                 <div className="flex flex-col justify-start gap-1">
                                     <label className="text-[10px] font-medium text-zinc-700">
-                                        TITLE OF THE OBJECTIVE
+                                        TITLE OF THE OBJECTIVE / TITRE DE L&apos;OBJECTIF
                                     </label>
                                     <input
                                         autoCorrect="off"
@@ -567,7 +567,7 @@ export function NewObjective({
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
                                     <label className="text-[10px] font-medium text-zinc-700">
-                                        DEADLINE OF THE OBJECTIVE
+                                        DEADLINE OF THE OBJECTIVE / DATE LIMITE
                                     </label>
                                     <input
                                         autoCorrect="off"
@@ -593,9 +593,7 @@ export function NewObjective({
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
                                     <label className="text-[10px] font-medium text-zinc-700">
-                                        OBJECTIVE KPI (KEY PERFORMANCE
-                                        INDICATORS)
-                                    </label>
+                                        OBJECTIVE KPI / INDICATEURS DE PERFORMANCE                                     </label>
                                     <textarea
                                         autoCorrect="off"
                                         spellCheck="false"
@@ -618,7 +616,7 @@ export function NewObjective({
                             <div className="mt-1 flex flex-col gap-2">
                                 <div className="flex flex-col justify-start gap-1">
                                     <label className="text-[10px] font-medium text-zinc-700">
-                                        OBJECTIVE DESCRIPTION / MAIN ACTIVITY
+                                        OBJECTIVE DESCRIPTION
                                     </label>
                                     <textarea
                                         autoCorrect="off"
@@ -642,7 +640,7 @@ export function NewObjective({
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
                                     <label className="text-[10px] font-medium text-zinc-700">
-                                        OBJECTIVE SUCCESS CONDITIONS
+                                        OBJECTIVE SUCCESS CONDITIONS / PREREQUIS DE REUSSITE
                                     </label>
                                     <textarea
                                         autoCorrect="off"
@@ -675,7 +673,7 @@ export function NewObjective({
 
                     {user &&
                         step == 2 &&
-                        objectives.every((obj) => obj.status == "ok") && (
+                        (selectedObjective.status == "ok") && (
                             <MidtermReview
                                 employee={employee}
                                 user={user}

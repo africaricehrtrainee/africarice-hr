@@ -131,7 +131,7 @@ export function NewSelfEvaluation({
                             </div> */}
                         </div>
                         <form className="mt-6 flex w-full">
-                            <div className="flex flex-col w-full pb-4 border-b border-zinc-200 gap-8">
+                            <div className="flex flex-col w-full pb-4 gap-8">
                                 {metrics.slice(0, 6).map((metric) => (
                                     <div
                                         key={metric.name}
@@ -187,6 +187,7 @@ export function NewSelfEvaluation({
                                 ))}
                             </div>
                         </form>
+                        <div className="h-16 rounded-sm bg-zinc-100 w-full" />
                         <div className="mt-4 flex items-start justify-between">
                             <p className="text-2xl font-bold text-zinc-600">
                                 {employee.firstName.split(" ")[0]}&apos;s

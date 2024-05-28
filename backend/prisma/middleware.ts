@@ -66,9 +66,11 @@ const objectiveMiddleware: Prisma.Middleware = async (params, next) => {
 						.then(() => {
 							sendMail({
 								title: "Requested Action from HR",
-								content: `Dear ${
-									supervisor.firstName.split(" ")[0]
-								}, a member of your team has submitted their objectives and is awaiting your review.`,
+								context: {
+									content: `Dear ${
+										supervisor.firstName.split(" ")[0]
+									}, a member of your team has submitted their objectives and is awaiting your review.`,
+								},
 								recipients: [supervisor.email],
 							});
 						})
@@ -96,9 +98,11 @@ const objectiveMiddleware: Prisma.Middleware = async (params, next) => {
 							.then(() => {
 								sendMail({
 									title: "Requested Action from HR",
-									content: `Dear ${
-										employee.firstName.split(" ")[0]
-									}, your supervisor has reviewed your objectives and has requested changes.`,
+									context: {
+										content: `Dear ${
+											employee.firstName.split(" ")[0]
+										}, your supervisor has reviewed your objectives and has requested changes.`,
+									},
 									recipients: [employee.email],
 								});
 							})
@@ -124,9 +128,11 @@ const objectiveMiddleware: Prisma.Middleware = async (params, next) => {
 						.then(() => {
 							sendMail({
 								title: "Information from HR",
-								content: `Dear ${
-									employee.firstName.split(" ")[0]
-								}, your supervisor has reviewed your progress for the midterm period.`,
+								context: {
+									content: `Dear ${
+										employee.firstName.split(" ")[0]
+									}, your supervisor has reviewed your progress for the midterm period.`,
+								},
 								recipients: [employee.email],
 							});
 						})
@@ -153,9 +159,11 @@ const objectiveMiddleware: Prisma.Middleware = async (params, next) => {
 						.then(() => {
 							sendMail({
 								title: "Requested Action from HR",
-								content: `Dear ${
-									employee.firstName.split(" ")[0]
-								}, your supervisor has evaluated all your objectives.`,
+								context: {
+									content: `Dear ${
+										employee.firstName.split(" ")[0]
+									}, your supervisor has evaluated all your objectives.`,
+								},
 								recipients: [employee.email],
 							});
 						})
@@ -205,9 +213,11 @@ const evaluationMiddleware: Prisma.Middleware = async (params, next) => {
 				.then(() => {
 					sendMail({
 						title: "Information from HR",
-						content: `Dear ${
-							employee.firstName.split(" ")[0]
-						}, your supervisor has submitted your compentency evaluation.`,
+						context: {
+							content: `Dear ${
+								employee.firstName.split(" ")[0]
+							}, your supervisor has submitted your compentency evaluation.`,
+						},
 						recipients: [employee.email],
 					});
 				})
@@ -277,9 +287,11 @@ const evaluation360Middleware: Prisma.Middleware = async (params, next) => {
 						.then(() => {
 							sendMail({
 								title: "Required Action from HR",
-								content: `Dear ${
-									supervisor.firstName.split(" ")[0]
-								}, a member of your team has submitted their 360 evaluation and is awaiting your review.`,
+								context: {
+									content: `Dear ${
+										supervisor.firstName.split(" ")[0]
+									}, a member of your team has submitted their 360 evaluation and is awaiting your review.`,
+								},
 								recipients: [supervisor.email],
 							});
 						})
@@ -301,9 +313,11 @@ const evaluation360Middleware: Prisma.Middleware = async (params, next) => {
 						.then(() => {
 							sendMail({
 								title: "Requested Action from HR",
-								content: `Dear ${
-									evaluator.firstName.split(" ")[0]
-								}, you have received a 360 evaluation request and are required to review it.`,
+								context: {
+									content: `Dear ${
+										evaluator.firstName.split(" ")[0]
+									}, you have received a 360 evaluation request and are required to review it.`,
+								},
 								recipients: [evaluator.email],
 							});
 						})
@@ -330,9 +344,11 @@ const evaluation360Middleware: Prisma.Middleware = async (params, next) => {
 							.then(() => {
 								sendMail({
 									title: "Required Action from HR",
-									content: `Dear ${
-										employee.firstName.split(" ")[0]
-									}, your supervisor has reviewed your 360 evaluation and has requested changes.`,
+									context: {
+										content: `Dear ${
+											employee.firstName.split(" ")[0]
+										}, your supervisor has reviewed your 360 evaluation and has requested changes.`,
+									},
 									recipients: [employee.email],
 								});
 							})
@@ -356,9 +372,11 @@ const evaluation360Middleware: Prisma.Middleware = async (params, next) => {
 						.then(() => {
 							sendMail({
 								title: "Information from HR",
-								content: `Dear ${
-									employee.firstName.split(" ")[0]
-								}, your evaluators have evaluated your 360 form.`,
+								context: {
+									content: `Dear ${
+										employee.firstName.split(" ")[0]
+									}, your evaluators have evaluated your 360 form.`,
+								},
 								recipients: [employee.email],
 							});
 						});

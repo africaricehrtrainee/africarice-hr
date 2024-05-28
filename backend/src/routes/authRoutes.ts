@@ -2,6 +2,9 @@
 import bodyParser from "body-parser";
 import express, { Request, Response, NextFunction } from "express";
 import passport from "passport";
+import prisma from "../../prisma/middleware";
+import sendMail from "../services/mail-service";
+import { Employees } from "@prisma/client";
 
 // Create an Express router
 const router = express.Router();
@@ -40,6 +43,93 @@ router.get("/saml", passport.authenticate("saml"), function (req, res) {
 	res.redirect("/");
 });
 
+// Route to change password
+router.put("/password-change", function (req, res) {
+	try {
+		if (req.user) {
+			const user = req.user as Employees;
+			const { password, newPassword } = req.body;
+
+			if (!password || !newPassword) {
+				return res
+					.status(400)
+					.json("Please include valid credentials.");
+			}
+			if (password !== (user.password as string)) {
+				return res.status(400).json("Your old password is incorrect.");
+			}
+
+			prisma.employees
+				.update({
+					where: {
+						employeeId: user.employeeId,
+					},
+					data: {
+						password: newPassword,
+					},
+				})
+				.then(() => {
+					return res
+						.status(201)
+						.json("Successfully changed password.");
+				})
+				.catch(() => {
+					return res
+						.status(500)
+						.json("An error occurred when changing passwords.");
+				});
+		} else if (req.body.recoveryId) {
+			const { recoveryId, newPassword } = req.body;
+
+			if (!recoveryId || !newPassword) {
+				return res
+					.status(400)
+					.json("Please include valid credentials.");
+			}
+
+			prisma.accountRecoveries
+				.findUnique({
+					where: {
+						recoveryId,
+					},
+				})
+				.then((recovery) => {
+					if (!recovery) {
+						return res
+							.status(404)
+							.json("This recovery link is invalid.");
+					}
+
+					prisma.employees
+						.update({
+							where: {
+								employeeId: recovery.employeeId,
+							},
+							data: {
+								password: newPassword,
+							},
+						})
+						.then(() => {
+							return res
+								.status(201)
+								.json("Successfully changed password.");
+						})
+						.catch(() => {
+							return res
+								.status(500)
+								.json(
+									"An error occurred when changing passwords."
+								);
+						});
+				});
+		} else {
+			return res.status(400).json("Unauthorized");
+		}
+	} catch (error) {
+		return res.status(500).json("An internal error occurred.");
+	}
+});
+
 // Route to check user session
 router.get("/session", (req: Request, res: Response) => {
 	if (req.isAuthenticated()) {
@@ -49,6 +139,55 @@ router.get("/session", (req: Request, res: Response) => {
 		// If user is not authenticated, send an unauthorized response
 		res.status(401).json("Unauthorized");
 	}
+});
+
+router.post("/recovery", async function (req, res) {
+	const { email } = req.body;
+
+	if (!email)
+		return res.status(400).json("Please include an e-mail address.");
+
+	const user = await prisma.employees.findUnique({
+		where: {
+			email,
+		},
+	});
+
+	if (!user) return res.status(404).json("This account does not exist.");
+
+	const recovery = await prisma.accountRecoveries.create({
+		data: {
+			employeeId: user.employeeId,
+		},
+	});
+
+	if (!recovery)
+		return res.status(500).json("Your account could not be recovered.");
+
+	if (recovery.used) {
+		return res
+			.status(400)
+			.json("This recovery link has already been used.");
+	}
+
+	sendMail({
+		title: "Account recovery",
+		recipients: [user.email],
+		template: "recovery",
+		context: {
+			recoveryId: recovery.recoveryId,
+		},
+	})
+		.then((value) => {
+			return res
+				.status(201)
+				.json("Your recovery link has successfully been sent.");
+		})
+		.catch((value) => {
+			return res
+				.status(500)
+				.json("An error occured while sending your recovery link.");
+		});
 });
 
 // Route for user logout

@@ -177,10 +177,14 @@ function EvaluationInput({ evaluation }: { evaluation: Evaluator360 }) {
                 <label className="mt-3 text-[10px] font-medium text-zinc-300">
                     EVALUATION SECTION QUESTION
                 </label>
-                <div className="flex w-full items-center justify-start gap-8">
+                <div className="flex w-full flex-col items-center justify-start gap-4">
                     <p className="text-sm font-medium text-zinc-700">
                         {/* @ts-ignore */}
                         {settings["EVALUATION_QUESTION_" + (index + 1)]}
+                    </p>
+                    <p className="text-sm font-medium text-zinc-700">
+                        {/* @ts-ignore */}
+                        {settings["EVALUATION_QUESTION_FR_" + (index + 1)]}
                     </p>
                 </div>
                 <label className="text-[10px] flex gap-2 items-center font-medium text-zinc-300">

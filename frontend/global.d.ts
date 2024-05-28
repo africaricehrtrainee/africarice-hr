@@ -125,6 +125,7 @@ interface Step {
 	stepId: number;
 	name: string;
 	message: string;
+	messageFr: string;
 	dateFrom: string;
 	dateTo: string;
 	active: boolean;
