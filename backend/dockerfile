@@ -7,7 +7,6 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package*.json ./
 RUN npm install
-RUN npx prisma migrate deploy
 
 # Bundle app source inside the Docker image
 COPY . .
@@ -16,4 +15,4 @@ COPY . .
 EXPOSE 4000
 
 # Define the command to run your app
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]
