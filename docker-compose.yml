@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+    nextjs:
+        container_name: nextjs-app
+        build: ./path_to_your_nextjs_app
+        ports:
+            - "3000:3000"
+        networks:
+            - app-network
+
+    express:
+        container_name: express-app
+        build: ./path_to_your_express_app
+        ports:
+            - "4000:4000"
+        networks:
+            - app-network
+
+    mysql:
+        container_name: mysql-db
+        image: mysql:latest
+        environment:
+            MYSQL_DATABASE: "mycareer"
+            MYSQL_USER: "root"
+            MYSQL_PASSWORD: "mysql"
+            MYSQL_ROOT_PASSWORD: "mysql"
+        volumes:
+            - db-data:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        networks:
+            - app-network
+
+# Defines named volume to persist your MySQL database
+volumes:
+    db-data:
+
+# Defines the network to facilitate communication between the containers
+networks:
+    app-network:
+        driver: bridge

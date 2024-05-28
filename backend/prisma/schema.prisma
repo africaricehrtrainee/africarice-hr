@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
     provider = "mysql"
-    url      = "mysql://root:mysql@localhost:3306/testdb"
+    url      = "mysql://root:mysql@localhost:3306/mycareer"
 }
 
 model Positions {

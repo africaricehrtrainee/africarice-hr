@@ -1,0 +1,24 @@
+# Specify the node base image
+FROM node:latest
+
+# Create app directory in the container
+WORKDIR /app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# Install dependencies in the container
+RUN npm install
+
+# Bundle app source inside the Docker image
+COPY . .
+
+# Build the Next.js app
+RUN npm run build
+
+# Your app binds to port 3000 so you'll use the EXPOSE instruction to have it mapped
+EXPOSE 3000
+
+# Define the command to run your app using CMD which defines your runtime
+CMD ["npm", "run", "start"]

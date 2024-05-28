@@ -26,8 +26,8 @@ export default function startup() {
 					messageFr:
 						"La période de soumission des objectifs a commencé. Veuillez prendre le temps de soumettre vos objectifs sur la plateforme de performance.",
 					active: false,
-					dateFrom: "2024-01-01",
-					dateTo: "2024-01-07",
+					dateFrom: "2024-05-27",
+					dateTo: "2024-05-29",
 				},
 
 				{
@@ -38,8 +38,8 @@ export default function startup() {
 					messageFr:
 						"La période de validation des objectifs a commencé. Veuillez prendre le temps de valider les objectifs de vos membres d'équipe sur la plateforme de performance.",
 					active: false,
-					dateFrom: "2024-01-08",
-					dateTo: "2024-01-14",
+					dateFrom: "2024-06-01",
+					dateTo: "2024-06-31",
 				},
 				{
 					stepId: 3,
@@ -49,8 +49,8 @@ export default function startup() {
 					messageFr:
 						"La période de notation à mi-parcours a commencé. Veuillez prendre le temps de noter les progres de votre équipe ainsi que les vôtres sur la plateforme de performance.",
 					active: false,
-					dateFrom: "2024-01-15",
-					dateTo: "2024-01-23",
+					dateFrom: "2024-09-01",
+					dateTo: "2024-10-31",
 				},
 
 				{
@@ -61,8 +61,8 @@ export default function startup() {
 					messageFr:
 						"La période d'évaluation de fin d'année a commencé. Veuillez prendre le temps d'évaluer vos membres d'équipe sur la plateforme de performance.",
 					active: false,
-					dateFrom: "2024-02-08",
-					dateTo: "2024-02-14",
+					dateFrom: "2024-12-01",
+					dateTo: "2024-12-31",
 				},
 			],
 		})
