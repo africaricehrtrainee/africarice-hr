@@ -2,7 +2,7 @@ version: "3.8"
 services:
     nextjs:
         container_name: nextjs-app
-        build: ./path_to_your_nextjs_app
+        build: ./frontend
         ports:
             - "3000:3000"
         networks:
@@ -10,7 +10,7 @@ services:
 
     express:
         container_name: express-app
-        build: ./path_to_your_express_app
+        build: ./backend
         ports:
             - "4000:4000"
         networks:
