@@ -27,6 +27,7 @@ export default function RootLayout({
     return (
         <ReactQueryClientProvider>
             <html lang="en">
+                <link rel="icon" href="/favicon.ico" sizes="any" />
                 <body
                     className={
                         GeistSans.className +

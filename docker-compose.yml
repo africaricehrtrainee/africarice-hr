@@ -12,6 +12,7 @@ services:
     express:
         container_name: express-app
         build: ./backend
+        restart: "always"
         ports:
             - "4000:4000"
         networks:
