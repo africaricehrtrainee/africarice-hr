@@ -1,5 +1,4 @@
 "use client";
-import Chip from "@/components/ui/Chip";
 import { useEffect, useState } from "react";
 import ObjectiveList from "@/features/objectives/components/ObjectiveList";
 import { NewObjective } from "../../../features/objectives/components/NewObjective";

@@ -5,7 +5,6 @@ import AfricaRice from "@/public/africarice.webp";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import Button from "./Button";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname, useRouter } from "next/navigation";
 import LoadingBar from "react-top-loading-bar";
@@ -16,6 +15,8 @@ import { useObjectivesDataStore } from "@/app/objectives/[userId]/_store/useStor
 import { useEvaluationDataStore } from "@/app/evaluation360/[userId]/_store/useStore";
 import { cn } from "@/util/utils";
 import { HelpCircle } from "lucide-react";
+import { HelpSection } from "@/features/help/components/HelpSection";
+import Button from "./Button";
 
 function NotificationBox({ user }: { user: Employee }) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -410,7 +411,7 @@ function Menu() {
     return (
         <>
             {user && (
-                <div className="flex items-center justify-center gap-2 rounded-md bg-zinc-100 p-1">
+                <div className="flex items-center justify-center gap-2 p-1 rounded-md bg-zinc-100">
                     {links.map((link) => {
                         return <Page item={link} key={link.name} />;
                     })}
@@ -420,12 +421,6 @@ function Menu() {
     );
 }
 
-function Help() {
-    return <Button variant="outline" >
-        Help
-        <HelpCircle size={16} className="ml-1" />
-    </Button>
-}
 
 export default function Navigation() {
     const loaderRef = useLoaderRef();
@@ -486,17 +481,17 @@ export default function Navigation() {
     axios.defaults.withCredentials = true;
 
     return (
-        <nav className="flex h-14 w-full select-none items-center justify-between gap-8 bg-white px-8 shadow-sm">
+        <nav className="flex items-center justify-between w-full gap-8 px-8 bg-white shadow-sm select-none h-14">
             <LoadingBar color="lightgreen" height={5} ref={loaderRef} />
 
             <Profile />
             <Menu />
-            <div className="flex gap-4">
-                {user && <Help />}
+            <div className="flex items-center justify-center gap-4">
+                {user && <HelpSection />}
                 <Link href="/">
                     <Image
                         src={AfricaRice}
-                        className="h-auto w-24"
+                        className="w-24 h-auto"
                         alt="Africa Rice"
                     />
                 </Link>

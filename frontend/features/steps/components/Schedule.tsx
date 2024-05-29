@@ -55,7 +55,7 @@ export function Schedule({
     return (
         <div className="flex w-full flex-1 items-start justify-between gap-1 rounded-md border border-zinc-200 bg-white p-4 text-center shadow-sm transition-all">
             <div className="flex max-w-md xl:max-w-3xl flex-col items-start justify-start gap-2 rounded-md border border-zinc-100 bg-zinc-50 p-4 text-start">
-                <p className="flex items-center justify-center gap-2 border-b border-b-zinc-200 pb-1 text-sm font-bold">
+                <p className="flex items-center justify-center gap-2 border-b border-b-zinc-200 pb-1 text-sm font-medium">
                     {data.evaluationSteps[currentStepIndex].name}
                     <Icon
                         icon="bi:star-fill"

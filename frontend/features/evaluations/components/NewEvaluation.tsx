@@ -82,13 +82,13 @@ export function NewEvaluation({
 
     if (!settings) return;
     return (
-        <div className="relative flex h-full w-full flex-col items-start justify-start rounded-md transition-all">
+        <div className="relative flex flex-col items-start justify-start w-full h-full transition-all rounded-md">
             {data.evaluationLocal &&
                 ((user.employeeId == data.evaluationLocal.employeeId &&
                     data.evaluationLocal.evaluationStatus == "sent") ||
                     user.employeeId == data.evaluationLocal.supervisorId) ? (
                 <div className="w-full">
-                    <div className="flex w-full items-center justify-between">
+                    <div className="flex items-center justify-between w-full">
                         {data.evaluationLocal.evaluationStatus == "draft" && (
                             <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[8px] font-medium text-zinc-600">
                                 Draft
@@ -110,13 +110,13 @@ export function NewEvaluation({
                             </div>
                         )}
                     </div>
-                    <div className="mt-2 h-full w-full">
+                    <div className="w-full h-full mt-2">
                         <div className="flex items-center justify-between">
                             <p className="text-2xl font-bold text-zinc-600">
                                 {employee.firstName.split(" ")[0]}&apos;s
                                 competency evaluation
                             </p>
-                            <div className="absolute right-4 top-4 flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
+                            <div className="absolute flex flex-col items-end justify-center p-2 border rounded-md right-4 top-4 border-zinc-100 text-end">
                                 <p className="text-[10px] font-bold text-zinc-400">
                                     Estimated competency grade
                                 </p>
@@ -146,8 +146,8 @@ export function NewEvaluation({
                                 </p>
                             </div>
                         </div>
-                        <form className="mt-4 flex w-full pt-2 pb-4 ">
-                            <div className="flex flex-col gap-8 w-full">
+                        <form className="flex w-full pt-2 pb-4 mt-4 ">
+                            <div className="flex flex-col w-full gap-8">
                                 {metrics.slice(0, 6).map((metric) => (
                                     <div
                                         key={metric.name}
@@ -165,7 +165,7 @@ export function NewEvaluation({
                                                 </span>
                                             )}
                                         </label>
-                                        <div className="flex w-full items-center justify-center gap-1">
+                                        <div className="flex items-center justify-center w-full gap-1">
                                             <button
                                                 type="button"
                                                 disabled={
@@ -359,13 +359,13 @@ export function NewEvaluation({
                             </div>
                         </form>
 
-                        <div className="h-16 rounded-sm bg-zinc-100 w-full" />
-                        <div className="mt-4 flex items-start justify-between">
+                        <div className="w-full h-16 rounded-sm bg-zinc-100" />
+                        <div className="flex items-start justify-between mt-4">
                             <p className="text-2xl font-bold text-zinc-600">
                                 {employee.firstName.split(" ")[0]}&apos;s
-                                overall evaluation
+                                <span className="text-brand"> overall evaluation</span>
                             </p>
-                            <div className="flex flex-col items-end justify-center rounded-md border border-zinc-100 p-2 text-end">
+                            <div className="flex flex-col items-end justify-center p-2 border rounded-md border-zinc-100 text-end">
                                 <p className="text-[10px] font-bold text-zinc-400">
                                     Overall grade
                                 </p>
@@ -399,7 +399,7 @@ export function NewEvaluation({
                                     </span>
                                 )}
                             </label>
-                            <div className="flex w-full items-center justify-center gap-1">
+                            <div className="flex items-center justify-center w-full gap-1">
                                 <button
                                     type="button"
                                     disabled={
@@ -590,7 +590,7 @@ export function NewEvaluation({
                         </div>
                         {user.employeeId ==
                             data.evaluationLocal.supervisorId && (
-                                <div className="mt-4 flex w-full items-center justify-end gap-2">
+                                <div className="flex items-center justify-end w-full gap-2 mt-4">
                                     <Button
                                         disabled={
                                             JSON.stringify(data.evaluation) ===
@@ -639,14 +639,14 @@ export function NewEvaluation({
                                         onClose={() => setIsSubmitModalOpen(false)}
                                     >
                                         <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
-                                            <div className="flex w-full flex-col items-start justify-between">
+                                            <div className="flex flex-col items-start justify-between w-full">
                                                 <p className="text-xl font-bold text-zinc-600">
                                                     Submit evaluation ?
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
                                                     This action cannot be undone.
                                                 </p>
-                                                <div className="mt-4 flex w-full items-center justify-end gap-2">
+                                                <div className="flex items-center justify-end w-full gap-2 mt-4">
                                                     <Button
                                                         onClick={() => {
                                                             setIsSubmitModalOpen(
@@ -694,7 +694,7 @@ export function NewEvaluation({
                 </div>
             ) : (
                 <>
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-4 text-zinc-300">
+                    <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-zinc-300">
                         <Icon icon="iconamoon:pen-fill" fontSize={48} />
                         <h1 className="text-2xl font-bold">
                             An evaluation has not been submitted yet.

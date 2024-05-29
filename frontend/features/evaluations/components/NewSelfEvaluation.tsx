@@ -82,13 +82,13 @@ export function NewSelfEvaluation({
 
     if (!settings) return;
     return (
-        <div className="relative flex h-full w-full flex-col items-start justify-start ">
+        <div className="relative flex flex-col items-start justify-start w-full h-full ">
             {data.evaluationLocal &&
                 ((user.employeeId == employee.supervisorId &&
                     data.evaluationLocal.selfEvaluationStatus == "sent") ||
                     user.employeeId == employee.employeeId) ? (
                 <>
-                    <div className="flex w-full items-center justify-between">
+                    <div className="flex items-center justify-between w-full">
                         {data.evaluationLocal.selfEvaluationStatus ==
                             "draft" && (
                                 <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[8px] font-medium text-zinc-700">
@@ -112,7 +112,7 @@ export function NewSelfEvaluation({
                                 </div>
                             )}
                     </div>
-                    <div className="mt-2 h-full w-full">
+                    <div className="w-full h-full mt-2">
                         <div className="flex items-center justify-between">
                             <p className="text-2xl font-bold text-zinc-700">
                                 {employee.firstName.split(" ")[0]}&apos;s
@@ -130,8 +130,8 @@ export function NewSelfEvaluation({
                                 </Chip>
                             </div> */}
                         </div>
-                        <form className="mt-6 flex w-full">
-                            <div className="flex flex-col w-full pb-4 gap-8">
+                        <form className="flex w-full mt-6">
+                            <div className="flex flex-col w-full gap-8 pb-4">
                                 {metrics.slice(0, 6).map((metric) => (
                                     <div
                                         key={metric.name}
@@ -187,11 +187,11 @@ export function NewSelfEvaluation({
                                 ))}
                             </div>
                         </form>
-                        <div className="h-16 rounded-sm bg-zinc-100 w-full" />
-                        <div className="mt-4 flex items-start justify-between">
+                        <div className="w-full h-16 rounded-sm bg-zinc-100" />
+                        <div className="flex items-start justify-between mt-4">
                             <p className="text-2xl font-bold text-zinc-600">
                                 {employee.firstName.split(" ")[0]}&apos;s
-                                overall self-evaluation
+                                <span className="text-brand"> overall self-evaluation</span>
                             </p>
                         </div>
 
@@ -240,12 +240,12 @@ export function NewSelfEvaluation({
                                     data.setEvaluationLocal(obj);
                                 }}
                                 placeholder={`Write your ${metrics[6].name} review`}
-                                className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                className="h-[80px] w-full bg-green-50 rounded-md border border-green-500 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                             />
                         </div>
 
                         {user.employeeId == data.evaluationLocal.employeeId && (
-                            <div className="mt-4 flex w-full items-center justify-end gap-2">
+                            <div className="flex items-center justify-end w-full gap-2 mt-4">
                                 <Button
                                     disabled={
                                         JSON.stringify(data.evaluation) ===
@@ -292,14 +292,14 @@ export function NewSelfEvaluation({
                                     onClose={() => setIsSubmitModalOpen(false)}
                                 >
                                     <div className="flex w-[500px] flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-4 shadow-sm transition-all">
-                                        <div className="flex w-full flex-col items-start justify-between">
+                                        <div className="flex flex-col items-start justify-between w-full">
                                             <p className="text-xl font-bold text-zinc-700">
                                                 Submit self-evaluation ?
                                             </p>
                                             <p className="text-xs text-muted-foreground">
                                                 This action cannot be undone.
                                             </p>
-                                            <div className="mt-4 flex w-full items-center justify-end gap-2">
+                                            <div className="flex items-center justify-end w-full gap-2 mt-4">
                                                 <Button
                                                     onClick={() => {
                                                         setIsSubmitModalOpen(
@@ -347,7 +347,7 @@ export function NewSelfEvaluation({
                 </>
             ) : (
                 <>
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-4 text-zinc-300">
+                    <div className="flex flex-col items-center justify-center w-full h-full gap-4 text-zinc-300">
                         <Icon icon="iconamoon:pen-fill" fontSize={48} />
                         <h1 className="text-2xl font-bold">
                             A self-evaluation has not been made yet.

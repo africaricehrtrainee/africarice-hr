@@ -19,8 +19,8 @@ function ProfileCard({ user }: { user: Employee }) {
         defaultValue: getYear(new Date()).toString(),
     });
 
-    const {data : objectives} = useGetObjectives(user.employeeId, year);
-    const {data : evaluation} = useGetEvaluations(user.employeeId, year);
+    const { data: objectives } = useGetObjectives(user.employeeId, year);
+    const { data: evaluation } = useGetEvaluations(user.employeeId, year);
 
 
     return (
@@ -42,28 +42,28 @@ function ProfileCard({ user }: { user: Employee }) {
                 </Select>
 
                 {objectives && evaluation && (
-                <PDFDownloadLink document={<Summary user={user} objectives={objectives} evaluation={evaluation} year ={year} />}>
-                    {({ blob, url, loading, error }) =>
-                    <Button loading={loading} variant="alternateOutline" >
-                        Download summary
-                        <Icon
-                            icon="bi:file-earmark-arrow-down"
-                            className="ml-1"
-                            fontSize={16} />
-                    </Button> 
-                    }
-                </PDFDownloadLink> )
-                    }
+                    <PDFDownloadLink document={<Summary user={user} objectives={objectives} evaluation={evaluation} year={year} />}>
+                        {({ blob, url, loading, error }) =>
+                            <Button loading={loading} variant="alternateOutline" >
+                                Download summary
+                                <Icon
+                                    icon="bi:file-earmark-arrow-down"
+                                    className="ml-1"
+                                    fontSize={16} />
+                            </Button>
+                        }
+                    </PDFDownloadLink>)
+                }
             </div>
             <div className="flex items-start justify-evenly gap-4">
                 <div className="flex h-full flex-col items-center justify-center gap-1">
                     <Chip
                         variant={"background"}
-                        className="font-mono text-xs font-bold text-zinc-800"
+                        className="font-mono text-xs font-medium text-zinc-800"
                     >
                         {user.matricule}
                     </Chip>
-                    <div className="te flex h-10 w-10 items-center justify-center rounded-full bg-brand font-bold text-white">
+                    <div className="te flex h-10 w-10 items-center justify-center rounded-full bg-brand font-medium text-white">
                         {user.firstName && user.lastName
                             ? user.lastName.charAt(0) + user.firstName.charAt(0)
                             : ""}
@@ -74,7 +74,7 @@ function ProfileCard({ user }: { user: Employee }) {
                         <p className="text-[10px] font-medium text-zinc-500">
                             NAME
                         </p>
-                        <p className="text-xs font-bold text-zinc-700">
+                        <p className="text-xs font-medium text-zinc-700">
                             {user.firstName && user.lastName
                                 ? user.lastName + " " + user.firstName.split(" ")[0]
                                 : ""}
@@ -84,7 +84,7 @@ function ProfileCard({ user }: { user: Employee }) {
                         <p className="text-[10px] font-medium text-zinc-500">
                             POSITION
                         </p>
-                        <p className="w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-xs font-bold text-zinc-700">
+                        <p className="w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-xs font-medium text-zinc-700">
                             {user.jobTitle.toUpperCase() ?? "..."}
                         </p>
                     </div>
@@ -94,7 +94,7 @@ function ProfileCard({ user }: { user: Employee }) {
                         <p className="text-[10px] font-medium text-zinc-500">
                             SUPERVISOR (N+1)
                         </p>
-                        <p className="whitespace-nowrap text-xs font-bold text-zinc-700">
+                        <p className="whitespace-nowrap text-xs font-medium text-zinc-700">
                             {user.supervisor
                                 ? user.supervisor.lastName +
                                 " " +
@@ -106,7 +106,7 @@ function ProfileCard({ user }: { user: Employee }) {
                         <p className="text-[10px] font-medium text-zinc-500">
                             SUPERVISOR (N+2)
                         </p>
-                        <p className="whitespace-nowrap text-xs font-bold text-zinc-700">
+                        <p className="whitespace-nowrap text-xs font-medium text-zinc-700">
                             {user.supervisor && user.supervisor.supervisor
                                 ? user.supervisor.supervisor.lastName +
                                 " " +
