@@ -35,7 +35,7 @@ export default async function cronJobInit() {
 		mailNotificationStep();
 	}
 
-	cron.schedule("*/5 * * * *", evaluationStepJob);
+	// cron.schedule("*/5 * * * *", evaluationStepJob);
 
 	// log(
 	//     chalk.black.bgYellow(
