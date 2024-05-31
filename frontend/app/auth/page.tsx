@@ -37,6 +37,8 @@ export default function Home() {
                     });
                     if (response.data.user.password == "1234") {
                         router.push(`/auth/password-change?onboard=true`);
+                    } else if (response.data.user.subordinates.length > 0) {
+                        router.push(`/`);
                     } else if (params.get("redirect")) {
                         console.log("redirect");
                         router.back();

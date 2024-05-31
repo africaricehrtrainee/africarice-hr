@@ -63,6 +63,7 @@ export class ExpressServer {
 			"http://10.225.100.30",
 			"http://10.225.100.33",
 			"http://127.0.0.1",
+			process.env.PUBLIC_ADDRESS,
 		];
 
 		// Configure CORS (Cross-Origin Resource Sharing)

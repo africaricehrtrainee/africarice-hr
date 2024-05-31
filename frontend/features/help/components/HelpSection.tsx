@@ -13,9 +13,9 @@ import { AtSign, HelpCircle } from "lucide-react"
 import React from "react"
 
 function VideoFrame({ children }: { children: React.ReactNode }) {
-    return <div className=" w-[640px] h-[480px] rounded-md bg-muted">
+    return <div className=" w-[1280px] h-[720px] rounded-md bg-muted">
 
-
+        {children}
     </div>
 }
 
@@ -49,13 +49,15 @@ export function HelpSection() {
                     </TabsList>
                     <TabsContent className="flex justify-end w-full mt-0" value="objective-creation">
                         <VideoFrame>
-                            <video height="480" width="640" src="./videos/objective-creation.webm" controls>
+                            <video height="720" width="1280" controls>
+                                <source src="/videos/objective-creation.webm" type="video/webm" />
                             </video>
                         </VideoFrame>
                     </TabsContent>
                     <TabsContent className="flex justify-end w-full mt-0" value="objective-submission">
                         <VideoFrame>
-                            <video height="480" width="640" src="./videos/objective-submission.webm" controls>
+                            <video height="720" width="1280" controls>
+                                <source src="/videos/objective-submission.webm" type="video/webm" />
                             </video>
                         </VideoFrame>
                     </TabsContent>

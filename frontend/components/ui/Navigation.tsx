@@ -141,8 +141,10 @@ function NotificationBox({ user }: { user: Employee }) {
                     className="bg-white"
                 >
                     My Tasks
-                    <Icon icon="heroicons:inbox-16-solid"
-                        className="ml-1"
+                    <Icon icon="lets-icons:bell-fill"
+                        className={cn("ml-1",
+                            status && computeUndo(status) && "text-red-500 animate-shake"
+                        )}
                         fontSize={14}
                     />
                 </Button>

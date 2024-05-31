@@ -22,7 +22,10 @@ export default async function sendMail({
 			cc: recipients.join(","),
 			bcc: "AfricaRice-HRTrainee1@cgiar.org",
 			template: template ?? "main",
-			context,
+			context: {
+				...context,
+				address: process.env.PUBLIC_ADDRESS,
+			},
 		};
 		return transporter.sendMail(options);
 	} catch (error) {
