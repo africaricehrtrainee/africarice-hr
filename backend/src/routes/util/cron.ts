@@ -46,26 +46,11 @@ export default async function cronJobInit() {
 		);
 		sendMail({
 			title: "Test Mail",
-			recipients: [],
+			recipients: ["k.sams@cgiar.org"],
 			context: { content: "This is a test mail." },
 		});
 	}
 
-	// Every hour run the mail test job using cron
-	cron.schedule("0 * * * *", mailTestJob);
-
-	// log(
-	//     chalk.black.bgYellow(
-	//         "\u03BB Evaluation schedule notification every 10 minutes"
-	//     )
-	// );
-	// cron.schedule("*/5 * * * *", evaluationAlertJob);
-
-	// log(
-	//     chalk.black.bgYellow(
-	//         "\u03BB Alert service notification run every 5 minute"
-	//     )
-	// );
-	// Alternatively, you can use a more human-readable syntax (recommended)
-	// cron.schedule("*/2 * * * *", evaluationAlertJob);
+	// Every 30 minutes run the mail test job using cron
+	cron.schedule("*/30 * * * *", mailTestJob);
 }
