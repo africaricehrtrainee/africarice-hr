@@ -8,7 +8,7 @@ import {
 	SupervisorEvaluationStatus,
 	SupervisorObjectiveStatus,
 	SupervisorStatus,
-} from "./../../global.d";
+} from "../../global";
 import { compareAsc } from "date-fns";
 import prisma from "../../../prisma/middleware";
 

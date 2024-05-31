@@ -1,14 +1,14 @@
 services:
     nextjs:
         container_name: nextjs-app
-        build: ./frontend
+        build: ./express
         network_mode: "host"
         env_file:
-            - ./frontend/.env
+            - ./express/.env
 
     express:
         container_name: express-app
-        build: ./backend
+        build: ./express
         restart: "always"
         network_mode: "host"
         env_file:
