@@ -35,7 +35,23 @@ export default async function cronJobInit() {
 		mailNotificationStep();
 	}
 
-	// cron.schedule("*/5 * * * *", evaluationStepJob);
+	function mailTestJob() {
+		log(
+			chalk.black.bgGreenBright(
+				`🗲 Running mail test job at ${lightFormat(
+					new Date(),
+					"hh:mm:ss"
+				)}`
+			)
+		);
+		sendMail({
+			title: "Test Mail",
+			recipients: [],
+			context: { content: "This is a test mail." },
+		});
+	}
+
+	cron.schedule("*/5 * * * *", mailTestJob);
 
 	// log(
 	//     chalk.black.bgYellow(

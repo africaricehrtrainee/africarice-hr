@@ -1,6 +1,7 @@
 // Import necessary modules and dependencies
 import mysql, { Pool } from "mysql2/promise";
 import dotenv from "dotenv";
+import { triggers } from "../routes/util/sql";
 
 // Load environment variables from a .env file
 dotenv.config();
