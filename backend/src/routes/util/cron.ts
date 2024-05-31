@@ -13,7 +13,7 @@ export default async function cronJobInit() {
 	function evaluationStepJob() {
 		log(
 			chalk.black.bgGreenBright(
-				`🗲 Running evaluation schedule job at ${lightFormat(
+				`Running evaluation schedule job at ${lightFormat(
 					new Date(),
 					"hh:mm:ss"
 				)}`
@@ -26,7 +26,7 @@ export default async function cronJobInit() {
 	function evaluationAlertJob() {
 		log(
 			chalk.black.bgGreenBright(
-				`🗲 Running evaluation alert job at ${lightFormat(
+				`Running evaluation alert job at ${lightFormat(
 					new Date(),
 					"hh:mm:ss"
 				)}`
@@ -38,7 +38,7 @@ export default async function cronJobInit() {
 	function mailTestJob() {
 		log(
 			chalk.black.bgGreenBright(
-				`🗲 Running mail test job at ${lightFormat(
+				`Running mail test job at ${lightFormat(
 					new Date(),
 					"hh:mm:ss"
 				)}`
@@ -51,7 +51,8 @@ export default async function cronJobInit() {
 		});
 	}
 
-	cron.schedule("*/5 * * * *", mailTestJob);
+	// Every hour run the mail test job using cron
+	cron.schedule("0 * * * *", mailTestJob);
 
 	// log(
 	//     chalk.black.bgYellow(
