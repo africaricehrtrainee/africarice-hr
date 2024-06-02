@@ -8,13 +8,15 @@ import Button from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from "axios";
-import { TextareaHTMLAttributes, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../../components/ui/Modal";
 import { toast, useToast } from "../../../components/ui/use-toast";
 import { useQueryState } from "nuqs";
 import { cn } from "@/util/utils";
 import Chip from "@/components/ui/Chip";
 import { useGetSettings } from "@/features/settings/queries";
+import { TextArea } from "@/components/ui/TextArea";
+import { Input } from "@/components/ui/Input";
 
 export function NewObjective({
     employee,
@@ -544,7 +546,7 @@ export function NewObjective({
                                     <label className="text-[10px] font-medium text-zinc-700">
                                         TITLE OF THE OBJECTIVE / TITRE DE L&apos;OBJECTIF
                                     </label>
-                                    <input
+                                    <Input
                                         autoCorrect="off"
                                         spellCheck="false"
                                         maxLength={50}
@@ -562,14 +564,13 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Enter the objective title"
-                                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
                                     <label className="text-[10px] font-medium text-zinc-700">
                                         DEADLINE OF THE OBJECTIVE / DATE LIMITE
                                     </label>
-                                    <input
+                                    <Input
                                         autoCorrect="off"
                                         spellCheck="false"
                                         disabled={isEditable}
@@ -588,13 +589,12 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Pick the deadline for your objective"
-                                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium placeholder-zinc-500 outline-none transition-all hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
                                     <label className="text-[10px] font-medium text-zinc-700">
                                         OBJECTIVE KPI / INDICATEURS DE PERFORMANCE                                     </label>
-                                    <textarea
+                                    <TextArea
                                         autoCorrect="off"
                                         spellCheck="false"
                                         disabled={isEditable}
@@ -609,7 +609,6 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Enter the objective's key performance indicators (KPI)"
-                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                             </div>
@@ -618,7 +617,7 @@ export function NewObjective({
                                     <label className="text-[10px] font-medium text-zinc-700">
                                         OBJECTIVE DESCRIPTION
                                     </label>
-                                    <textarea
+                                    <TextArea
                                         autoCorrect="off"
                                         spellCheck="false"
                                         disabled={isEditable}
@@ -635,14 +634,13 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Enter the description of the objective"
-                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                                 <div className="flex flex-col justify-start gap-1">
                                     <label className="text-[10px] font-medium text-zinc-700">
                                         OBJECTIVE SUCCESS CONDITIONS / PREREQUIS DE REUSSITE
                                     </label>
-                                    <textarea
+                                    <TextArea
                                         autoCorrect="off"
                                         spellCheck="false"
                                         disabled={isEditable}
@@ -661,7 +659,6 @@ export function NewObjective({
                                             data.setObjectivesLocal(arr);
                                         }}
                                         placeholder="Enter the objective’s success conditions"
-                                        className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                     />
                                 </div>
                             </div>
@@ -804,7 +801,7 @@ function MidtermReview({
                                 <label className="text-[10px] font-medium text-zinc-700">
                                     Objective Review (min. 200 characters)
                                 </label>
-                                <textarea
+                                <TextArea
                                     autoCorrect="off"
                                     minLength={parseInt(settings.SETTING_MIN_CHAR)}
                                     maxLength={parseInt(settings.SETTING_MAX_CHAR)}
@@ -834,7 +831,6 @@ function MidtermReview({
                                         }
                                     }}
                                     placeholder={`Write about your progress on this objective`}
-                                    className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                 />
                             </div>
                             {user?.employeeId == employee.employeeId && (
@@ -901,7 +897,7 @@ function MidtermReview({
                                 <label className="text-[10px] font-medium text-zinc-700">
                                     Supervisor Review (min. {parseInt(settings.SETTING_MIN_CHAR)} characters)
                                 </label>
-                                <textarea
+                                <TextArea
                                     minLength={parseInt(settings.SETTING_MIN_CHAR)}
                                     maxLength={parseInt(settings.SETTING_MAX_CHAR)}
                                     autoCorrect="off"
@@ -929,7 +925,6 @@ function MidtermReview({
                                         }
                                     }}
                                     placeholder={`Write about this staff's progress on this objective`}
-                                    className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                                 />
                             </div>
                             {user?.employeeId == employee.supervisorId && (
@@ -1029,7 +1024,7 @@ function ObjectiveEvaluation({ employee, user, saveObjectives, settings }: { emp
                         Objective self-evaluation <span className="text-xs">(min. {parseInt(settings.SETTING_MIN_CHAR)} characters)</span>
                     </p>
                     <div className="flex w-[450px] flex-col items-start justify-start gap-1">
-                        <textarea
+                        <TextArea
                             minLength={parseInt(settings.SETTING_MIN_CHAR)}
                             maxLength={parseInt(settings.SETTING_MAX_CHAR)}
                             autoCorrect="off"
@@ -1061,7 +1056,6 @@ function ObjectiveEvaluation({ employee, user, saveObjectives, settings }: { emp
                                 }
                             }}
                             placeholder={`Write your self-evaluation for this objective`}
-                            className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                         />
                     </div>
                     <Button
@@ -1288,7 +1282,7 @@ function ObjectiveEvaluation({ employee, user, saveObjectives, settings }: { emp
                             </button>
                         </div>
 
-                        <textarea
+                        <TextArea
                             autoCorrect="off"
                             minLength={parseInt(settings.SETTING_MIN_CHAR)}
                             maxLength={parseInt(settings.SETTING_MAX_CHAR)}
@@ -1319,7 +1313,6 @@ function ObjectiveEvaluation({ employee, user, saveObjectives, settings }: { emp
                                 }
                             }}
                             placeholder={`Write your evaluation for this objective`}
-                            className="h-[100px] w-full rounded-md border border-zinc-200 p-2 px-3 text-start text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                         />
                     </div>
                     <Button

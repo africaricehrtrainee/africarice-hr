@@ -77,7 +77,7 @@ export default function startup() {
 				{
 					settingId: 1,
 					name: "SETTING_MIN_OBJ",
-					value: "3",
+					value: "4",
 					label: "Minimum number of objectives",
 				},
 
@@ -91,7 +91,7 @@ export default function startup() {
 				{
 					settingId: 3,
 					name: "SETTING_MIN_CHAR",
-					value: "100",
+					value: "50",
 					label: "Minimum length for input fields",
 				},
 

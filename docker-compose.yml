@@ -1,17 +1,15 @@
 services:
     nextjs:
-        container_name: nextjs-app
-        build: ./express
+        container_name: next
+        build: ./next-js
         network_mode: "host"
-        environment:
-            - NEXT_PUBLIC_API_URL="http://10.225.100.33"
+        env_file:
+            - .env
 
     express:
-        container_name: express-app
+        container_name: express
         build: ./express
         restart: "always"
         network_mode: "host"
-        environment:
-            - NODE_ENV=:"production"
-            - DATABASE_URL="mysql://root:mysql@localhost:3306/testdb"
-            - PUBLIC_ADDRESS="http://10.225.100.33"
+        env_file:
+            - .env

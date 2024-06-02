@@ -10,6 +10,7 @@ import { SetStateAction, useEffect, useState } from "react";
 import Modal from "../../../components/ui/Modal";
 import Chip from "../../../components/ui/Chip";
 import { useGetSettings } from "@/features/settings/queries";
+import { TextArea } from "@/components/ui/TextArea";
 
 export function NewEvaluation({
     user,
@@ -324,7 +325,7 @@ export function NewEvaluation({
                                             </button>
                                         </div>
 
-                                        <textarea
+                                        <TextArea
                                             autoCorrect="off"
                                             minLength={parseInt(settings.SETTING_MIN_CHAR)}
                                             maxLength={parseInt(settings.SETTING_MAX_CHAR)}
@@ -352,7 +353,7 @@ export function NewEvaluation({
                                                 data.setEvaluationLocal(obj);
                                             }}
                                             placeholder={`Write your ${metric.name} review`}
-                                            className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                            className="h-[80px]"
                                         />
                                     </div>
                                 ))}
@@ -557,7 +558,7 @@ export function NewEvaluation({
                                 </button>
                             </div>
 
-                            <textarea
+                            <TextArea
                                 autoCorrect="off"
                                 minLength={parseInt(settings.SETTING_MIN_CHAR)}
                                 maxLength={parseInt(settings.SETTING_MAX_CHAR)}
@@ -585,7 +586,7 @@ export function NewEvaluation({
                                     data.setEvaluationLocal(obj);
                                 }}
                                 placeholder={`Write your ${metrics[6].name} review`}
-                                className="h-[80px] w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-medium outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                                className="h-[80px]"
                             />
                         </div>
                         {user.employeeId ==

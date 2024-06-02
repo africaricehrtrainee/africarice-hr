@@ -75,7 +75,7 @@ function GradeHeader({
                     </p>
                 </div>
             </div>
-            <div className="flex w-full items-center justify-between">
+            {/* <div className="flex w-full items-center justify-between">
                 <div className="flex items-center justify-start">
                     <h1 className="text-sm font-semibold text-zinc-600">Competency & Objectives grade</h1>
                 </div>
@@ -90,7 +90,7 @@ function GradeHeader({
                         <span className="text-xs font-bold text-zinc-400">/5</span>
                     </p>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }

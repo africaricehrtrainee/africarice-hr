@@ -77,29 +77,29 @@ model Evaluations {
     updatedAt DateTime @updatedAt
     createdAt DateTime @default(now())
 
-    efficiency       String? @db.VarChar(255)
+    efficiency       String? @db.VarChar(2000)
     efficiencyRating Int?
-    competency       String? @db.VarChar(255)
+    competency       String? @db.VarChar(2000)
     competencyRating Int?
-    commitment       String? @db.VarChar(255)
+    commitment       String? @db.VarChar(2000)
     commitmentRating Int?
-    initiative       String? @db.VarChar(255)
+    initiative       String? @db.VarChar(2000)
     initiativeRating Int?
-    respect          String? @db.VarChar(255)
+    respect          String? @db.VarChar(2000)
     respectRating    Int?
-    leadership       String? @db.VarChar(255)
+    leadership       String? @db.VarChar(2000)
     leadershipRating Int?
-    overall          String? @db.VarChar(255)
+    overall          String? @db.VarChar(2000)
     overallRating    Int?
 
     selfEvaluationStatus String
-    selfEfficiency       String? @db.VarChar(255)
-    selfCompetency       String? @db.VarChar(255)
-    selfCommitment       String? @db.VarChar(255)
-    selfInitiative       String? @db.VarChar(255)
-    selfRespect          String? @db.VarChar(255)
-    selfLeadership       String? @db.VarChar(255)
-    selfOverall          String? @db.VarChar(255)
+    selfEfficiency       String? @db.VarChar(2000)
+    selfCompetency       String? @db.VarChar(2000)
+    selfCommitment       String? @db.VarChar(2000)
+    selfInitiative       String? @db.VarChar(2000)
+    selfRespect          String? @db.VarChar(2000)
+    selfLeadership       String? @db.VarChar(2000)
+    selfOverall          String? @db.VarChar(2000)
 
     employee   Employees @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
     supervisor Employees @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
@@ -122,15 +122,15 @@ model Evaluator360 {
     evaluatorId       Int
     evaluatorJobTitle String
 
-    questionOne   String? @db.VarChar(255)
+    questionOne   String? @db.VarChar(2000)
     ratingOne     Int?
-    questionTwo   String? @db.VarChar(255)
+    questionTwo   String? @db.VarChar(2000)
     ratingTwo     Int?
-    questionThree String? @db.VarChar(255)
+    questionThree String? @db.VarChar(2000)
     ratingThree   Int?
-    questionFour  String? @db.VarChar(255)
+    questionFour  String? @db.VarChar(2000)
     ratingFour    Int?
-    questionFive  String? @db.VarChar(255)
+    questionFive  String? @db.VarChar(2000)
     ratingFive    Int?
 
     evaluation Evaluation360 @relation(fields: [evaluationId], references: [evaluation360Id], onDelete: Cascade)
@@ -151,16 +151,16 @@ model Objectives {
     updatedAt            DateTime  @updatedAt
     deletedAt            DateTime?
 
-    title              String?             @db.VarChar(255)
-    description        String?             @db.VarChar(255)
-    successConditions  String?             @db.VarChar(255)
-    deadline           String?             @db.VarChar(255)
-    kpi                String?             @db.VarChar(255)
+    title              String?             @db.VarChar(2000)
+    description        String?             @db.VarChar(2000)
+    successConditions  String?             @db.VarChar(2000)
+    deadline           String?             @db.VarChar(2000)
+    kpi                String?             @db.VarChar(2000)
     grade              Int?
-    comment            String?             @db.VarChar(255)
-    selfComment        String?             @db.VarChar(255)
-    midtermSelfComment String?             @db.VarChar(255)
-    midtermComment     String?             @db.VarChar(255)
+    comment            String?             @db.VarChar(2000)
+    selfComment        String?             @db.VarChar(2000)
+    midtermSelfComment String?             @db.VarChar(2000)
+    midtermComment     String?             @db.VarChar(2000)
     employee           Employees           @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
     supervisor         Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
     ObjectiveComment   ObjectiveComments[]
@@ -193,7 +193,7 @@ model Settings {
     settingId Int    @id @default(autoincrement())
     label     String
     name      String @unique
-    value     String @db.VarChar(255)
+    value     String @db.VarChar(2000)
 }
 
 model AccountRecoveries {
