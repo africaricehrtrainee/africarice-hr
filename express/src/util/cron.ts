@@ -17,9 +17,12 @@ export default async function cronJobInit() {
 			)
 		);
 		sendMail({
-			title: "Test Mail",
+			subject: "Test Mail",
 			recipients: ["k.sams@cgiar.org"],
-			context: { content: "This is a test mail." },
+			templateData: {
+				template: "main",
+				context: { content: "This is a test mail." },
+			},
 		});
 	}
 
