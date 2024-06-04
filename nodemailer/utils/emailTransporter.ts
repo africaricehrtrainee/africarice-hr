@@ -19,10 +19,10 @@ transporter.use(
 	hbs({
 		viewEngine: {
 			extname: ".hbs",
-			partialsDir: path.resolve(__dirname, "../templates"),
+			partialsDir: path.resolve(__dirname, "../../templates"),
 			defaultLayout: false,
 		},
-		viewPath: path.resolve(__dirname, "../templates"),
+		viewPath: path.resolve(__dirname, "../../templates"),
 		extName: ".hbs",
 	})
 );
