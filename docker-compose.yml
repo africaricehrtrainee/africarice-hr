@@ -22,7 +22,7 @@ services:
         restart: "always"
         network_mode: "host"
         volumes:
-            - .myapp:/var/lib/rabbitmq
+            - myapp:/var/lib/rabbitmq
         environment:
             RABBITMQ_DEFAULT_USER: user
             RABBITMQ_DEFAULT_PASS: password
@@ -36,6 +36,22 @@ services:
             - ./nodemailer/.env
         depends_on:
             - rabbitmq
+
+    mysql-workbench:
+        image: lscr.io/linuxserver/mysql-workbench:latest
+        container_name: mysql-workbench
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Etc/UTC
+        volumes:
+            - myapp:/config
+        ports:
+            - 3000:3000
+            - 3001:3001
+        cap_add:
+            - IPC_LOCK
+        restart: unless-stopped
 
 volumes:
     myapp:

@@ -10,7 +10,6 @@ import {
 } from "@/app/objectives/[userId]/_store/useStore";
 import axios from "axios";
 import { useToast } from "../../../components/ui/use-toast";
-import Objectives from "../../../app/objectives/[userId]/page";
 import { useQueryState } from "nuqs";
 import { useGetSettings } from "@/features/settings/queries";
 
@@ -110,7 +109,7 @@ function ObjectiveHeaderBar(props: {
     const { toast } = useToast();
 
     const filteredObjectives = props.objectives.filter(
-        (obj) => obj.status !== "cancelled" && obj.status !== "draft"
+        (obj) => obj.status !== "cancelled"
     );
 
     const getReviewStatus = props.user.employeeId == props.employeeId ? (obj: Partial<Objective>) => obj.selfReviewStatus : (obj: Partial<Objective>) => obj.reviewStatus
