@@ -24,7 +24,7 @@ export const sendEmail = async (
 				address: process.env.PUBLIC_ADDRESS,
 			},
 		};
-		await transporter.sendMail(options);
+		return await transporter.sendMail(options);
 	} catch (error) {
 		console.error(error);
 	}

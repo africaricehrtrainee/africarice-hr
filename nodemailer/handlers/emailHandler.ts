@@ -11,7 +11,7 @@ interface EmailMessage {
 export const handleEmailMessage = async (msg: Buffer) => {
 	try {
 		const message: EmailMessage = JSON.parse(msg.toString());
-		await sendEmail(
+		return await sendEmail(
 			message.recipients,
 			message.subject,
 			message.templateData

@@ -13,8 +13,14 @@ const start = async () => {
 		queue,
 		async (msg) => {
 			if (msg !== null) {
-				await handleEmailMessage(msg.content);
-				channel.ack(msg);
+				const response = await handleEmailMessage(msg.content);
+				if (response?.accepted) {
+					console.log(`Email sent to ${response.accepted}`);
+					channel.ack(msg);
+				} else {
+					console.log("Error sending email");
+					channel.nack(msg);
+				}
 			}
 		},
 		{
