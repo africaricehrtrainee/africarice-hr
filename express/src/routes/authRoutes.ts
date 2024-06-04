@@ -171,11 +171,13 @@ router.post("/recovery", async function (req, res) {
 	}
 
 	sendMail({
-		title: "Account recovery",
+		subject: "Account recovery",
 		recipients: [user.email],
-		template: "recovery",
-		context: {
-			recoveryId: recovery.recoveryId,
+		templateData: {
+			template: "recovery",
+			context: {
+				recoveryId: recovery.recoveryId,
+			},
 		},
 	})
 		.then((value) => {

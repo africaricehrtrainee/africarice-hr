@@ -20,10 +20,9 @@ import cors from "cors";
 import { DbService } from "./db-service";
 import employeeDatabaseInit from "./xlsx-service";
 import prisma from "../../prisma/middleware";
-import cronJobInit from "../routes/util/cron";
 import prismaInit from "../../prisma/startup";
 import { Strategy } from "@node-saml/passport-saml";
-import { SAML_CALLBACK, SAML_CERT } from "../../config";
+import cronJobInit from "../util/cron";
 
 export class ExpressServer {
 	private app: Application;
@@ -107,39 +106,39 @@ export class ExpressServer {
 		// Use a custom LocalStrategy for Passport.js authentication
 		passport.use(new LocalStrategy());
 
-		passport.use(
-			"saml",
-			new Strategy(
-				{
-					callbackUrl: SAML_CALLBACK,
-					entryPoint: "http://mocksaml.com/api/saml/sso",
-					issuer: "https://saml.example.com/entityid",
-					idpCert: SAML_CERT,
-				},
+		// passport.use(
+		// 	"saml",
+		// 	new Strategy(
+		// 		{
+		// 			callbackUrl: SAML_CALLBACK,
+		// 			entryPoint: "http://mocksaml.com/api/saml/sso",
+		// 			issuer: "https://saml.example.com/entityid",
+		// 			idpCert: SAML_CERT,
+		// 		},
 
-				function (req, profile, done) {
-					if (!profile) return;
-					prisma.employees
-						.findUnique({
-							where: { email: profile.email },
-						})
-						.then((user) => {
-							if (user) {
-								return done(null, user);
-							}
-						})
-						.catch((err) => {
-							return done(err);
-						});
-				},
+		// 		function (req, profile, done) {
+		// 			if (!profile) return;
+		// 			prisma.employees
+		// 				.findUnique({
+		// 					where: { email: profile.email },
+		// 				})
+		// 				.then((user) => {
+		// 					if (user) {
+		// 						return done(null, user);
+		// 					}
+		// 				})
+		// 				.catch((err) => {
+		// 					return done(err);
+		// 				});
+		// 		},
 
-				function (req, profile, done) {
-					req.logOut(function (error) {
-						if (error) return done(error);
-					});
-				}
-			)
-		);
+		// 		function (req, profile, done) {
+		// 			req.logOut(function (error) {
+		// 				if (error) return done(error);
+		// 			});
+		// 		}
+		// 	)
+		// );
 
 		// Serialize and deserialize user data for session management
 		passport.serializeUser((employee: any, done) =>

@@ -1,39 +1,11 @@
 import cron from "node-cron";
 import chalk from "chalk";
-import sendMail, {
-	mailEvaluationStep,
-	mailNotificationStep,
-} from "../../services/mail-service";
 import { lightFormat } from "date-fns";
+import sendMail from "../services/mail-service";
 // Schedule the task to run every 5 seconds (using a cron expression)
 
 export default async function cronJobInit() {
 	const log = console.log;
-	// Define your task function here
-	function evaluationStepJob() {
-		log(
-			chalk.black.bgGreenBright(
-				`Running evaluation schedule job at ${lightFormat(
-					new Date(),
-					"hh:mm:ss"
-				)}`
-			)
-		);
-		mailEvaluationStep();
-		// Replace this with your actual task logic
-	}
-
-	function evaluationAlertJob() {
-		log(
-			chalk.black.bgGreenBright(
-				`Running evaluation alert job at ${lightFormat(
-					new Date(),
-					"hh:mm:ss"
-				)}`
-			)
-		);
-		mailNotificationStep();
-	}
 
 	function mailTestJob() {
 		log(

@@ -4,7 +4,9 @@ services:
         build: ./next-js
         network_mode: "host"
         env_file:
-            - .env
+            - ./next-js/.env
+        depends_on:
+            - express
 
     express:
         container_name: express
@@ -12,4 +14,28 @@ services:
         restart: "always"
         network_mode: "host"
         env_file:
-            - .env
+            - ./express/.env
+
+    rabbitmq:
+        container_name: rabbitmq
+        image: rabbitmq:3-management
+        restart: "always"
+        network_mode: "host"
+        volumes:
+            - .myapp:/var/lib/rabbitmq
+        environment:
+            RABBITMQ_DEFAULT_USER: user
+            RABBITMQ_DEFAULT_PASS: password
+
+    nodemailer:
+        container_name: nodemailer
+        build: ./nodemailer
+        network_mode: "host"
+        restart: "unless-stopped"
+        env_file:
+            - ./nodemailer/.env
+        depends_on:
+            - rabbitmq
+
+volumes:
+    myapp:

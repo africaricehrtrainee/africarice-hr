@@ -1,120 +1,107 @@
-import { Employees, Prisma, PrismaClient } from "@prisma/client";
-import { computeFinished, computeNotifications } from "../routes/util/utils";
-import chalk from "chalk";
-import transporter from "./mail/lib/handlebars";
 import prisma from "../../prisma/middleware";
+import { computeFinished } from "../util/utils";
+import { publishToQueue } from "../util/rabbitmq";
 
-export default async function sendMail({
-	title,
+export default async function addMailToQueue({
+	subject,
 	recipients,
-	template,
-	context,
+	templateData,
 }: {
-	title?: string;
+	subject?: string;
 	recipients: string[];
-	template?: "main" | "recovery";
-	context: { content: string } | { recoveryId: string };
+	templateData:
+		| { template: "main"; context: { content: string } }
+		| { template: "recovery"; context: { recoveryId: string } };
 }) {
 	try {
-		const options = {
-			from: "AfricaRice HR <AfricaRice-HRTrainee1@cgiar.org>",
-			subject: title ?? "Update from Human Resources",
-			// cc: recipients.join(","),
-			bcc: "AfricaRice-HRTrainee1@cgiar.org",
-			template: template ?? "main",
-			context: {
-				...context,
-				address: process.env.PUBLIC_ADDRESS,
-			},
-		};
-		return transporter.sendMail(options);
+		publishToQueue("emailQueue", { subject, recipients, templateData });
 	} catch (error) {
 		console.log(error);
 	}
 }
 
-export async function mailEvaluationStep() {
-	const employees = await prisma.employees.findMany({
-		select: {
-			employeeId: true,
-			email: true,
-			firstName: true,
-			lastName: true,
-		},
-		orderBy: {
-			lastName: "asc",
-		},
-		where: {
-			email: {
-				not: {
-					startsWith: "A",
-				},
-			},
-		},
-	});
+// export async function mailEvaluationStep() {
+// 	const employees = await prisma.employees.findMany({
+// 		select: {
+// 			employeeId: true,
+// 			email: true,
+// 			firstName: true,
+// 			lastName: true,
+// 		},
+// 		orderBy: {
+// 			lastName: "asc",
+// 		},
+// 		where: {
+// 			email: {
+// 				not: {
+// 					startsWith: "A",
+// 				},
+// 			},
+// 		},
+// 	});
 
-	if (!employees) {
-		console.log("No employees have been found.");
-		return;
-	}
+// 	if (!employees) {
+// 		console.log("No employees have been found.");
+// 		return;
+// 	}
 
-	const getCurrentDate = (): string => new Date().toISOString().split("T")[0];
-	const date = getCurrentDate();
+// 	const getCurrentDate = (): string => new Date().toISOString().split("T")[0];
+// 	const date = getCurrentDate();
 
-	// Fetching all the steps
-	const step = await prisma.steps.findFirst({
-		select: {
-			dateFrom: true,
-			name: true,
-			message: true,
-			stepId: true,
-			sent: true,
-		},
-		where: {
-			dateFrom: {
-				lte: date,
-			},
-		},
-		orderBy: {
-			dateFrom: "desc",
-		},
-	});
+// 	// Fetching all the steps
+// 	const step = await prisma.steps.findFirst({
+// 		select: {
+// 			dateFrom: true,
+// 			name: true,
+// 			message: true,
+// 			stepId: true,
+// 			sent: true,
+// 		},
+// 		where: {
+// 			dateFrom: {
+// 				lte: date,
+// 			},
+// 		},
+// 		orderBy: {
+// 			dateFrom: "desc",
+// 		},
+// 	});
 
-	if (!step) {
-		console.log("No performance step has been found");
-		return;
-	}
+// 	if (!step) {
+// 		console.log("No performance step has been found");
+// 		return;
+// 	}
 
-	console.log("Current evaluation step is: " + `\u001b${step.name}`);
+// 	console.log("Current evaluation step is: " + `\u001b${step.name}`);
 
-	if (step.sent) {
-		console.log("Message has already been sent for this step");
-		return;
-	}
+// 	if (step.sent) {
+// 		console.log("Message has already been sent for this step");
+// 		return;
+// 	}
 
-	const recipients = employees
-		.filter((empl) => empl.email.includes("cgiar.org"))
-		.map((employee) => employee.email);
+// 	const recipients = employees
+// 		.filter((empl) => empl.email.includes("cgiar.org"))
+// 		.map((employee) => employee.email);
 
-	sendMail({
-		context: { content: step.message },
-		recipients,
-	})
-		.then(async () => {
-			console.log("Message sent successfully");
-			await prisma.steps.update({
-				data: {
-					sent: true,
-				},
-				where: {
-					stepId: step.stepId,
-				},
-			});
-		})
-		.catch((err) => {
-			console.log("Message failed to send", err);
-		});
-}
+// 	sendMail({
+// 		context: { content: step.message },
+// 		recipients,
+// 	})
+// 		.then(async () => {
+// 			console.log("Message sent successfully");
+// 			await prisma.steps.update({
+// 				data: {
+// 					sent: true,
+// 				},
+// 				where: {
+// 					stepId: step.stepId,
+// 				},
+// 			});
+// 		})
+// 		.catch((err) => {
+// 			console.log("Message failed to send", err);
+// 		});
+// }
 
 export async function mailNotificationStep() {
 	// Fetching all the employees and the current date
@@ -156,14 +143,19 @@ export async function mailNotificationStep() {
 		return;
 	}
 
-	sendMail({
-		context: {
-			content:
-				"You have not finished all the steps of the evaluation process. Please do so as soon as possible.",
+	addMailToQueue({
+		templateData: {
+			template: "main",
+			context: {
+				content:
+					"You have not finished all the steps of the evaluation process. Please do so as soon as possible.",
+			},
 		},
 		recipients,
 	})
-		.then(() => console.log("Successfully  sent notification mail"))
+		.then(() =>
+			console.log("Successfully added notification mail to queue")
+		)
 		.catch((err) =>
 			console.log("An error occurred sending notification mail", err)
 		);

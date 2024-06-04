@@ -8,9 +8,9 @@ import {
 	SupervisorEvaluationStatus,
 	SupervisorObjectiveStatus,
 	SupervisorStatus,
-} from "../../global";
+} from "../global";
 import { compareAsc } from "date-fns";
-import prisma from "../../../prisma/middleware";
+import prisma from "../../prisma/middleware";
 
 export function keygen(): string {
 	const charset =
