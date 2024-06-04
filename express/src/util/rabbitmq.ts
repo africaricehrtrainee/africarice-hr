@@ -9,7 +9,9 @@ export const publishToQueue = async (queue: string, message: object) => {
 		channel.assertQueue(queue, {
 			durable: true,
 		});
-		channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
+		channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)), {
+			persistent: true,
+		});
 
 		setTimeout(() => {
 			channel.close();
