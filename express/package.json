@@ -48,6 +48,7 @@
 		"xlsx": "^0.18.5"
 	},
 	"devDependencies": {
+		"@types/amqplib": "^0.10.5",
 		"@types/ansi": "^0.3.6",
 		"@types/bcrypt": "^5.0.2",
 		"@types/cookie-parser": "^1.4.6",
