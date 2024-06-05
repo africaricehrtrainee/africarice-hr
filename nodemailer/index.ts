@@ -8,11 +8,15 @@ const start = async () => {
 	channel.assertQueue(queue, {
 		durable: true,
 	});
-
+	channel.prefetch(1);
 	channel.consume(
 		queue,
 		async (msg) => {
 			if (msg !== null) {
+				console.log(
+					"Received enail message queue",
+					msg.properties.userId
+				);
 				const response = await handleEmailMessage(msg.content);
 				if (response?.accepted) {
 					console.log(`Email sent to ${response.accepted}`);

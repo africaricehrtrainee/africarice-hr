@@ -20,6 +20,23 @@ function VideoFrame({ children }: { children: React.ReactNode }) {
 }
 
 export function HelpSection() {
+    const videos: { title: string, src: string, key: string }[] = [
+        {
+            title: "How to create an objective",
+            src: "/videos/objective-creation.webm",
+            key: "objective-creation"
+        },
+        {
+            title: "How to submit my objectives",
+            src: "/videos/objective-submission.webm",
+            key: "objective-submission"
+        },
+        {
+            title: "How to approve/reject an objective",
+            src: "/videos/objective-validation.webm",
+            key: "objective-validation"
+        }
+    ]
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -44,23 +61,19 @@ export function HelpSection() {
                 </DialogHeader>
                 <Tabs defaultValue="account" className="flex items-start justify-between w-full gap-4">
                     <TabsList className="flex flex-col items-start h-fit w-fit">
-                        <TabsTrigger value="objective-creation">How to create an objective</TabsTrigger>
-                        <TabsTrigger value="objective-submission">How to submit my objectives</TabsTrigger>
+                        {videos.map((video, index) => (
+                            <TabsTrigger key={index} value={video.key}>{video.title}</TabsTrigger>
+                        ))}
                     </TabsList>
-                    <TabsContent className="flex justify-end w-full mt-0" value="objective-creation">
-                        <VideoFrame>
-                            <video height="720" width="1280" controls>
-                                <source src="/videos/objective-creation.webm" type="video/webm" />
-                            </video>
-                        </VideoFrame>
-                    </TabsContent>
-                    <TabsContent className="flex justify-end w-full mt-0" value="objective-submission">
-                        <VideoFrame>
-                            <video height="720" width="1280" controls>
-                                <source src="/videos/objective-submission.webm" type="video/webm" />
-                            </video>
-                        </VideoFrame>
-                    </TabsContent>
+                    {videos.map((video, index) => (
+                        <TabsContent key={index} className="flex justify-end w-full mt-0" value={video.key}>
+                            <VideoFrame>
+                                <video height="720" width="1280" controls>
+                                    <source src={video.src} type="video/webm" />
+                                </video>
+                            </VideoFrame>
+                        </TabsContent>
+                    ))}
                 </Tabs>
                 <DialogFooter>
                 </DialogFooter>

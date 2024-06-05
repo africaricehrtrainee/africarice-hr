@@ -27,5 +27,5 @@ export default async function cronJobInit() {
 	}
 
 	// Every 30 minutes run the mail test job using cron
-	cron.schedule("*/30 * * * *", mailTestJob);
+	// cron.schedule("*/30 * * * *", mailTestJob);
 }
