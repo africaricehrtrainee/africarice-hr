@@ -107,10 +107,9 @@ export function xlsxToJsonArray(fileUrl: any): any[] {
 
 			// Mail building
 
-			let email =
-				value["AY"].length > 4
-					? value["AY"].trim()
-					: `${matricule}@cgiar.org`;
+			let email = value["AY"]
+				? value["AY"].trim().toLowerCase()
+				: `${matricule}@cgiar.org`;
 
 			// Job title
 			let jobTitle = "";
