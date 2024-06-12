@@ -1,0 +1,27 @@
+name: Deploy Docker Compose
+
+on:
+  push:
+    branches:
+      - main # Change this to your preferred branch
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Stop existing Docker Compose setup
+      run: |
+        docker-compose down
+
+    - name: Pull latest commit
+      run: |
+        git fetch
+        git checkout main    # Ensure you are on the correct branch
+        git pull origin main # Pull the latest commits
+
+    - name: Rebuild and restart Docker Compose
+      run: |
+        docker-compose up --build -d

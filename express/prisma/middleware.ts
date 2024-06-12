@@ -81,6 +81,7 @@ const objectiveMiddleware: Prisma.Middleware = async (params, next) => {
 					// STAFF_SUBMITTED
 				}
 			}
+
 			if (current.status == "ok" || current.status == "invalid") {
 				// OBJECTIVES_VALIDATED
 

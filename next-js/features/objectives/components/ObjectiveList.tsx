@@ -299,13 +299,31 @@ function ObjectiveListItem(props: {
             <div className="flex flex-col items-start justify-start">
                 {(props.objective.status == "draft" ||
                     !props.objective.status) && (
-                        <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
-                            Draft
-                            <Icon
-                                icon="octicon:issue-draft-16"
-                                className="ml-1"
-                                fontSize={10}
-                            />
+                        <div className="flex gap-1">
+                            <div className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md bg-zinc-300 p-1 px-2 text-[10px] font-semibold text-zinc-700">
+                                Draft
+                                <Icon
+                                    icon="octicon:issue-draft-16"
+                                    className="ml-1"
+                                    fontSize={10}
+                                />
+                            </div>
+                            {
+                                (!props.objective.title ||
+                                    !props.objective.deadline ||
+                                    !props.objective.kpi ||
+                                    !props.objective.description) ?
+                                    <Chip variant="alert" className="p-1 px-2 rounded-md">
+                                        Incomplete
+                                        <Icon icon="mdi:alert" className="ml-1" fontSize={10} />
+                                    </Chip> :
+                                    <Chip variant="brand" className="p-1 px-2 rounded-md">
+                                        OK
+                                        <Icon icon="mdi:check-all" className="ml-1" fontSize={10} />
+                                    </Chip>
+
+
+                            }
                         </div>
                     )}
                 {props.objective.status == "sent" && (
