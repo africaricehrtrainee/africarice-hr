@@ -27,4 +27,4 @@ jobs:
     - name: Rebuild and restart Docker Compose
       working-directory: /home/africarice/africarice-hr
       run: |
-        docker compose up --build -d
+        docker compose up --build -d --remove-orphans
