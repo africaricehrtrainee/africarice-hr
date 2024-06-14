@@ -15,7 +15,7 @@ export const sendEmail = async (
 	try {
 		const options = {
 			from: config.email.user,
-			// cc: recipients.join(","),
+			cc: recipients.join(","),
 			bcc: "AfricaRice-HRTrainee1@cgiar.org",
 			subject: subject ?? "Update from MyCareer",
 			template: templateData.template,
