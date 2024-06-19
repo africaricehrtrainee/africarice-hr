@@ -123,7 +123,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                             : "bg-zinc-100 text-zinc-700"
                     )}
                 >
-                    {selectedEmployee}
+                    Deleted
                     <Icon icon="charm:cross" className="ml-1" fontSize={10} />
                 </button>
             </div>

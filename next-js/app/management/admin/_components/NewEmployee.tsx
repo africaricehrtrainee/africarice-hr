@@ -37,7 +37,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
             email,
             supervisorId: supervisorId ?? undefined,
             role,
-            password: 1234,
+            password: "1234",
             jobTitle,
         };
         axios
