@@ -77,29 +77,29 @@ model Evaluations {
     updatedAt DateTime @updatedAt
     createdAt DateTime @default(now())
 
-    efficiency       String? @db.VarChar(2000)
+    efficiency       String? @db.Text
     efficiencyRating Int?
-    competency       String? @db.VarChar(2000)
+    competency       String? @db.Text
     competencyRating Int?
-    commitment       String? @db.VarChar(2000)
+    commitment       String? @db.Text
     commitmentRating Int?
-    initiative       String? @db.VarChar(2000)
+    initiative       String? @db.Text
     initiativeRating Int?
-    respect          String? @db.VarChar(2000)
+    respect          String? @db.Text
     respectRating    Int?
-    leadership       String? @db.VarChar(2000)
+    leadership       String? @db.Text
     leadershipRating Int?
-    overall          String? @db.VarChar(2000)
+    overall          String? @db.Text
     overallRating    Int?
 
     selfEvaluationStatus String
-    selfEfficiency       String? @db.VarChar(2000)
-    selfCompetency       String? @db.VarChar(2000)
-    selfCommitment       String? @db.VarChar(2000)
-    selfInitiative       String? @db.VarChar(2000)
-    selfRespect          String? @db.VarChar(2000)
-    selfLeadership       String? @db.VarChar(2000)
-    selfOverall          String? @db.VarChar(2000)
+    selfEfficiency       String? @db.Text
+    selfCompetency       String? @db.Text
+    selfCommitment       String? @db.Text
+    selfInitiative       String? @db.Text
+    selfRespect          String? @db.Text
+    selfLeadership       String? @db.Text
+    selfOverall          String? @db.Text
 
     employee   Employees @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
     supervisor Employees @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
@@ -122,15 +122,15 @@ model Evaluator360 {
     evaluatorId       Int
     evaluatorJobTitle String
 
-    questionOne   String? @db.VarChar(2000)
+    questionOne   String? @db.Text
     ratingOne     Int?
-    questionTwo   String? @db.VarChar(2000)
+    questionTwo   String? @db.Text
     ratingTwo     Int?
-    questionThree String? @db.VarChar(2000)
-    ratingThree   Int?
-    questionFour  String? @db.VarChar(2000)
+    questionThree String? @db.Text
+    ratingThree   Int
+    questionFour  String? @db.Text
     ratingFour    Int?
-    questionFive  String? @db.VarChar(2000)
+    questionFive  String? @db.Text
     ratingFive    Int?
 
     evaluation Evaluation360 @relation(fields: [evaluationId], references: [evaluation360Id], onDelete: Cascade)
@@ -151,16 +151,16 @@ model Objectives {
     updatedAt            DateTime  @updatedAt
     deletedAt            DateTime?
 
-    title              String?             @db.VarChar(2000)
-    description        String?             @db.VarChar(2000)
-    successConditions  String?             @db.VarChar(2000)
-    deadline           String?             @db.VarChar(2000)
-    kpi                String?             @db.VarChar(2000)
+    title              String?
+    description        String?             @db.Text
+    successConditions  String?             @db.Text
+    deadline           String?             @db.Text
+    kpi                String?             @db.Text
     grade              Int?
-    comment            String?             @db.VarChar(2000)
-    selfComment        String?             @db.VarChar(2000)
-    midtermSelfComment String?             @db.VarChar(2000)
-    midtermComment     String?             @db.VarChar(2000)
+    comment            String?             @db.Text
+    selfComment        String?             @db.Text
+    midtermSelfComment String?             @db.Text
+    midtermComment     String?             @db.Text
     employee           Employees           @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
     supervisor         Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: Cascade)
     ObjectiveComment   ObjectiveComments[]
@@ -193,7 +193,7 @@ model Settings {
     settingId Int    @id @default(autoincrement())
     label     String
     name      String @unique
-    value     String @db.VarChar(2000)
+    value     String @db.Text
 }
 
 model AccountRecoveries {

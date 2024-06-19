@@ -35,9 +35,9 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
             firstName,
             lastName: lastName?.toUpperCase() ?? null,
             email,
-            supervisorId : supervisorId ?? undefined,
+            supervisorId: supervisorId ?? undefined,
             role,
-            password: email.split("@")[0],
+            password: 1234,
             jobTitle,
         };
         axios

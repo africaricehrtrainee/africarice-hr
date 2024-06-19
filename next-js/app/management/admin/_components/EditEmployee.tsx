@@ -1,9 +1,10 @@
+"use client"
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState, useRef } from "react";
 import Button from "../../../../components/ui/Button";
 import axios from "axios";
 import { cn } from "@/util/utils";
-import LoadingBar from "react-top-loading-bar";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ProfileEditorProps {
     selectedEmployee?: Employee;
@@ -20,6 +21,7 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
     const [role, setRole] = useState<"admin" | "hr" | "staff" | "consultant">(
         "staff"
     );
+    const { toast } = useToast();
 
     function handleUpdate(e: React.SyntheticEvent) {
         {
@@ -32,8 +34,8 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                 axios
                     .patch(
                         process.env.NEXT_PUBLIC_API_URL +
-                            "/api/employees/" +
-                            selectedEmployee.employeeId,
+                        "/api/employees/" +
+                        selectedEmployee.employeeId,
                         {
                             email,
                             firstName,
@@ -43,9 +45,16 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                         }
                     )
                     .then((response) =>
-                        response.status == 200
-                            ? alert("Successfully updated user.")
-                            : alert("An error occurred.")
+                        response.status == 200 ?
+                            toast({
+                                title: "Profile Updated",
+                                description: "Successfully updated the profile.",
+                            }) :
+                            toast({
+                                title: "Error",
+                                description: "An error occurred while updating the profile.",
+                                variant: "destructive"
+                            })
                     )
                     .catch((err) => console.log(err))
                     .finally(() => {
@@ -61,8 +70,8 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                 axios
                     .patch(
                         process.env.NEXT_PUBLIC_API_URL +
-                            "/api/employees/" +
-                            employeeId,
+                        "/api/employees/" +
+                        employeeId,
                         {
                             deletedAt: null,
                         }
@@ -80,8 +89,8 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                 axios
                     .delete(
                         process.env.NEXT_PUBLIC_API_URL +
-                            "/api/employees/" +
-                            employeeId
+                        "/api/employees/" +
+                        employeeId
                     )
                     .then((response) =>
                         response.status == 201
@@ -293,13 +302,13 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                                     supervisorId,
                                     role,
                                 ]) !==
-                                    JSON.stringify([
-                                        selectedEmployee.firstName ?? "",
-                                        selectedEmployee.lastName ?? "",
-                                        selectedEmployee.email,
-                                        selectedEmployee.supervisorId ?? "",
-                                        selectedEmployee.role ?? "staff",
-                                    ])
+                                JSON.stringify([
+                                    selectedEmployee.firstName ?? "",
+                                    selectedEmployee.lastName ?? "",
+                                    selectedEmployee.email,
+                                    selectedEmployee.supervisorId ?? "",
+                                    selectedEmployee.role ?? "staff",
+                                ])
                             )
                         }
                         variant="primary"

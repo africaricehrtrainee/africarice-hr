@@ -93,7 +93,7 @@ export class ExpressServer {
 		//  Configure session management with Express session
 		this.app.use(
 			session({
-				secret: "your-secret-key", // Secret key for session management
+				secret: "@rc1999_secret", // Secret key for session management
 				resave: false,
 				saveUninitialized: false,
 				cookie: { maxAge: 3600000, secure: false }, // Session cookie settings

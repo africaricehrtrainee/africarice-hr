@@ -23,16 +23,16 @@ export default function Dashboard() {
 
     return (
         <main className="flex min-h-screen flex-col items-start justify-start p-8">
-            <div className="flex h-[550px] w-full gap-4 transition-all">
+            <div className="flex h-[800px] w-full gap-4 transition-all">
                 <EmployeeList
                     fetch={fetch}
-                    employees={employees}
+                    employees={employees.sort((a, b) => a.lastName.localeCompare(b.lastName))}
                     setSelectedEmployee={setSelectedEmployee}
                     selectedEmployee={selectedEmployee}
                 />
                 {selectedEmployee !== -1 && (
                     <EditEmployee
-                        selectedEmployee={employees[selectedEmployee]}
+                        selectedEmployee={employees.find((e) => e.employeeId === selectedEmployee) as Employee}
                         fetch={fetch}
                     />
                 )}

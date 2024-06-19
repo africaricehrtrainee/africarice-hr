@@ -39,7 +39,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                     Staff accounts
                 </p>
                 <div className="flex gap-2">
-                    {/* <Button
+                    <Button
                         variant="outline"
                         onClick={() => setShowModal(true)}
                     >
@@ -50,18 +50,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                             fontSize={14}
                         />
                     </Button>
-                    <Button
-                        className=""
-                        onClick={() => {}}
-                        variant="alternateOutline"
-                    >
-                        Upload filesheet
-                        <Icon
-                            icon="mingcute:upload-3-fill"
-                            className="ml-1"
-                            fontSize={16}
-                        />
-                    </Button> */}
+
+
                 </div>
                 <Modal show={showModal} onClose={() => setShowModal(false)}>
                     <EmployeeForm
@@ -133,7 +123,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                             : "bg-zinc-100 text-zinc-700"
                     )}
                 >
-                    Deleted
+                    {selectedEmployee}
                     <Icon icon="charm:cross" className="ml-1" fontSize={10} />
                 </button>
             </div>
@@ -141,7 +131,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                 {employees
                     .filter((employee) => {
                         let fil;
-                        switch(filter) {
+                        switch (filter) {
                             case "hr":
                                 fil = employee.role == "hr";
                                 break;
@@ -178,15 +168,14 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                 onClick={() => {
                                     selectedEmployee == i
                                         ? setSelectedEmployee(-1)
-                                        : setSelectedEmployee(i);
+                                        : setSelectedEmployee(employee.employeeId);
                                 }}
                                 className={cn(
                                     "grid grid-cols-6 w-full relative items-center justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50 ",
                                     `${employee.deletedAt && "opacity-50"}`,
-                                    `${
-                                        i == selectedEmployee
-                                            ? "bg-zinc-50 opacity-100 hover:bg-zinc-50 border-l-4 border-l-brand"
-                                            : ""
+                                    `${i == selectedEmployee
+                                        ? "bg-zinc-50 opacity-100 hover:bg-zinc-50 border-l-4 border-l-brand"
+                                        : ""
                                     }`
                                 )}
                                 key={i}
@@ -244,16 +233,16 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                     <p className="max-w-[150px] truncate text-xs font-medium text-zinc-700">
                                         {employee.supervisorId
                                             ? employees.find(
-                                                  (list) =>
-                                                      list.employeeId ==
-                                                      employee.supervisorId
-                                              )?.lastName +
-                                              " " +
-                                              employees.find(
-                                                  (list) =>
-                                                      list.employeeId ==
-                                                      employee.supervisorId
-                                              )?.firstName
+                                                (list) =>
+                                                    list.employeeId ==
+                                                    employee.supervisorId
+                                            )?.lastName +
+                                            " " +
+                                            employees.find(
+                                                (list) =>
+                                                    list.employeeId ==
+                                                    employee.supervisorId
+                                            )?.firstName
                                             : "N/A"}
                                     </p>
                                 </div>
