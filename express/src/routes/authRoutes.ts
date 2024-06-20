@@ -27,10 +27,10 @@ router.post(
 	}
 );
 
-router.post(
+router.get(
 	"/callback",
 	bodyParser.urlencoded({ extended: false }),
-	passport.authenticate("saml", {
+	passport.authenticate("oauth2", {
 		failureRedirect: "/",
 		failureFlash: true,
 	}),
@@ -39,9 +39,7 @@ router.post(
 	}
 );
 
-router.get("/saml", passport.authenticate("saml"), function (req, res) {
-	res.redirect("/");
-});
+router.get("/login/oauth2", passport.authenticate("oauth2"));
 
 // Route to change password
 router.put("/password-change", function (req, res) {

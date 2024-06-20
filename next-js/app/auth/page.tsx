@@ -125,9 +125,9 @@ export default function Home() {
                             Login
                             <Icon icon="akar-icons:arrow-right" className="w-4 h-4 ml-1" />
                         </Button>
-                        {/* <Button type="button" variant="outline" onClick={
+                        <Button type="button" variant="outline" onClick={
                             async () => {
-                                fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/saml`, {
+                                fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/oauth2`, {
                                     method: "GET",
                                     redirect: "follow",
                                 }).then((response) => {
@@ -136,7 +136,7 @@ export default function Home() {
                             }}>
                             Login as CGIAR
                             <Icon icon="ri:building-line" className="w-4 h-4 ml-1" />
-                        </Button> */}
+                        </Button>
                         <Link href="auth/recovery" className="text-xs text-muted-foreground underline underline-offset-2">Forgot your password ?</Link>
                     </div>
                 </form>

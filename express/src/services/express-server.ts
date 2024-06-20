@@ -21,8 +21,8 @@ import { DbService } from "./db-service";
 import employeeDatabaseInit from "./xlsx-service";
 import prisma from "../../prisma/middleware";
 import prismaInit from "../../prisma/startup";
-import { Strategy } from "@node-saml/passport-saml";
 import cronJobInit from "../util/cron";
+import Strategy from "passport-oauth2";
 
 export class ExpressServer {
 	private app: Application;
@@ -107,40 +107,27 @@ export class ExpressServer {
 		// Use a custom LocalStrategy for Passport.js authentication
 		passport.use(new LocalStrategy());
 
-		// passport.use(
-		// 	"saml",
-		// 	new Strategy(
-		// 		{
-		// 			callbackUrl: SAML_CALLBACK,
-		// 			entryPoint: "http://mocksaml.com/api/saml/sso",
-		// 			issuer: "https://saml.example.com/entityid",
-		// 			idpCert: SAML_CERT,
-		// 		},
-
-		// 		function (req, profile, done) {
-		// 			if (!profile) return;
-		// 			prisma.employees
-		// 				.findUnique({
-		// 					where: { email: profile.email },
-		// 				})
-		// 				.then((user) => {
-		// 					if (user) {
-		// 						return done(null, user);
-		// 					}
-		// 				})
-		// 				.catch((err) => {
-		// 					return done(err);
-		// 				});
-		// 		},
-
-		// 		function (req, profile, done) {
-		// 			req.logOut(function (error) {
-		// 				if (error) return done(error);
-		// 			});
-		// 		}
-		// 	)
-		// );
-
+		passport.use(
+			"oauth2",
+			new Strategy(
+				{
+					authorizationURL:
+						"https://accounts.google.com/o/oauth2/v2/auth",
+					clientID:
+						"979161779144-0tpt0jib18l1vv1p1odlo7b8u8obq7tf.apps.googleusercontent.com",
+					clientSecret: "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",
+					tokenURL: "https://accounts.google.com/o/oauth2/token",
+					callbackURL:
+						"https://mycareer.africarice.org/api/auth/callback",
+					scope: ["email", "profile"],
+				},
+				//@ts-ignore
+				function (accessToken, refreshToken, profile, cb) {
+					console.log("Profile is", profile);
+					return cb(profile);
+				}
+			)
+		);
 		// Serialize and deserialize user data for session management
 		passport.serializeUser((employee: any, done) =>
 			done(null, employee.employeeId)
