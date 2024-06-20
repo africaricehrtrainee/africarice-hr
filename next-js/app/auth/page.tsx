@@ -130,6 +130,7 @@ export default function Home() {
                                 fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/oauth2`, {
                                     method: "GET",
                                     redirect: "follow",
+                                    mode: 'no-cors'
                                 }).then((response) => {
                                     console.log(response)
                                 }).catch(err => console.log('error from ajax', err))
