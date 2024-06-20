@@ -73,7 +73,7 @@ export class ExpressServer {
 				credentials: true,
 				origin: function (origin, callback) {
 					console.log("Origin is", origin);
-					if (origin && whitelist.indexOf(origin) !== -1) {
+					if (!origin || whitelist.indexOf(origin) !== -1) {
 						callback(null, true);
 					} else {
 						callback(new Error("Not allowed by CORS"));
