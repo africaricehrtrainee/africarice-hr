@@ -120,10 +120,12 @@ export class ExpressServer {
 					callbackURL:
 						"https://mycareer.africarice.org/api/auth/callback",
 					scope: ["email", "profile"],
+					passReqToCallback: true,
 				},
 				//@ts-ignore
 				function (accessToken, refreshToken, profile, cb) {
 					console.log("Profile is", profile);
+					console.log("Access token is", accessToken);
 					return cb(profile);
 				}
 			)
