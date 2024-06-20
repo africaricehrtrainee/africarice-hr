@@ -171,7 +171,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                         : setSelectedEmployee(employee.employeeId);
                                 }}
                                 className={cn(
-                                    "grid grid-cols-6 w-full relative items-center justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50 ",
+                                    "grid grid-cols-7 w-full relative items-center justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50 ",
                                     `${employee.deletedAt && "opacity-50"}`,
                                     `${i == selectedEmployee
                                         ? "bg-zinc-50 opacity-100 hover:bg-zinc-50 border-l-4 border-l-brand"
@@ -180,6 +180,21 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                 )}
                                 key={i}
                             >
+                                <div className="flex flex-col items-start justify-center">
+                                    <p className="text-[8px] font-medium text-zinc-300">
+                                        RESNO
+                                    </p>
+                                    <p
+                                        className={cn(
+                                            "text-xs text-zinc-700 max-w-[150px] truncate font-mono",
+                                            selectedEmployee == i
+                                                ? "font-bold"
+                                                : "font-medium"
+                                        )}
+                                    >
+                                        {employee.matricule ?? "N/A"}
+                                    </p>
+                                </div>
                                 <div className="flex flex-col items-start justify-center">
                                     <p className="text-[8px] font-medium text-zinc-300">
                                         EMPLOYEE ID

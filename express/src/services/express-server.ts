@@ -59,8 +59,7 @@ export class ExpressServer {
 		var whitelist = [
 			"http://localhost",
 			"http://localhost:3000",
-			"http://10.225.100.30",
-			"http://10.225.100.33",
+			"https://10.225.100.33",
 			"http://127.0.0.1",
 			"https://mycareer.africarice.org",
 			"http://mycareer.africarice.org",

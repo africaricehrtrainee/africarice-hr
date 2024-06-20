@@ -5,6 +5,7 @@ import Button from "../../../../components/ui/Button";
 import axios from "axios";
 import { cn } from "@/util/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/Input";
 
 interface ProfileEditorProps {
     selectedEmployee?: Employee;
@@ -17,6 +18,7 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
     const [firstName, setFirstName] = useState<string | null>(null);
     const [lastName, setLastName] = useState<string | null>(null);
     const [email, setEmail] = useState<string | null>(null);
+    const [matricule, setMatricule] = useState<string | null>(null);
     const [supervisorId, setSupervisorId] = useState<number | null>(null);
     const [role, setRole] = useState<"admin" | "hr" | "staff" | "consultant">(
         "staff"
@@ -42,6 +44,7 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                             lastName: lastName?.toUpperCase(),
                             supervisorId,
                             role,
+                            matricule
                         }
                     )
                     .then((response) =>
@@ -112,11 +115,13 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
             setEmail(selectedEmployee.email);
             setSupervisorId(selectedEmployee.supervisorId);
             setRole(selectedEmployee.role);
+            setMatricule(selectedEmployee.matricule);
         } else {
             setFirstName(null);
             setLastName(null);
             setEmail(null);
             setSupervisorId(null);
+            setMatricule(null);
             setRole("staff");
         }
     }, [selectedEmployee]);
@@ -186,12 +191,12 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                     <label className="text-[8px] font-medium text-zinc-300">
                         FIRST NAME
                     </label>
-                    <input
+                    <Input
                         autoCorrect="off"
                         spellCheck="false"
                         type="text"
                         value={firstName ?? ""}
-                        onChange={(e) => setFirstName(e.target.value)}
+                        onChange={(e) => setFirstName(e.currentTarget.value)}
                         placeholder="Enter the first name"
                         className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                     />
@@ -200,12 +205,12 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                     <label className="text-[8px] font-medium text-zinc-300">
                         LAST NAME
                     </label>
-                    <input
+                    <Input
                         autoCorrect="off"
                         spellCheck="false"
                         type="text"
                         value={lastName ?? ""}
-                        onChange={(e) => setLastName(e.target.value)}
+                        onChange={(e) => setLastName(e.currentTarget.value)}
                         placeholder="Enter the last name"
                         className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                     />
@@ -214,14 +219,30 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                     <label className="text-[8px] font-medium text-zinc-300">
                         EMAIL ADDRESS
                     </label>
-                    <input
+                    <Input
                         autoCorrect="off"
                         spellCheck="false"
                         type="email"
                         required
                         value={email ?? ""}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setEmail(e.currentTarget.value)}
                         placeholder="Enter the email address"
+                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                    />
+                </div>
+                <div className="mt-4 flex w-full flex-col justify-start gap-1">
+                    <label className="text-[8px] font-medium text-zinc-300">
+                        RESNO
+                    </label>
+                    <Input
+                        autoCorrect="off"
+                        spellCheck="false"
+                        type="text"
+                        value={matricule ?? ""}
+                        onChange={(e) =>
+                            setMatricule(e.currentTarget.value)
+                        }
+                        placeholder="Enter the resno"
                         className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                     />
                 </div>
@@ -229,13 +250,13 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                     <label className="text-[8px] font-medium text-zinc-300">
                         SUPERVISOR ID NUMBER
                     </label>
-                    <input
+                    <Input
                         autoCorrect="off"
                         spellCheck="false"
                         type="number"
                         value={supervisorId ?? ""}
                         onChange={(e) =>
-                            setSupervisorId(parseInt(e.target.value))
+                            setSupervisorId(parseInt(e.currentTarget.value))
                         }
                         placeholder="Enter the id number"
                         className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
@@ -301,6 +322,7 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                                     email,
                                     supervisorId,
                                     role,
+                                    matricule
                                 ]) !==
                                 JSON.stringify([
                                     selectedEmployee.firstName ?? "",
@@ -308,6 +330,7 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                                     selectedEmployee.email,
                                     selectedEmployee.supervisorId ?? "",
                                     selectedEmployee.role ?? "staff",
+                                    selectedEmployee.matricule ?? ""
                                 ])
                             )
                         }
