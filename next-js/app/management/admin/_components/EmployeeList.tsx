@@ -150,16 +150,19 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                             fil &&
                             (employee.firstName
                                 ?.toLowerCase()
-                                .includes(search) ||
+                                .includes(search.toLowerCase()) ||
                                 employee.lastName
                                     ?.toLowerCase()
-                                    .includes(search) ||
+                                    .includes(search.toLowerCase()) ||
                                 employee.email
                                     ?.toLowerCase()
-                                    .includes(search) ||
+                                    .includes(search.toLowerCase()) ||
                                 employee.matricule
                                     ?.toLowerCase()
-                                    .includes(search))
+                                    .includes(search.toLowerCase())) ||
+                            employee.jobTitle
+                                ?.toLowerCase()
+                                .includes(search.toLowerCase())
                         );
                     })
                     .map((employee, i) => {

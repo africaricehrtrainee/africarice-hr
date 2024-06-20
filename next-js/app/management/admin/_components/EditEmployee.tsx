@@ -6,6 +6,7 @@ import axios from "axios";
 import { cn } from "@/util/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/Input";
+import { set } from "date-fns";
 
 interface ProfileEditorProps {
     selectedEmployee?: Employee;
@@ -18,11 +19,13 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
     const [firstName, setFirstName] = useState<string | null>(null);
     const [lastName, setLastName] = useState<string | null>(null);
     const [email, setEmail] = useState<string | null>(null);
+    const [jobTitle, setJobTitle] = useState<string | null>(null);
     const [matricule, setMatricule] = useState<string | null>(null);
     const [supervisorId, setSupervisorId] = useState<number | null>(null);
     const [role, setRole] = useState<"admin" | "hr" | "staff" | "consultant">(
         "staff"
     );
+
     const { toast } = useToast();
 
     function handleUpdate(e: React.SyntheticEvent) {
@@ -44,7 +47,8 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                             lastName: lastName?.toUpperCase(),
                             supervisorId,
                             role,
-                            matricule
+                            matricule,
+                            jobTitle
                         }
                     )
                     .then((response) =>
@@ -116,12 +120,14 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
             setSupervisorId(selectedEmployee.supervisorId);
             setRole(selectedEmployee.role);
             setMatricule(selectedEmployee.matricule);
+            setJobTitle(selectedEmployee.jobTitle);
         } else {
             setFirstName(null);
             setLastName(null);
             setEmail(null);
             setSupervisorId(null);
             setMatricule(null);
+            setJobTitle(null);
             setRole("staff");
         }
     }, [selectedEmployee]);
@@ -232,6 +238,22 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                 </div>
                 <div className="mt-4 flex w-full flex-col justify-start gap-1">
                     <label className="text-[8px] font-medium text-zinc-300">
+                        JOB TITLE
+                    </label>
+                    <Input
+                        autoCorrect="off"
+                        spellCheck="false"
+                        type="text"
+                        value={jobTitle ?? ""}
+                        onChange={(e) =>
+                            setJobTitle(e.currentTarget.value)
+                        }
+                        placeholder="Enter the resno"
+                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                    />
+                </div>
+                <div className="mt-4 flex w-full flex-col justify-start gap-1">
+                    <label className="text-[8px] font-medium text-zinc-300">
                         RESNO
                     </label>
                     <Input
@@ -322,7 +344,8 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                                     email,
                                     supervisorId,
                                     role,
-                                    matricule
+                                    matricule,
+                                    jobTitle
                                 ]) !==
                                 JSON.stringify([
                                     selectedEmployee.firstName ?? "",
@@ -330,7 +353,8 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                                     selectedEmployee.email,
                                     selectedEmployee.supervisorId ?? "",
                                     selectedEmployee.role ?? "staff",
-                                    selectedEmployee.matricule ?? ""
+                                    selectedEmployee.matricule ?? "",
+                                    selectedEmployee.jobTitle ?? ""
                                 ])
                             )
                         }

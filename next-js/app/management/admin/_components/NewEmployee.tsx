@@ -24,6 +24,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
     const [lastName, setLastName] = useState<string | null>(null);
     const [email, setEmail] = useState<string>("");
     const [supervisorId, setSupervisorId] = useState<number | null>(null);
+    const [matricule, setMatricule] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [role, setRole] = useState<"hr" | "staff" | "admin">("staff");
     const [jobTitle, setJobTitle] = useState<string>("");
@@ -35,6 +36,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
             firstName,
             lastName: lastName?.toUpperCase() ?? null,
             email,
+            matricule,
             supervisorId: supervisorId ?? undefined,
             role,
             password: "1234",
@@ -61,6 +63,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
                 setLastName(null);
                 setEmail("");
                 setSupervisorId(null);
+                setMatricule("");
             });
     };
 
@@ -141,6 +144,22 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
                             setJobTitle(e.target.value)
                         }
                         placeholder="Enter the job title"
+                        className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
+                    />
+                </div>
+                <div className="mt-4 flex w-full flex-col justify-start gap-1">
+                    <label className="text-[8px] font-medium text-zinc-300">
+                        RESNO
+                    </label>
+                    <input
+                        autoCorrect="off"
+                        spellCheck="false"
+                        type="text"
+                        value={matricule ?? ""}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setMatricule(e.target.value)
+                        }
+                        placeholder="Enter the resno"
                         className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
                     />
                 </div>
