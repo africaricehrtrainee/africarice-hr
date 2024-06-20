@@ -168,16 +168,16 @@ export class ExpressServer {
 
 	private configureRoutes(): void {
 		// Define and use various API routes
-		this.app.use("/employees", employeesRoutes);
-		this.app.use("/comments", commentsRoutes);
-		this.app.use("/evaluations", evaluationsRoutes);
-		this.app.use("/evaluation360", evaluation360Routes);
-		this.app.use("/evaluator360", evaluator360Routes);
-		this.app.use("/objectives", objectivesRoutes);
-		this.app.use("/steps", stepsRoutes);
-		this.app.use("/reports", reportsRoutes);
-		this.app.use("/settings", settingsRoutes);
-		this.app.use("/auth", authRoutes);
+		this.app.use("/api/employees", employeesRoutes);
+		this.app.use("/api/comments", commentsRoutes);
+		this.app.use("/api/evaluations", evaluationsRoutes);
+		this.app.use("/api/evaluation360", evaluation360Routes);
+		this.app.use("/api/evaluator360", evaluator360Routes);
+		this.app.use("/api/objectives", objectivesRoutes);
+		this.app.use("/api/steps", stepsRoutes);
+		this.app.use("/api/reports", reportsRoutes);
+		this.app.use("/api/settings", settingsRoutes);
+		this.app.use("/api/auth", authRoutes);
 	}
 
 	public start(): void {
