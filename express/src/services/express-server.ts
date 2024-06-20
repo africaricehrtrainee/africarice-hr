@@ -23,6 +23,7 @@ import prisma from "../../prisma/middleware";
 import prismaInit from "../../prisma/startup";
 import cronJobInit from "../util/cron";
 import Strategy from "passport-oauth2";
+import config from "../../config";
 
 export class ExpressServer {
 	private app: Application;
@@ -113,9 +114,8 @@ export class ExpressServer {
 				{
 					authorizationURL:
 						"https://accounts.google.com/o/oauth2/v2/auth",
-					clientID:
-						"979161779144-0tpt0jib18l1vv1p1odlo7b8u8obq7tf.apps.googleusercontent.com",
-					clientSecret: "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",
+					clientID: config.oauthClientId,
+					clientSecret: config.oauthClientSecret,
 					tokenURL: "https://accounts.google.com/o/oauth2/token",
 					callbackURL:
 						"https://mycareer.africarice.org/api/auth/callback",
