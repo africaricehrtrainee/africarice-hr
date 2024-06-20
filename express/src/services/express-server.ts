@@ -22,7 +22,7 @@ import employeeDatabaseInit from "./xlsx-service";
 import prisma from "../../prisma/middleware";
 import prismaInit from "../../prisma/startup";
 import cronJobInit from "../util/cron";
-import Strategy from "passport-oauth2";
+import Strategy, { VerifyFunctionWithRequest } from "passport-oauth2";
 import config from "../../config";
 
 export class ExpressServer {
@@ -122,11 +122,9 @@ export class ExpressServer {
 					scope: ["email", "profile"],
 					passReqToCallback: true,
 				},
-				//@ts-ignore
-				function (accessToken, refreshToken, profile, cb) {
-					console.log("Profile is", profile);
-					console.log("Access token is", accessToken);
-					return cb(profile);
+				function (req, accessToken, refreshToken, profile, verified) {
+					console.log(profile);
+					verified(null, profile);
 				}
 			)
 		);
