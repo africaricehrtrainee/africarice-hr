@@ -127,7 +127,7 @@ export default function Home() {
                         </Button>
                         <Button type="button" variant="outline" onClick={
                             async () => {
-                                fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/oauth2`, {
+                                fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/saml`, {
                                     method: "GET",
                                     redirect: "follow",
                                     mode: 'no-cors'
