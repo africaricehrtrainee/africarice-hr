@@ -115,28 +115,36 @@ export class ExpressServer {
 					idpCert: config.saml.idpCert,
 					issuer: config.saml.issuer,
 					entryPoint: config.saml.entryPoint,
+					passReqToCallback: true,
 				},
 				function (req, profile, done) {
-					if (!profile) return done(new Error("No profile found"));
-					prisma.employees
-						.findUnique({
-							where: {
-								email: profile.email,
-							},
-						})
-						.then((employee) => {
-							if (employee) {
-								return done(null, employee);
-							} else {
-								return done(new Error("No account found"));
-							}
-						});
-				},
-				function (req, profile, done) {
-					if (!profile) {
-						return done(new Error("No profile found"));
+					try {
+						if (!profile)
+							return done(new Error("No profile found"));
+						prisma.employees
+							.findFirst({
+								where: {
+									email: profile.email,
+								},
+							})
+							.then((employee) => {
+								if (employee) {
+									return done(null, employee);
+								} else {
+									return done(new Error("No account found"));
+								}
+							});
+					} catch (error) {
+						console.log(error);
 					}
-					done(null, profile);
+				},
+				function (req, profile, done) {
+					try {
+						if (!profile) {
+							return done(new Error("No profile found"));
+						}
+						done(null, profile);
+					} catch (error) {}
 				}
 			)
 		);
