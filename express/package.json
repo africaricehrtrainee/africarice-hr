@@ -43,7 +43,6 @@
 		"passport": "^0.6.0",
 		"passport-local": "^1.0.0",
 		"passport-oauth2": "^1.8.0",
-		"passport-saml": "^3.2.4",
 		"sql-template-tag": "^5.2.0",
 		"string-similarity": "^4.0.4",
 		"xlsx": "^0.18.5"

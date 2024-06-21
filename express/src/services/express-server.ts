@@ -22,7 +22,7 @@ import employeeDatabaseInit from "./xlsx-service";
 import prisma from "../../prisma/middleware";
 import prismaInit from "../../prisma/startup";
 import cronJobInit from "../util/cron";
-import Strategy, { VerifyFunctionWithRequest } from "passport-oauth2";
+import { Strategy } from "@node-saml/passport-saml";
 import config from "../../config";
 
 export class ExpressServer {
@@ -109,22 +109,22 @@ export class ExpressServer {
 		passport.use(new LocalStrategy());
 
 		passport.use(
-			"oauth2",
+			"saml",
 			new Strategy(
 				{
-					authorizationURL:
-						"https://accounts.google.com/o/oauth2/v2/auth",
-					clientID: config.oauthClientId,
-					clientSecret: config.oauthClientSecret,
-					tokenURL: "https://accounts.google.com/o/oauth2/token",
-					callbackURL:
-						"https://mycareer.africarice.org/api/auth/callback",
-					scope: ["email", "profile"],
-					passReqToCallback: true,
+					callbackUrl: config.saml.callbackUrl,
+					idpCert: config.saml.idpCert,
+					issuer: config.saml.issuer,
+					entryPoint: config.saml.entryPoint,
 				},
-				function (req, accessToken, refreshToken, profile, verified) {
+				function (profile, done) {
 					console.log(profile);
-					verified(null, profile);
+				},
+				function (req, profile, done) {
+					if (!profile) {
+						return done(new Error("No profile found"));
+					}
+					done(null, profile);
 				}
 			)
 		);
