@@ -39,7 +39,9 @@ router.get(
 	}
 );
 
-router.get("/saml", passport.authenticate("saml"));
+router.get("/saml", passport.authenticate("saml"), function (req, res) {
+	res.redirect("/");
+});
 
 // Route to change password
 router.put("/password-change", function (req, res) {

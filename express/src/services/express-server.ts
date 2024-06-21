@@ -61,6 +61,7 @@ export class ExpressServer {
 			"http://localhost",
 			"http://localhost:3000",
 			"https://10.225.100.33",
+			"https://mocksaml.com",
 			"https://mycareer.africarice.org",
 			process.env.PUBLIC_ADDRESS,
 		];

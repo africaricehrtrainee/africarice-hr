@@ -126,16 +126,10 @@ export default function Home() {
                             <Icon icon="akar-icons:arrow-right" className="w-4 h-4 ml-1" />
                         </Button>
                         <Button type="button" variant="outline" onClick={
-                            async () => {
-                                fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/saml`, {
-                                    method: "GET",
-                                    redirect: "follow",
-                                    mode: 'no-cors'
-                                }).then((response) => {
-                                    console.log(response)
-                                }).catch(err => console.log('error from ajax', err))
-                            }}>
-                            Login as CGIAR
+                            // Redirect to ${process.env.NEXT_PUBLIC_API_URL}/api/auth/saml
+                            () => router.push("/api/auth/saml")
+                        }>
+                            Login with SAML
                             <Icon icon="ri:building-line" className="w-4 h-4 ml-1" />
                         </Button>
                         <Link href="auth/recovery" className="text-xs text-muted-foreground underline underline-offset-2">Forgot your password ?</Link>
