@@ -27,7 +27,7 @@ router.post(
 	}
 );
 
-router.get(
+router.post(
 	"/callback",
 	bodyParser.urlencoded({ extended: false }),
 	passport.authenticate("saml", {

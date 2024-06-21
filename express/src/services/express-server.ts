@@ -116,8 +116,21 @@ export class ExpressServer {
 					issuer: config.saml.issuer,
 					entryPoint: config.saml.entryPoint,
 				},
-				function (profile, done) {
-					console.log(profile);
+				function (req, profile, done) {
+					if (!profile) return done(new Error("No profile found"));
+					prisma.employees
+						.findUnique({
+							where: {
+								email: profile.email,
+							},
+						})
+						.then((employee) => {
+							if (employee) {
+								return done(null, employee);
+							} else {
+								return done(new Error("No account found"));
+							}
+						});
 				},
 				function (req, profile, done) {
 					if (!profile) {
