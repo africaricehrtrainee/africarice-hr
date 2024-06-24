@@ -7,7 +7,7 @@ export default {
 	publicApi: process.env.PUBLIC_ADDRESS as string,
 	saml: {
 		entryPoint: process.env.SAML_ENTRY_POINT as string,
-		issuer: "passport-saml" as string,
+		issuer: "africarice-mycareer" as string,
 		idpCert: process.env.SAML_CERT as string,
 		callbackUrl: process.env.SAML_CALLBACK_URL as string,
 	},

@@ -27,6 +27,7 @@
 		"cookie-parser": "^1.4.6",
 		"cookieparser": "^0.1.0",
 		"cors": "^2.8.5",
+		"csv-parse": "^5.5.6",
 		"date-fns": "^3.3.1",
 		"dotenv": "^16.3.1",
 		"emailjs": "^4.0.3",
