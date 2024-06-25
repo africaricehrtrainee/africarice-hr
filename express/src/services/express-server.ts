@@ -116,6 +116,7 @@ export class ExpressServer {
 					issuer: config.saml.issuer,
 					entryPoint: config.saml.entryPoint,
 					passReqToCallback: true,
+					authnContext: ["urn:federation:authentication:windows"],
 				},
 				function (req, profile, done) {
 					try {
