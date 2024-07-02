@@ -479,6 +479,7 @@ export default function Navigation() {
         if (user && bcrypt.compareSync(user.matricule, user.password)) {
             router.push("/auth/password-change?onboard=true");
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathName]);
 
     axios.defaults.withCredentials = true;

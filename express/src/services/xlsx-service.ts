@@ -179,7 +179,7 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 						where: {
 							employeeId: employee.employeeId,
 						},
-						update: { ...employee },
+						update: { ...employee, password: undefined },
 						create: employee,
 					});
 				})

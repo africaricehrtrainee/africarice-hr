@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { set } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
