@@ -76,7 +76,7 @@ export default function Home() {
                 title: "Welcome to the team!",
                 description: "You need to change your password before you can continue.",
             });
-            setPassword("1234")
+            setPassword("123456")
         }
     }, [onboard])
 

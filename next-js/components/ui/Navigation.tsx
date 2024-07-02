@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import bcrypt from 'bcryptjs'
 import AfricaRice from "@/public/africarice.webp";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -475,7 +476,7 @@ export default function Navigation() {
 
     // A redirect whenever a connected user changes routes while having the default password
     useEffect(() => {
-        if (user && user.password === "1234" && !pathName.includes("password-change")) {
+        if (user && bcrypt.compareSync(user.matricule, user.password)) {
             router.push("/auth/password-change?onboard=true");
         }
     }, [pathName]);

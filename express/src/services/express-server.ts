@@ -122,6 +122,7 @@ export class ExpressServer {
 					identifierFormat: null,
 				},
 				function (req, profile, done) {
+					console.log(profile);
 					try {
 						if (!profile)
 							return done(new Error("No profile found"));

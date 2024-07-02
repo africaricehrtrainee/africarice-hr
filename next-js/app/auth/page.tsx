@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
 import { useAuth } from "@/hooks/useAuth";
 import axios from "axios";
+import bcrypt from 'bcryptjs'
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -28,14 +29,15 @@ export default function Home() {
                 email,
                 password,
             })
-            .then((response) => {
+            .then(async (response: { data: { user: Employee } }) => {
                 console.log(response);
                 if (response.data.user) {
                     setUser(response.data.user);
                     toast({
                         description: "Successfully logged in.",
                     });
-                    if (response.data.user.password == "1234") {
+                    const isPasswordDefault = bcrypt.compareSync(response.data.user.matricule, response.data.user.password);
+                    if (isPasswordDefault) {
                         router.push(`/auth/password-change?onboard=true`);
                     } else if (response.data.user.subordinates.length > 0) {
                         router.push(`/`);
@@ -115,23 +117,26 @@ export default function Home() {
                         <p className="mt-1 text-sm text-red-400">{error}</p>
                     )}
                     <div className="flex flex-col items-center justify-start gap-2">
-                        <Button
-                            type="submit"
-                            className="mt-4"
-                            loading={loading}
-                            variant="outline"
-                            onClick={logIn}
-                        >
-                            Login
-                            <Icon icon="akar-icons:arrow-right" className="w-4 h-4 ml-1" />
-                        </Button>
-                        <Button type="button" variant="outline" onClick={
+                        <div className="flex w-full justify-center items-center gap-2">
+                            <Button
+                                type="submit"
+                                className="mt-4"
+                                loading={loading}
+                                variant="outline"
+                                onClick={logIn}
+                            >
+                                Login
+                                <Icon icon="akar-icons:arrow-right" className="w-4 h-4 ml-1" />
+                            </Button>
+
+                        </div>
+                        {/* <Button type="button" variant="outline" onClick={
                             // Redirect to ${process.env.NEXT_PUBLIC_API_URL}/api/auth/saml
                             () => router.push("/api/auth/saml")
                         }>
                             Login with SAML
                             <Icon icon="ri:building-line" className="w-4 h-4 ml-1" />
-                        </Button>
+                        </Button> */}
                         <Link href="auth/recovery" className="text-xs text-muted-foreground underline underline-offset-2">Forgot your password ?</Link>
                     </div>
                 </form>

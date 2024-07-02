@@ -41,7 +41,7 @@ export class LocalStrategy extends Strategy {
 					const res = await bcrypt.compare(password, user.password);
 
 					// If the password doesn't match, return an error
-					if (password !== user.password) {
+					if (!res) {
 						return done(null, false, {
 							message: "Invalid password",
 						});

@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { parse } from "csv-parse";
 import { readFile, utils } from "xlsx";
+import bcrypt from "bcrypt";
 import stringSimilarity from "string-similarity";
 import prisma from "../../prisma/middleware";
 
@@ -148,7 +149,7 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 
 			// Password creation
 			// let password = matricule;
-			let password = "1234";
+			let password = bcrypt.hashSync(matricule, 10);
 			let email = value["Q"]
 				? value["Q"].toLowerCase().trim()
 				: `${matricule}@cgiar.org`;
@@ -178,7 +179,7 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 						where: {
 							employeeId: employee.employeeId,
 						},
-						update: { ...employee, password: undefined },
+						update: { ...employee },
 						create: employee,
 					});
 				})
