@@ -35,7 +35,7 @@ router.get("/test", async (req, res) => {
 			recipients: ["c.kacou@cgiar.org", "k.sams@cgiar.org"],
 		});
 
-		res.send(200).json("Email request created successfully");
+		res.status(200).json("Email request created successfully");
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: "Internal Server Error" });

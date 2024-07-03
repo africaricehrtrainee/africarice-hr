@@ -101,8 +101,6 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 		raw: true,
 	});
 
-	console.log(utils.sheet_to_json(worksheet, { header: "A", raw: true }));
-
 	// Map the array of objects to the desired format
 	// The current format of the worksheet is as follows
 	// B : Matricule, C : Full Name, L : Supervisor Matricule, I : Job Title
