@@ -1,6 +1,5 @@
 // Import necessary modules and dependencies
 import passportLocal, { Strategy } from "passport-local";
-import { DbService } from "./db-service";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 

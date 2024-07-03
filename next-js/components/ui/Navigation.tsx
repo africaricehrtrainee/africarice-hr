@@ -476,8 +476,10 @@ export default function Navigation() {
 
     // A redirect whenever a connected user changes routes while having the default password
     useEffect(() => {
-        if (user && bcrypt.compareSync(user.matricule, user.password)) {
-            router.push("/auth/password-change?onboard=true");
+        if (user && user.matricule) {
+            if (bcrypt.compareSync(user.matricule, user.password)) {
+                router.push("/auth/password-change?onboard=true");
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathName]);

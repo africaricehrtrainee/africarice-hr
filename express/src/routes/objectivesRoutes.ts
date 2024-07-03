@@ -5,6 +5,7 @@ import { isAuthenticated } from "./authRoutes";
 import { ObjectiveComments, Objectives } from "@prisma/client";
 import { parse } from "dotenv";
 import prisma from "../../prisma/middleware";
+import addMailToQueue from "../services/mail-service";
 
 const router = express.Router();
 const db = new DbService();
@@ -15,6 +16,26 @@ router.get("/", isAuthenticated, async (req, res) => {
 			orderBy: { objectiveId: "asc" },
 		});
 		res.status(200).json(result);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+});
+
+router.get("/test", async (req, res) => {
+	try {
+		addMailToQueue({
+			subject: "Test Email from Admin Panel",
+			templateData: {
+				template: "main",
+				context: {
+					content: `This is a test email from the Admin Panel. If you received this email, it means that the email service is working correctly.`,
+				},
+			},
+			recipients: ["c.kacou@cgiar.org", "k.sams@cgiar.org"],
+		});
+
+		res.send(200).json("Email request created successfully");
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: "Internal Server Error" });

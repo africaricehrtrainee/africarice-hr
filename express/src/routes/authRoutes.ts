@@ -1,4 +1,5 @@
 // Import necessary modules and dependencies
+import bcrypt from "bcrypt";
 import bodyParser from "body-parser";
 import express, { Request, Response, NextFunction } from "express";
 import passport from "passport";
@@ -44,10 +45,11 @@ router.get("/saml", passport.authenticate("saml"), function (req, res) {
 });
 
 // Route to change password
-router.put("/password-change", function (req, res) {
+router.put("/password-change", async function (req, res) {
 	try {
 		if (req.user) {
 			const user = req.user as Employees;
+			const onboard = req.query.onboard;
 			const { password, newPassword } = req.body;
 
 			if (!password || !newPassword) {
@@ -55,17 +57,18 @@ router.put("/password-change", function (req, res) {
 					.status(400)
 					.json("Please include valid credentials.");
 			}
-			if (password !== (user.password as string)) {
+			if (!onboard && !bcrypt.compareSync(password, user.password)) {
 				return res.status(400).json("Your old password is incorrect.");
 			}
 
+			const hashedPassword = bcrypt.hashSync(newPassword, 10);
 			prisma.employees
 				.update({
 					where: {
 						employeeId: user.employeeId,
 					},
 					data: {
-						password: newPassword,
+						password: hashedPassword,
 					},
 				})
 				.then(() => {
@@ -93,20 +96,21 @@ router.put("/password-change", function (req, res) {
 						recoveryId,
 					},
 				})
-				.then((recovery) => {
+				.then(async (recovery) => {
 					if (!recovery) {
 						return res
 							.status(404)
 							.json("This recovery link is invalid.");
 					}
 
+					const hashedPassword = bcrypt.hashSync(newPassword, 10);
 					prisma.employees
 						.update({
 							where: {
 								employeeId: recovery.employeeId,
 							},
 							data: {
-								password: newPassword,
+								password: hashedPassword,
 							},
 						})
 						.then(() => {

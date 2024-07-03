@@ -1,16 +1,22 @@
 import prisma from "./middleware";
+import bcrypt from "bcrypt";
 
 export default function startup() {
+	const adminData = {
+		email: "admin@mail.com",
+		firstName: "Admin",
+		lastName: "Platform",
+		jobTitle: "Administrator",
+		password: bcrypt.hashSync("admin", 10),
+		role: "admin",
+		employeeId: 1,
+	};
 	prisma.employees
-		.create({
-			data: {
-				email: "admin@mail.com",
-				firstName: "Admin",
-				lastName: "Platform",
-				jobTitle: "Administrator",
-				password: "admin",
-				role: "admin",
-				employeeId: 1,
+		.upsert({
+			create: adminData,
+			update: adminData,
+			where: {
+				employeeId: adminData.employeeId,
 			},
 		})
 		.catch((err) => {});

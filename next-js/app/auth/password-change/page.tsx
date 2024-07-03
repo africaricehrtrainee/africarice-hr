@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 export default function Home() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
+    const { user } = useAuth()
     const [password, setPassword] = useState<string>("");
     const [newPassword, setNewPassword] = useState<string>("")
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("")
@@ -41,7 +42,7 @@ export default function Home() {
         }
 
         axios
-            .put(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/password-change`, {
+            .put(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/password-change?onboard=true`, {
                 password,
                 newPassword,
                 recoveryId
@@ -70,12 +71,12 @@ export default function Home() {
     }
 
     useEffect(() => {
-        if (onboard) {
+        if (onboard && user) {
             toast({
                 title: "Welcome to the team!",
                 description: "You need to change your password before you can continue.",
             });
-            setPassword("123456")
+            setPassword(user.matricule)
         }
     }, [onboard])
 
