@@ -137,7 +137,7 @@ export default function Home() {
                             Login with SAML
                             <Icon icon="ri:building-line" className="w-4 h-4 ml-1" />
                         </Button> */}
-                        <Link href="auth/recovery" className="text-xs text-muted-foreground underline underline-offset-2">Forgot your password ?</Link>
+                        <Link href="auth/recovery" className="text-xs text-muted-foreground underline underline-offset-2">New Account ? / Forgot your password ?</Link>
                     </div>
                 </form>
             </div>

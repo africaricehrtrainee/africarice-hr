@@ -3,7 +3,6 @@ import fs from "fs";
 import { parse } from "csv-parse";
 import { readFile, utils } from "xlsx";
 import bcrypt from "bcrypt";
-import stringSimilarity from "string-similarity";
 import prisma from "../../prisma/middleware";
 
 function toTitleCase(str: string): string {
@@ -23,6 +22,7 @@ function calculateDepth(data: EmployeeCreateDTO[], employeeId: number): number {
 		data.find((e) => e.employeeId === employeeId)?.lastName;
 
 	while (supervisorId) {
+		// console.log(name, supervisorId, depth)
 		name =
 			data.find((e) => e.employeeId === supervisorId)?.firstName +
 			" " +
@@ -57,37 +57,14 @@ interface EmployeeCreateDTO {
 	role: string;
 }
 
-function parseCsvToJson(filePath: string): Promise<any[]> {
-	return new Promise((resolve, reject) => {
-		const results: any[] = [];
-
-		fs.createReadStream(filePath)
-			.pipe(
-				parse({
-					columns: true, // this will treat the first row as header names
-					skip_empty_lines: true, // skip empty lines
-				})
-			)
-			.on("data", (data) => results.push(data))
-			.on("end", () => {
-				resolve(results);
-			})
-			.on("error", (error) => {
-				reject(error);
-			});
-	});
-}
-
 // Use the function and log the results
 
 export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
+	console.log("\u03BB Reading employee list");
 	// Load the XLSX file
 	const workbook = readFile(fileUrl, {
 		dateNF: "MM-DD-YYYY",
 	});
-
-	const missingSupervisors = [] as string[];
-	const missingStaffEmails = [] as string[];
 
 	// Assume that the first sheet in the workbook should be converted to JSON
 	const sheetName = workbook.SheetNames[0];
@@ -132,12 +109,11 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 
 			if (value["L"]) {
 				let match = data.findIndex(
-					(sheet) => sheet["B"] === value["L"]
+					(sheet) => sheet["B"]?.trim() === value["L"]?.trim()
 				);
 				if (match !== -1) {
 					supervisorId = match + 2;
 				} else {
-					missingSupervisors.push(value["M"]);
 					supervisorId = null;
 				}
 			} else {
@@ -159,7 +135,6 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 			if (value["Q"]) {
 				email = value["Q"].toLowerCase().trim();
 			} else {
-				missingStaffEmails.push(value["C"]);
 				email =
 					// firstName.toLowerCase().substring(0, 2) +
 					// lastName.toLowerCase() +
@@ -185,8 +160,6 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 		console.log("\u03BB Updating employee list");
 		const arr = sortByHierarchyLevel(output);
 
-		console.log(new Set(missingSupervisors));
-		console.log(new Set(missingStaffEmails));
 		prisma
 			.$transaction(
 				arr.map((employee, i) => {
@@ -201,6 +174,9 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 			)
 			.catch((err) => {
 				console.log(err);
+			})
+			.then(() => {
+				console.log("\u2714 Employee list updated");
 			});
 	}
 

@@ -1,8 +1,4 @@
-import nodemailer from "nodemailer";
-import fs from "fs";
-import path from "path";
 import config from "../config/config";
-import hbs from "nodemailer-express-handlebars";
 import transporter from "../utils/emailTransporter";
 
 export const sendEmail = async (

@@ -63,6 +63,7 @@
 		"@types/nodemailer-express-handlebars": "^4.0.5",
 		"@types/nodemailer-smtp-transport": "^2.7.8",
 		"@types/passport-oauth2": "^1.4.17",
+		"@types/speakeasy": "^2.0.10",
 		"@types/string-similarity": "^4.0.2",
 		"nodemon": "^3.0.1",
 		"prisma": "^5.8.1",

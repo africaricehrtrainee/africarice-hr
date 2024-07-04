@@ -49,16 +49,12 @@ router.put("/password-change", async function (req, res) {
 	try {
 		if (req.user) {
 			const user = req.user as Employees;
-			const onboard = req.query.onboard;
 			const { password, newPassword } = req.body;
 
 			if (!password || !newPassword) {
 				return res
 					.status(400)
 					.json("Please include valid credentials.");
-			}
-			if (!onboard && !bcrypt.compareSync(password, user.password)) {
-				return res.status(400).json("Your old password is incorrect.");
 			}
 
 			const hashedPassword = bcrypt.hashSync(newPassword, 10);

@@ -53,7 +53,7 @@ export default function Home() {
         <main className="flex flex-1 h-full flex-col items-center justify-center p-16">
             <div className="flex w-[320px] flex-col items-center gap-1 rounded-md border border-zinc-200 bg-white p-8 text-center shadow-sm">
                 <h1 className="w-fit text-2xl font-semibold leading-none">
-                    Account recovery
+                    Password reset
                 </h1>
                 <h2 className="mt-1 text-sm text-zinc-500">
                     Enter your e-mail address to receive a recovery link for your account
@@ -85,7 +85,7 @@ export default function Home() {
                             variant="outline"
                             onClick={reset}
                         >
-                            Reset my password
+                            Get a new password
                         </Button>
                         {/* <Button type="button" variant="outline" onClick={
                             async () => {

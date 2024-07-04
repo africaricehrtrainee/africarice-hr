@@ -78,6 +78,7 @@ export default function Home() {
             });
             setPassword(user.matricule)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [onboard])
 
     return (
@@ -108,7 +109,7 @@ export default function Home() {
                     </div>
                     }
                     <div className="flex w-full flex-col items-start mt-4">
-                        <Label>New password</Label>
+                        <Label>New password<span className="text-xs text-muted-foreground ml-1 text-normal">(min. 6 chars.)</span></Label>
                         <Input
                             type="password"
                             required

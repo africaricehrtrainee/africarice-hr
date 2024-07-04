@@ -46,6 +46,7 @@ model Employees {
     grade         String?
     bgLevel       String?
     matricule     String? @unique
+    secretKey     String?
 
     // Relations
     supervisor   Employees?          @relation("Supervisor", fields: [supervisorId], references: [employeeId], onDelete: SetNull)
