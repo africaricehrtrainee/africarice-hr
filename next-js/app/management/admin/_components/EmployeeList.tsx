@@ -6,6 +6,8 @@ import Button from "../../../../components/ui/Button";
 import Modal from "../../../../components/ui/Modal";
 import EmployeeForm from "./NewEmployee";
 import { cn } from "@/util/utils";
+import axios from "axios";
+import { useToast } from "@/components/ui/use-toast";
 
 interface EmployeeListProps {
     employees: Array<Employee>;
@@ -23,6 +25,34 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
     const [showModal, setShowModal] = useState(false);
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState<"hr" | "admin" | "deleted" | "">();
+    const { toast } = useToast()
+
+    async function sendTestEmail() {
+        axios
+            .get(process.env.NEXT_PUBLIC_API_URL + "/api/objectives/test")
+            .then((response) => {
+                if (response.status == 200) {
+                    toast({
+                        title: "Test email sent",
+                        description: "The test email has been sent successfully",
+                    })
+                } else {
+                    toast({
+                        title: "Error",
+                        description: "An error occurred while sending the test email",
+
+                    })
+                }
+            })
+            .catch((err) => {
+                toast({
+                    title: "Error",
+                    description: "An error occurred while sending the test email",
+
+                })
+                console.log(err);
+            })
+    }
 
     return (
         <div className="flex h-full w-full flex-col items-start justify-start rounded-md border border-zinc-200 bg-white p-8 shadow-sm transition-all">
@@ -46,6 +76,16 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                         Create employee
                         <Icon
                             icon="majesticons:plus-line"
+                            className="ml-1"
+                            fontSize={14}
+                        />
+                    </Button>
+                    <Button variant="outline"
+                        onClick={() => sendTestEmail()}
+                    >
+                        Send test email
+                        <Icon
+                            icon="mdi:email-send-outline"
                             className="ml-1"
                             fontSize={14}
                         />
