@@ -86,6 +86,9 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 		dateNF: "MM-DD-YYYY",
 	});
 
+	const missingSupervisors = [] as string[];
+	const missingStaffEmails = [] as string[];
+
 	// Assume that the first sheet in the workbook should be converted to JSON
 	const sheetName = workbook.SheetNames[0];
 	const worksheet = workbook.Sheets[sheetName];
@@ -96,6 +99,7 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 		L: string;
 		I: string;
 		Q: string;
+		M: string;
 	}[] = utils.sheet_to_json(worksheet, {
 		header: "A",
 		raw: true,
@@ -103,7 +107,7 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 
 	// Map the array of objects to the desired format
 	// The current format of the worksheet is as follows
-	// B : Matricule, C : Full Name, L : Supervisor Matricule, I : Job Title
+	// B : Matricule, C : Full Name, L : Supervisor Matricule, I : Job Title, M: Supervisor Name
 	data = data.slice(1);
 	const output = data
 		.filter((val) => val["B"] !== undefined)
@@ -133,6 +137,7 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 				if (match !== -1) {
 					supervisorId = match + 2;
 				} else {
+					missingSupervisors.push(value["M"]);
 					supervisorId = null;
 				}
 			} else {
@@ -150,9 +155,17 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 			// Password creation
 			// let password = matricule;
 			let password = bcrypt.hashSync(matricule, 10);
-			let email = value["Q"]
-				? value["Q"].toLowerCase().trim()
-				: `${matricule}@cgiar.org`;
+			let email = "";
+			if (value["Q"]) {
+				email = value["Q"].toLowerCase().trim();
+			} else {
+				missingStaffEmails.push(value["C"]);
+				email =
+					// firstName.toLowerCase().substring(0, 2) +
+					// lastName.toLowerCase() +
+					// "@cgiar.org";
+					matricule + "@cgiar.org";
+			}
 
 			return {
 				employeeId,
@@ -172,6 +185,8 @@ export async function xlsxToJsonArray(fileUrl: any): Promise<any[]> {
 		console.log("\u03BB Updating employee list");
 		const arr = sortByHierarchyLevel(output);
 
+		console.log(new Set(missingSupervisors));
+		console.log(new Set(missingStaffEmails));
 		prisma
 			.$transaction(
 				arr.map((employee, i) => {
