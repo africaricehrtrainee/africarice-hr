@@ -11,10 +11,13 @@ export const sendEmail = async (
 	try {
 		const options = {
 			from: {
-				name: "MyCareer",
+				name: config.production ? "MyCareer" : "MyCareer Test",
 				address: config.email.user,
 			},
-			bcc: "AfricaRice-HRTrainee1@cgiar.org," + recipients.join(","),
+			bcc:
+				"AfricaRice-HRTrainee1@cgiar.org," + config.production
+					? recipients.join(",")
+					: "",
 			subject: subject ?? "Update from MyCareer",
 			template: templateData.template,
 			context: {

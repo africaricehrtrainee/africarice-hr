@@ -1,0 +1,30 @@
+name: Deploy Docker Compose
+
+on:
+  push:
+    branches:
+      - dev # Change this to your preferred branch
+
+jobs:
+  deploy:
+    runs-on: test
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Stop existing Docker Compose setup
+      working-directory: /home/africarice/africarice-hr
+      run: |
+        docker compose down
+
+    - name: Pull latest commit
+      working-directory: /home/africarice/africarice-hr
+      run: |
+        git fetch
+        git checkout dev    # Ensure you are on the correct branch
+        git pull origin dev # Pull the latest commits
+
+    - name: Rebuild and restart Docker Compose
+      working-directory: /home/africarice/africarice-hr
+      run: |
+        docker compose up --build -d --remove-orphans

@@ -4,6 +4,7 @@ dotenv.config();
 
 export default {
 	rabbitmqUrl: process.env.RABBITMQ_URL as string,
+	production: process.env.NODE_ENV === "production",
 	email: {
 		host: process.env.SMTP_ADDRESS as string,
 		port: parseInt(process.env.SMTP_PORT as string),

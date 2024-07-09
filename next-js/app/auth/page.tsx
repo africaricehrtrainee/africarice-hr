@@ -78,7 +78,7 @@ export default function Home() {
 
     return (
         <main className="flex flex-1 h-full flex-col items-center justify-center p-16">
-            <div className="flex w-[320px] flex-col items-center gap-1 rounded-md border border-zinc-200 bg-white p-8 text-center shadow-sm">
+            <div className="flex w-[380px] flex-col items-center gap-1 rounded-md border border-zinc-200 bg-white p-8 text-center shadow-sm">
                 <h1 className="w-fit text-2xl font-semibold leading-none">
                     Sign in
                 </h1>
@@ -96,13 +96,13 @@ export default function Home() {
                             required
                             className=""
                             name="email"
-                            placeholder="Enter your email address"
+                            placeholder="Enter your CGIAR email address"
                             value={email}
                             onChange={(e: any) => setEmail(e.target.value)}
                         />
                     </div>
                     <div className="flex w-full flex-col items-start">
-                        <Label>Password</Label>
+                        <Label>Password<span className="text-xs text-muted-foreground ml-1">(default is your RESNO)</span></Label>
                         <Input
                             type="password"
                             required
@@ -137,7 +137,7 @@ export default function Home() {
                             Login with SAML
                             <Icon icon="ri:building-line" className="w-4 h-4 ml-1" />
                         </Button> */}
-                        <Link href="auth/recovery" className="text-xs text-muted-foreground underline underline-offset-2">New Account ? / Forgot your password ?</Link>
+                        <Link href="auth/recovery" className="text-xs text-muted-foreground underline underline-offset-2">Forgot your password ?</Link>
                     </div>
                 </form>
             </div>
