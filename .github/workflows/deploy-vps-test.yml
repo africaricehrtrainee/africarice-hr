@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: test
+    runs-on: ['self-hosted', 'test']
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
