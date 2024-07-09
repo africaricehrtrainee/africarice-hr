@@ -1,0 +1,20 @@
+# Use the node base image with a specific version to ensure consistency across development environments
+FROM node:14
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json to leverage Docker cache
+COPY package*.json ./
+
+# Install dependencies including 'devDependencies'
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Map port 3000 for access to the app
+EXPOSE 3001
+
+# Command to run the app in development mode with hot reloading
+CMD ["npm", "run", "dev"]

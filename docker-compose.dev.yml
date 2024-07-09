@@ -1,0 +1,48 @@
+services:
+    nextjs:
+        container_name: next-dev
+        build:
+            context: ./next-js
+            dockerfile: dockerfile.dev
+        network_mode: "host"
+        env_file:
+            - ./next-js/.env
+        depends_on:
+            - express
+
+    express:
+        container_name: express-dev
+        build:
+            context: ./express
+            dockerfile: dockerfile.dev
+        restart: "always"
+        network_mode: "host"
+        env_file:
+            - ./express/.env
+
+    rabbitmq:
+        container_name: rabbitmq-dev
+        image: rabbitmq:3-management
+        restart: "always"
+        network_mode: "host"
+        ports:
+            - "15673:15672"
+            - "5673:5672"
+        volumes:
+            - mydevapp:/var/lib/rabbitmq
+        environment:
+            RABBITMQ_DEFAULT_USER: user
+            RABBITMQ_DEFAULT_PASS: password
+
+    nodemailer:
+        container_name: nodemailer-dev
+        build: ./nodemailer
+        network_mode: "host"
+        restart: "unless-stopped"
+        env_file:
+            - ./nodemailer/.env
+        depends_on:
+            - rabbitmq
+
+volumes:
+    mydevapp:

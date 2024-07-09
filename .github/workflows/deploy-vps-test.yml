@@ -1,4 +1,4 @@
-name: Deploy Docker Compose Dev Environment
+name: Deploy Docker Compose Dev Environment in Dev
 
 on:
   push:
