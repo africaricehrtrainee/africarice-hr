@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Your app binds to port 4000 so you'll use the EXPOSE instruction to have it mapped
-EXPOSE 4000
+EXPOSE 4001
 
 # Define the command to run your app
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
