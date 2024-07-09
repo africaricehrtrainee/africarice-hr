@@ -15,7 +15,7 @@ jobs:
     - name: Stop existing Docker Compose setup
       working-directory: /home/africarice/africarice-hr-test
       run: |
-        docker compose down
+        docker compose -f docker-compose.dev.yml down
 
     - name: Pull latest commit
       working-directory: /home/africarice/africarice-hr-test
@@ -27,4 +27,4 @@ jobs:
     - name: Rebuild and restart Docker Compose
       working-directory: /home/africarice/africarice-hr-test
       run: |
-        docker compose up --build -d --remove-orphans
+        docker compose up -f docker-compose.dev.yml --build -d --remove-orphans
