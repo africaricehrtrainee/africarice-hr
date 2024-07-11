@@ -45,7 +45,7 @@ router.get("/saml", passport.authenticate("saml"), function (req, res) {
 });
 
 // Route to change password
-router.put("/password-change", async function (req, res) {
+router.put("/password-change", isAuthenticated, async function (req, res) {
 	try {
 		if (req.user) {
 			const user = req.user as Employees;
@@ -141,7 +141,7 @@ router.get("/session", (req: Request, res: Response) => {
 	}
 });
 
-router.post("/recovery", async function (req, res) {
+router.post("/recovery", isAuthenticated, async function (req, res) {
 	const { email } = req.body;
 
 	if (!email)

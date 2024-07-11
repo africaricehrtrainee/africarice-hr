@@ -1,16 +1,14 @@
 import express from "express";
 import { DbService } from "../services/db-service";
 import { isAuthenticated } from "./authRoutes";
-import { Employees, Evaluations, Objectives } from "@prisma/client";
+import { Employees } from "@prisma/client";
 import prisma from "../../prisma/middleware";
 import { xlsxToJsonArray } from "../services/xlsx-service";
-import { parse } from "dotenv";
 import { getYear } from "date-fns";
-import path from "path";
 import { computeNotifications } from "../util/utils";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
-const dbService = new DbService();
 
 // Route : api/employees
 // Create a new employee
@@ -24,7 +22,10 @@ router.post("/", isAuthenticated, async (req, res) => {
 		}
 
 		const result = await prisma.employees.create({
-			data: employee,
+			data: {
+				...employee,
+				password: bcrypt.hashSync(employee.password, 10),
+			},
 		});
 
 		res.status(201).json(result);

@@ -128,7 +128,7 @@ model Evaluator360 {
     questionTwo   String? @db.Text
     ratingTwo     Int?
     questionThree String? @db.Text
-    ratingThree   Int
+    ratingThree   Int?
     questionFour  String? @db.Text
     ratingFour    Int?
     questionFive  String? @db.Text

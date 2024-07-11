@@ -6,16 +6,17 @@ export const sendEmail = async (
 	subject: string,
 	templateData:
 		| { template: "main"; context: { content: string } }
-		| { template: "recovery"; context: { recoveryId: number } }
+		| { template: "recovery"; context: { recoveryId: number } },
+	isTestEmail: boolean
 ) => {
 	try {
 		const options = {
 			from: {
-				name: config.production ? "MyCareer" : "MyCareer Test",
+				name: isTestEmail ? "MyCareer" : "MyCareer Test",
 				address: config.email.user,
 			},
 			bcc:
-				"AfricaRice-HRTrainee1@cgiar.org," + config.production
+				"AfricaRice-HRTrainee1@cgiar.org," + !isTestEmail
 					? recipients.join(",")
 					: "",
 			subject: subject ?? "Update from MyCareer",
