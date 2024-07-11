@@ -1,5 +1,5 @@
 # Use the node base image with a specific version to ensure consistency across development environments
-FROM node:14
+FROM node:latest
 
 # Set the working directory in the container
 WORKDIR /app

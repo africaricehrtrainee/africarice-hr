@@ -1,6 +1,7 @@
 import prisma from "../../prisma/middleware";
 import { computeFinished } from "../util/utils";
 import { publishToQueue } from "../util/rabbitmq";
+import config from "../../config";
 
 export default async function addMailToQueue({
 	subject,
@@ -14,7 +15,13 @@ export default async function addMailToQueue({
 		| { template: "recovery"; context: { recoveryId: string } };
 }) {
 	try {
-		publishToQueue("emailQueue", { subject, recipients, templateData });
+		const isTestEmail = config.nodeEnv === "development";
+		publishToQueue("emailQueue", {
+			subject,
+			recipients,
+			templateData,
+			isTestEmail,
+		});
 	} catch (error) {
 		console.log(error);
 	}
