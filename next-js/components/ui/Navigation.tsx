@@ -477,7 +477,7 @@ export default function Navigation() {
     // A redirect whenever a connected user changes routes while having the default password
     useEffect(() => {
         if (user && user.matricule) {
-            if (bcrypt.compareSync(user.matricule, user.password)) {
+            if (bcrypt.compareSync(user.matricule, user.password) || (bcrypt.compareSync("1234", user.password))) {
                 router.push("/auth/password-change?onboard=true");
             }
         }

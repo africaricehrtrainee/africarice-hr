@@ -1,7 +1,7 @@
 import express from "express";
 import { DbService } from "../services/db-service";
 import { isAuthenticated } from "./authRoutes";
-import { Employees, Evaluations, Objectives } from "@prisma/client";
+import { Employees } from "@prisma/client";
 import prisma from "../../prisma/middleware";
 import { xlsxToJsonArray } from "../services/xlsx-service";
 import { getYear } from "date-fns";
@@ -9,7 +9,6 @@ import { computeNotifications } from "../util/utils";
 import bcrypt from "bcrypt";
 
 const router = express.Router();
-const dbService = new DbService();
 
 // Route : api/employees
 // Create a new employee

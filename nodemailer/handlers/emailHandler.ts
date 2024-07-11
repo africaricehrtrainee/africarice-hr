@@ -6,6 +6,7 @@ interface EmailMessage {
 	templateData:
 		| { template: "main"; context: { content: string } }
 		| { template: "recovery"; context: { recoveryId: number } };
+	isTestEmail: boolean;
 }
 
 export const handleEmailMessage = async (msg: Buffer) => {
@@ -14,7 +15,8 @@ export const handleEmailMessage = async (msg: Buffer) => {
 		return await sendEmail(
 			message.recipients,
 			message.subject,
-			message.templateData
+			message.templateData,
+			message.isTestEmail
 		);
 	} catch (error) {
 		console.error(error);
