@@ -59,7 +59,7 @@ export class ExpressServer {
 		// );
 		var whitelist = [
 			"http://localhost",
-			"http://localhost:3000",
+			"http://localhost:3001",
 			"https://10.225.100.33",
 			"https://login.microsoftonline.com",
 			"https://mycareer.africarice.org",
