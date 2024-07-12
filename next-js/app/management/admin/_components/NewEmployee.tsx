@@ -23,7 +23,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
     const [firstName, setFirstName] = useState<string | null>(null);
     const [lastName, setLastName] = useState<string | null>(null);
     const [email, setEmail] = useState<string>("");
-    const [supervisorId, setSupervisorId] = useState<number | null>(null);
+    const [supervisorId, setSupervisorId] = useState<string>("");
     const [matricule, setMatricule] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [role, setRole] = useState<"hr" | "staff" | "admin">("staff");
@@ -37,7 +37,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
             lastName: lastName?.toUpperCase() ?? null,
             email,
             matricule,
-            supervisorId: supervisorId ?? undefined,
+            supervisorId: supervisorId ? parseInt(supervisorId) : undefined,
             role,
             password: matricule ?? "1234",
             jobTitle,
@@ -62,7 +62,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
                 setFirstName(null);
                 setLastName(null);
                 setEmail("");
-                setSupervisorId(null);
+                setSupervisorId("");
                 setMatricule("");
             });
     };
@@ -173,7 +173,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
                         type="text"
                         value={supervisorId ?? ""}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setSupervisorId(parseInt(e.target.value))
+                            setSupervisorId(e.target.value)
                         }
                         placeholder="Enter the id number"
                         className="w-full rounded-md border border-zinc-200 p-2 px-3 text-xs font-semibold outline-none transition-all placeholder:text-zinc-300 hover:border-zinc-500 focus:border-brand focus:outline-brand-light disabled:text-zinc-500"
