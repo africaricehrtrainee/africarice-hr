@@ -216,6 +216,9 @@ export default function Objectives({ params }: { params: { userId: string } }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data.employee, user]);
 
+    if (data.employee && user && (user.employeeId !== data.employee.employeeId && user.employeeId !== data.employee.supervisorId)) return <div className="flex flex-1 items-center justify-center">
+        You are not authorized to view this page.
+    </div>
 
     return (
         // <ProtectedRoute>

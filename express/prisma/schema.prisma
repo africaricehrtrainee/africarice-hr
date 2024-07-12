@@ -168,6 +168,15 @@ model Objectives {
     ObjectiveComment   ObjectiveComments[]
 }
 
+model ConsultantObjectives {
+    consultantObjectiveId Int    @id @default(autoincrement())
+    status                String @default("draft")
+    employeeId            Int
+    supervisorId          Int?
+
+    title String?
+}
+
 model Steps {
     stepId    Int     @id @default(autoincrement())
     name      String

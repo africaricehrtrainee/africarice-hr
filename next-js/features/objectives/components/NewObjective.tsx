@@ -571,6 +571,7 @@ export function NewObjective({
                                         DEADLINE OF THE OBJECTIVE / DATE LIMITE
                                     </label>
                                     <Input
+                                        required
                                         autoCorrect="off"
                                         spellCheck="false"
                                         disabled={isEditable}
@@ -595,6 +596,7 @@ export function NewObjective({
                                     <label className="text-[10px] font-medium text-zinc-700">
                                         OBJECTIVE KPI / INDICATEURS DE PERFORMANCE                                     </label>
                                     <TextArea
+                                        required
                                         autoCorrect="off"
                                         spellCheck="false"
                                         disabled={isEditable}
@@ -618,6 +620,7 @@ export function NewObjective({
                                         OBJECTIVE DESCRIPTION
                                     </label>
                                     <TextArea
+                                        required
                                         autoCorrect="off"
                                         spellCheck="false"
                                         disabled={isEditable}

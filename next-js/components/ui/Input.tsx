@@ -9,7 +9,8 @@ export function Input(props: InputProps) {
             {...props}
             className={twMerge(
                 "w-full p-2 px-3 mt-1 text-xs outline-none border disabled:bg-zinc-50  rounded-md border-zinc-200 hover:border-zinc-500 transition-all",
-                props.valid ? "focus:border-brand focus:outline-brand-light" : "focus:border-green-300 focus:outline-green-100",
+                "focus:border-gray-300 focus:outline-gray-100",
+                props.required && !props.value && "border-red-300",
                 props.className
             )}
         ></input>
