@@ -22,7 +22,7 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
     const [jobTitle, setJobTitle] = useState<string | null>(null);
     const [matricule, setMatricule] = useState<string | null>(null);
     const [supervisorId, setSupervisorId] = useState<number | null>(null);
-    const [role, setRole] = useState<"admin" | "hr" | "staff" | "consultant">(
+    const [role, setRole] = useState<"admin" | "hr" | "staff" | "cons">(
         "staff"
     );
 
@@ -326,6 +326,25 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                             <Icon
                                 icon="bxs:wrench"
                                 className="ml-1"
+                                fontSize={10}
+                            />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                role == "cons" ? setRole("staff") : setRole("cons")
+                            }
+                            className={cn(
+                                "flex items-center h-full transition-all justify-center gap-0 whitespace-nowrap rounded-md p-2 px-2 text-[10px] font-semibold",
+                                role === "cons"
+                                    ? "bg-orange-600 text-orange-100"
+                                    : "bg-zinc-100 text-zinc-700"
+                            )}
+                        >
+                            Consultant
+                            <Icon
+                                icon="fa6-solid:hat-cowboy"
+                                className="ml-2"
                                 fontSize={10}
                             />
                         </button>

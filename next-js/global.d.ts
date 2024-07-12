@@ -1,6 +1,6 @@
 interface Employee {
 	employeeId: number;
-	role: "hr" | "staff" | "admin" | "consultant";
+	role: "hr" | "staff" | "admin" | "cons";
 	email: string;
 	supervisorId: number;
 	firstName: string;

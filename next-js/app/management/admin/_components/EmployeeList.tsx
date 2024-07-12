@@ -24,7 +24,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 }) => {
     const [showModal, setShowModal] = useState(false);
     const [search, setSearch] = useState("");
-    const [filter, setFilter] = useState<"hr" | "admin" | "deleted" | "">();
+    const [filter, setFilter] = useState<"hr" | "admin" | "deleted" | "cons" | "">();
     const { toast } = useToast()
 
     async function sendTestEmail() {
@@ -152,6 +152,25 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                 <button
                     type="button"
                     onClick={() =>
+                        filter == "cons" ? setFilter("") : setFilter("cons")
+                    }
+                    className={cn(
+                        "flex items-center h-full transition-all justify-center gap-0 whitespace-nowrap rounded-md p-2 px-2 text-[10px] font-semibold",
+                        filter === "cons"
+                            ? "bg-orange-600 text-orange-100"
+                            : "bg-zinc-100 text-zinc-700"
+                    )}
+                >
+                    Consultant
+                    <Icon
+                        icon="fa6-solid:hat-cowboy"
+                        className="ml-2"
+                        fontSize={10}
+                    />
+                </button>
+                <button
+                    type="button"
+                    onClick={() =>
                         filter == "deleted"
                             ? setFilter("")
                             : setFilter("deleted")
@@ -170,7 +189,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
             <div className="scroll-hover mt-8 h-full w-full flex-col items-start justify-start overflow-y-scroll transition-all">
                 {employees
                     .filter((employee) => {
-                        let fil;
+                        let fil: boolean;
                         switch (filter) {
                             case "hr":
                                 fil = employee.role == "hr";
@@ -178,8 +197,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                             case "admin":
                                 fil = employee.role == "admin";
                                 break;
+                            case "cons":
+                                fil = employee.role == "cons";
+                                break;
                             case "deleted":
-                                fil = employee.deletedAt;
+                                fil = employee.deletedAt != null;;
                                 break;
                             default:
                                 fil = true;
@@ -199,10 +221,10 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                     .includes(search.toLowerCase()) ||
                                 employee.matricule
                                     ?.toLowerCase()
-                                    .includes(search.toLowerCase())) ||
-                            employee.jobTitle
-                                ?.toLowerCase()
-                                .includes(search.toLowerCase())
+                                    .includes(search.toLowerCase()) ||
+                                employee.jobTitle
+                                    ?.toLowerCase()
+                                    .includes(search.toLowerCase()))
                         );
                     })
                     .map((employee, i) => {
@@ -330,6 +352,16 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                         {employee.role == "admin" && (
                                             <div className="flex items-center justify-center gap-0 whitespace-nowrap rounded-md bg-blue-100 p-1 px-2 text-[8px] font-semibold text-blue-700">
                                                 Admin
+                                                <Icon
+                                                    icon="bxs:wrench"
+                                                    className="ml-1"
+                                                    fontSize={8}
+                                                />
+                                            </div>
+                                        )}
+                                        {employee.role == "cons" && (
+                                            <div className="flex items-center justify-center gap-0 whitespace-nowrap rounded-md bg-orange-100 p-1 px-2 text-[8px] font-semibold text-orange-700">
+                                                Consultant
                                                 <Icon
                                                     icon="bxs:wrench"
                                                     className="ml-1"

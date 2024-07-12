@@ -29,6 +29,7 @@ model Positions {
 
 model Employees {
     employeeId Int    @id @default(autoincrement())
+    // roles : "hr", "staff", "cons", "admin"
     role       String @default("staff")
     email      String @unique
 
