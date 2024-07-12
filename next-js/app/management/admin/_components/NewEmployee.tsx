@@ -4,6 +4,7 @@ import Button from "../../../../components/ui/Button";
 import axios from "axios";
 import { routeModule } from "next/dist/build/templates/app-page";
 import { cn } from "@/util/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 interface EmployeeFormProps {
     onFormSubmit: (success: boolean) => any;
@@ -28,6 +29,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [role, setRole] = useState<"hr" | "staff" | "admin" | "cons">("staff");
     const [jobTitle, setJobTitle] = useState<string>("");
+    const { toast } = useToast()
 
     const handleFormSubmit = (e: React.FormEvent) => {
         setLoading(true);
@@ -49,12 +51,27 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
             .then((response) => {
                 if (response.status == 201) {
                     onFormSubmit(true);
+                    toast({
+                        title: "Operation successful",
+                        description: "Successfully created the account.",
+                    })
+
                 } else {
+                    toast({
+                        title: "An error occurred",
+                        description: "An error occurred while creating the account.",
+                        variant: "destructive"
+                    })
+
                 }
             })
             .catch((err) => {
                 onFormSubmit(false);
-                alert("An error occurred");
+                toast({
+                    title: "An error occurred",
+                    description: "An error occurred while creating the account.",
+                    variant: "destructive"
+                })
                 console.log(err);
             })
             .finally(() => {

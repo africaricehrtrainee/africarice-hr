@@ -94,7 +94,6 @@ export default function Home() {
                         <Label className="">E-mail</Label>
                         <Input
                             type="email"
-                            required
                             className=""
                             name="email"
                             placeholder="Enter your CGIAR email address"
@@ -106,7 +105,6 @@ export default function Home() {
                         <Label>Password<span className="text-xs text-muted-foreground ml-1">(default is your RESNO)</span></Label>
                         <Input
                             type="password"
-                            required
                             className=""
                             name="password"
                             placeholder="Enter your password"
@@ -123,6 +121,7 @@ export default function Home() {
                                 type="submit"
                                 className="mt-4"
                                 loading={loading}
+                                disabled={!email || !password}
                                 variant="outline"
                                 onClick={logIn}
                             >

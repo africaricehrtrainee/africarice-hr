@@ -231,17 +231,17 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                         return (
                             <button
                                 onClick={() => {
-                                    selectedEmployee == i
+                                    selectedEmployee == employee.employeeId
                                         ? setSelectedEmployee(-1)
-                                        : setSelectedEmployee(employee.employeeId - 2);
+                                        : setSelectedEmployee(employee.employeeId);
                                 }}
                                 className={cn(
                                     "grid grid-cols-7 w-full relative items-center justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50 ",
-                                    `${employee.deletedAt && "opacity-50"}`,
-                                    `${i == selectedEmployee
+                                    `${employee.employeeId == selectedEmployee
                                         ? "bg-zinc-50 opacity-100 hover:bg-zinc-50 border-l-4 border-l-brand"
                                         : ""
-                                    }`
+                                    }`,
+                                    `${employee.deletedAt && "opacity-50"}`,
                                 )}
                                 key={i}
                             >
@@ -252,7 +252,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                     <p
                                         className={cn(
                                             "text-xs text-zinc-700 max-w-[150px] truncate font-mono",
-                                            selectedEmployee == i
+                                            employee.employeeId == selectedEmployee
                                                 ? "font-bold"
                                                 : "font-medium"
                                         )}
@@ -267,7 +267,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                     <p
                                         className={cn(
                                             "text-xs text-zinc-700 max-w-[150px] truncate font-mono",
-                                            selectedEmployee == i
+                                            selectedEmployee == employee.employeeId
                                                 ? "font-bold"
                                                 : "font-medium"
                                         )}
@@ -282,7 +282,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                     <p
                                         className={cn(
                                             "text-xs text-zinc-700 max-w-[150px] truncate",
-                                            selectedEmployee == i
+                                            selectedEmployee == employee.employeeId
                                                 ? "font-bold"
                                                 : "font-medium"
                                         )}

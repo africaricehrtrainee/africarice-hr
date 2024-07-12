@@ -84,9 +84,14 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                         }
                     )
                     .then((response) =>
-                        response.status == 201
-                            ? alert("Successfully unrestricted user.")
-                            : alert("An error occurred")
+                        response.status == 200
+                            ? toast({
+                                title: "Operation successful",
+                                description: "The account has been unrestricted successfully",
+                            }) : toast({
+                                title: "An error occurred",
+                                description: "An error occurred while unrestricting the account.",
+                            })
                     )
                     .finally(() => {
                         fetch();
@@ -100,9 +105,15 @@ const EditEmployee: React.FC<ProfileEditorProps> = ({
                         employeeId
                     )
                     .then((response) =>
-                        response.status == 201
-                            ? alert("Successfully deleted user.")
-                            : alert("An error occurred")
+                        response.status == 200
+                            ? toast({
+                                title: "Operation successful",
+                                description: "The account has been restricted successfully",
+                            }) : toast({
+                                title: "An error occurred",
+                                description: "An error occurred while restricting the account.",
+                                variant: "destructive"
+                            })
                     )
                     .finally(() => {
                         fetch();
