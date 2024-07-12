@@ -30,13 +30,14 @@ export default function Home() {
                 password,
             })
             .then(async (response: { data: { user: Employee } }) => {
-                console.log(response);
                 if (response.data.user) {
                     setUser(response.data.user);
                     toast({
                         description: "Successfully logged in.",
                     });
-                    const isPasswordDefault = bcrypt.compareSync(response.data.user.matricule, response.data.user.password);
+                    console.log(response.data.user)
+                    const isPasswordDefault = response.data.user.matricule ? bcrypt.compareSync(response.data.user.matricule, response.data.user.password) : false;
+
                     if (isPasswordDefault) {
                         router.push(`/auth/password-change?onboard=true`);
                     } else if (response.data.user.subordinates.length > 0) {

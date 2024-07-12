@@ -26,7 +26,7 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
     const [supervisorId, setSupervisorId] = useState<string>("");
     const [matricule, setMatricule] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [role, setRole] = useState<"hr" | "staff" | "admin">("staff");
+    const [role, setRole] = useState<"hr" | "staff" | "admin" | "cons">("staff");
     const [jobTitle, setJobTitle] = useState<string>("");
 
     const handleFormSubmit = (e: React.FormEvent) => {
@@ -199,6 +199,27 @@ const EmployeeForm: FC<EmployeeFormProps> = ({ onFormSubmit }) => {
                             HR
                             <Icon
                                 icon="iconoir:eye-solid"
+                                className="ml-1"
+                                fontSize={10}
+                            />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() =>
+                                role == "cons"
+                                    ? setRole("staff")
+                                    : setRole("cons")
+                            }
+                            className={cn(
+                                "flex items-center transition-all justify-center gap-0 whitespace-nowrap rounded-md p-2 px-2 text-[10px] font-semibold",
+                                role === "cons"
+                                    ? "bg-orange-100 text-orange-700"
+                                    : "bg-zinc-100 text-zinc-700"
+                            )}
+                        >
+                            Consultant
+                            <Icon
+                                icon="fa6-solid:hat-cowboy"
                                 className="ml-1"
                                 fontSize={10}
                             />

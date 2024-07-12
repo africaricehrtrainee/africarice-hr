@@ -233,7 +233,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
                                 onClick={() => {
                                     selectedEmployee == i
                                         ? setSelectedEmployee(-1)
-                                        : setSelectedEmployee(employee.employeeId);
+                                        : setSelectedEmployee(employee.employeeId - 2);
                                 }}
                                 className={cn(
                                     "grid grid-cols-7 w-full relative items-center justify-start border-b border-t border-b-zinc-100 border-t-zinc-100 p-2 px-4 transition-all hover:bg-zinc-50 ",
